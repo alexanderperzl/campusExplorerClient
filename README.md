@@ -1,1 +1,1 @@
-# campusExplorerServer
+# campusExplorerClient
