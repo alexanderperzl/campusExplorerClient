@@ -5,18 +5,12 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ImageView
 
-class BuildingActivity : AppCompatActivity() {
+class RoomDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_building)
-        val imageView = findViewById<ImageView>(R.id.imageView)
-        imageView.setOnClickListener {
-            val intent = Intent(this, RoomDetailActivity::class.java)
-            startActivity(intent)
-        }
+        setContentView(R.layout.activity_room_detail)
     }
 
     /* Tool Bar */
