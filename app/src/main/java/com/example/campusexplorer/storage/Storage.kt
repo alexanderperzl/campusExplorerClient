@@ -47,8 +47,12 @@ object Storage {
         return roomData[buildingId]?.first
     }
 
-    fun getAllBuildings(): MutableMap<String, Pair<Building, MutableMap<String, Pair<Floor, MutableMap<String, Room>>>>> {
+    fun getAllBuildings(): MutableMap<String, Pair<Building, MutableMap<String, Pair<Floor, MutableMap<String, Room>>>>>? {
         return roomData
+    }
+
+    fun findFloors(buildingId: String): MutableMap<String, Pair<Floor, MutableMap<String, Room>>>? {
+        return roomData[buildingId]?.second
     }
 
     fun findRoom(buildingId: String, floorId: String, roomName: String): Room? {

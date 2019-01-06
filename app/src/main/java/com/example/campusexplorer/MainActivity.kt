@@ -5,10 +5,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.example.campusexplorer.service.ImportService
@@ -43,13 +41,29 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         // TODO get updated Location, show on map
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        requestPermissions(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION), PackageManager.PERMISSION_GRANTED)
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            fusedLocationClient.lastLocation.addOnSuccessListener { location -> lastLocation = location}
-        }
-        else {
-            requestPermissions(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION), PackageManager.PERMISSION_GRANTED)
+        requestPermissions(
+            arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ), PackageManager.PERMISSION_GRANTED
+        )
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location -> lastLocation = location }
+        } else {
+            requestPermissions(
+                arrayOf(
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ), PackageManager.PERMISSION_GRANTED
+            )
         }
     }
 
@@ -67,11 +81,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         // TODO Only set markers for buildings once the storage is fully initialized
 
-        buildings.forEach { building ->
+        buildings?.forEach { building ->
             val lat = building.value.first.lat
             val lng = building.value.first.lng
             val name = building.value.first.name
-            mMap.addMarker(MarkerOptions().position(LatLng(lat, lng)).title(name))
+            val marker = mMap.addMarker(MarkerOptions().position(LatLng(lat, lng)).title(name))
+            marker.tag = building.value.first._id
         }
 
         val oettingenstrasse = LatLng(48.1500233, 11.5942831)
@@ -81,11 +96,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
 
     override fun onMarkerClick(marker: Marker): Boolean {
+        val buildingId = marker.tag
         val intent = Intent(this, BuildingActivity::class.java)
+        intent.putExtra("id", buildingId.toString())
         startActivity(intent)
         return true
     }
-
 
     /* Tool Bar */
 
