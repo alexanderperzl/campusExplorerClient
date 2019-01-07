@@ -8,51 +8,51 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.Toast
-import com.android.volley.AuthFailureError
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.campusexplorer.model.Lecture
 import com.example.campusexplorer.storage.Storage
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import org.json.JSONObject
-
-const val SERVER_URL = "http://192.168.178.48:8080/"
+import java.util.*
 
 class BuildingActivity : AppCompatActivity() {
+    val gson = Gson()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_building)
 
-        // set image
         val buildingId = intent.getStringExtra("id")
+
+        val buildingIdServer = BuildingIDConverter.fromClientToServer(buildingId)
+        loadLectures(buildingIdServer ?: "")
+
         val floors = Storage.findFloors(buildingId)
         val groundFloor = floors?.filterValues { it -> it.first.level.trim() == "EG" }
 
         val imageView = findViewById<ImageView>(R.id.imageView)
         imageView.setOnClickListener {
-            requestBuilding()
             //val intent = Intent(this, RoomDetailActivity::class.java)
             //startActivity(intent)
         }
     }
 
-    fun requestBuilding() {
-        val route = "/getBuilding"
-        val body = HashMap<String, String>()
-        body.put("building", "blablabla")
-        post(route, body)
-    }
-
-    fun post(route: String, body: HashMap<String, String>) {
-        // Instantiate the RequestQueue.
+    fun loadLectures(building: String) {
         val queue = Volley.newRequestQueue(this)
-        val url = SERVER_URL + route
+        val url = "$SERVER_URL/getBuilding"
 
-        //String Request initialized
         val request = object : StringRequest(Request.Method.POST, url, Response.Listener { response ->
             Log.d("Response:", response)
-            Toast.makeText(applicationContext, response, Toast.LENGTH_LONG).show()
+
+            // Deserialize Server Response
+            val lectureListType = object : TypeToken<Collection<Lecture>>() {}.type
+            val lectures = gson.fromJson<List<Lecture>>(response, lectureListType)
+            Storage.setLectures(lectures)
+
         }, Response.ErrorListener { error ->
             Log.d("Error", error.message)
             Toast.makeText(applicationContext, "Error", Toast.LENGTH_LONG).show()
@@ -61,14 +61,14 @@ class BuildingActivity : AppCompatActivity() {
                 return "application/json"
             }
 
-            @Throws(AuthFailureError::class)
             override fun getBody(): ByteArray {
+                val body = HashMap<String, String>()
+                body["building"] = building
                 return JSONObject(body).toString().toByteArray()
             }
         }
         queue!!.add(request)
     }
-
 
     /* Tool Bar */
 

@@ -2,6 +2,7 @@ package com.example.campusexplorer.service
 
 import android.app.IntentService
 import android.content.Intent
+import android.support.v4.content.LocalBroadcastManager
 import com.example.campusexplorer.model.Building
 import com.example.campusexplorer.model.Floor
 import com.example.campusexplorer.model.Room
@@ -9,10 +10,12 @@ import com.example.campusexplorer.storage.Storage
 import com.google.gson.Gson
 import java.util.logging.Logger
 
-class ImportService: IntentService("ImportService") {
+
+class ImportService : IntentService("ImportService") {
 
     val log = Logger.getLogger(ImportService::class.java.name)
     val gson = Gson()
+
 
     override fun onHandleIntent(intent: Intent?) {
         val rooms = loadRooms()
@@ -20,7 +23,11 @@ class ImportService: IntentService("ImportService") {
         val buildings = loadBuildings()
         log.info("Loaded ${buildings.count()} buildings, ${floors.count()} floors and ${rooms.count()} rooms")
         Storage.init(buildings, floors, rooms)
+
+        val localIntent = Intent("STORAGE_INITIALIZED")
+        LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent)
     }
+
 
     private fun loadRooms(): List<Room> {
         val roomJson = resources.assets.open("rooms.json").bufferedReader().use {

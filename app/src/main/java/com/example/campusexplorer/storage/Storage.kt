@@ -2,6 +2,7 @@ package com.example.campusexplorer.storage
 
 import com.example.campusexplorer.model.Building
 import com.example.campusexplorer.model.Floor
+import com.example.campusexplorer.model.Lecture
 import com.example.campusexplorer.model.Room
 import java.util.logging.Logger
 
@@ -11,6 +12,7 @@ object Storage {
     private var roomData: MutableMap<String, Pair<Building, MutableMap<String, Pair<Floor, MutableMap<String, Room>>>>> = HashMap()
     private var floorById: MutableMap<String, Floor> = HashMap()
     private var roomById: MutableMap<String, Room> = HashMap()
+    private var lectures: List<Lecture> = emptyList()
 
     fun init(initBuildings: List<Building>, initFloors: List<Floor>, initRooms: List<Room>) {
         initBuildings(initBuildings)
@@ -40,6 +42,14 @@ object Storage {
                 roomById[room._id] = room
             }
         }
+    }
+
+    fun setLectures(lectures: List<Lecture>) {
+        this.lectures = lectures
+    }
+
+    fun getLectures(): List<Lecture>? {
+        return lectures
     }
 
     fun findBuilding(floorId: String): Building? {
