@@ -6,5 +6,6 @@ data class Lecture(
     val events: List<Event>,
     val department: String,
     val type: String,
+    val faculty: String,
     val link: String
 )

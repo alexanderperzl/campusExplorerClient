@@ -4,10 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
 import com.example.campusexplorer.model.Lecture
 import com.example.campusexplorer.storage.Storage
 import com.google.gson.Gson
@@ -48,6 +50,7 @@ class BuildingActivity : AppCompatActivity() {
         if (Storage.hasLectures()) {
             log.info("lectures already loaded")
             spinnerWrapper.visibility = View.GONE
+
         } else {
             loadLectures(buildingIdServer ?: "")
                 .subscribeOn(Schedulers.io())
