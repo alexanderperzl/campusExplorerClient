@@ -1,23 +1,23 @@
 package com.example.campusexplorer
 
-import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.location.Location
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import com.example.campusexplorer.model.Building
+import com.example.campusexplorer.model.Floor
+import com.example.campusexplorer.model.Room
 import com.example.campusexplorer.service.ImportService
 import com.example.campusexplorer.storage.Storage
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
@@ -26,52 +26,23 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 
 lateinit var mMap: GoogleMap
+var mLocationPermissionGranted: Boolean = false
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var lastLocation: Location
+    private var PERMISSIONS_REQUEST_LOCATION = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LocalBroadcastManager.getInstance(this)
-            .registerReceiver(LocalBroadcastReceiver(), IntentFilter("STORAGE_INITIALIZED"));
-        initStorage()
         setContentView(R.layout.activity_main)
-        setSupportActionBar(findViewById(R.id.my_toolbar))
+        LocalBroadcastManager.getInstance(this)
+            .registerReceiver(LocalBroadcastReceiver(), IntentFilter("STORAGE_INITIALIZED"))
+        initStorage()
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
-
-
-        // TODO get updated Location, show on map
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
-        requestPermissions(
-            arrayOf(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ), PackageManager.PERMISSION_GRANTED
-        )
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED &&
-            ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            fusedLocationClient.lastLocation.addOnSuccessListener { location -> lastLocation = location }
-        } else {
-            requestPermissions(
-                arrayOf(
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ), PackageManager.PERMISSION_GRANTED
-            )
-        }
     }
+
 
     private fun initStorage() {
         Intent(this, ImportService::class.java).also { intent ->
@@ -82,11 +53,66 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         mMap.setOnMarkerClickListener(this)
-
-        val oettingenstrasse = LatLng(48.1500233, 11.5942831)
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(oettingenstrasse, 15.0f))
-
+        updateLocationUI()
     }
+
+
+    private fun updateLocationUI() {
+        try {
+            // hier soll eig mLocationPermissionGranted abgefragt werden, dann klappts aber nicht
+            if (true) {
+                mMap.isMyLocationEnabled = true
+                mMap.uiSettings.isMyLocationButtonEnabled = true
+            } else {
+                mMap.isMyLocationEnabled = false
+                mMap.uiSettings.isMyLocationButtonEnabled = false
+                getLocationPermission()
+            }
+        } catch (e: SecurityException) {
+            Log.e("Exception: %s", e.message)
+        }
+    }
+
+    private fun getLocationPermission() {
+        if (ContextCompat.checkSelfPermission(
+                this.applicationContext,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+            && ContextCompat.checkSelfPermission(
+                this.applicationContext,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            mLocationPermissionGranted = true
+        } else {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(
+                    android.Manifest.permission.ACCESS_FINE_LOCATION,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+                ),
+                PERMISSIONS_REQUEST_LOCATION
+            )
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        mLocationPermissionGranted = false
+        when (requestCode) {
+            PERMISSIONS_REQUEST_LOCATION -> {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mLocationPermissionGranted = true
+                }
+            }
+        }
+        updateLocationUI()
+    }
+
 
     private class LocalBroadcastReceiver : BroadcastReceiver() {
 
@@ -94,12 +120,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             val buildings = Storage.getAllBuildings()
 
             buildings?.forEach { building ->
-                val lat = building.value.first.lat
-                val lng = building.value.first.lng
-                val name = building.value.first.name
-                val marker = mMap.addMarker(MarkerOptions().position(LatLng(lat, lng)).title(name))
-                marker.tag = building.value.first._id
+                setMarker(building)
             }
+        }
+
+        private fun setMarker(building: Map.Entry<String, Pair<Building, MutableMap<String, Pair<Floor, MutableMap<String, Room>>>>>) {
+            val lat = building.value.first.lat
+            val lng = building.value.first.lng
+            val name = building.value.first.name
+            val marker = mMap.addMarker(MarkerOptions().position(LatLng(lat, lng)).title(name))
+            marker.tag = building.value.first._id
         }
     }
 
