@@ -2,9 +2,11 @@ package com.example.campusexplorer
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.constraint.ConstraintLayout
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.ImageView
 import com.example.campusexplorer.model.Lecture
 import com.example.campusexplorer.storage.Storage
@@ -25,17 +27,27 @@ class BuildingActivity : AppCompatActivity() {
     val gson = Gson()
 
     private val log = Logger.getLogger(BuildingActivity::class.java.name)
+    private lateinit var spinnerWrapper: ConstraintLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_building)
+        spinnerWrapper = findViewById(R.id.spinnerWrapper)
 
         val buildingId = intent.getStringExtra("id")
 
         val buildingIdServer = BuildingIDConverter.fromClientToServer(buildingId)
 
+        spinnerWrapper.visibility = View.VISIBLE
+        val imageView = findViewById<ImageView>(R.id.imageView)
+        imageView.setOnClickListener {
+            //val intent = Intent(this, RoomDetailActivity::class.java)
+            //startActivity(intent)
+        }
+        
         if (Storage.hasLectures()) {
             log.info("lectures already loaded")
+            spinnerWrapper.visibility = View.GONE
         } else {
             loadLectures(buildingIdServer ?: "")
                 .subscribeOn(Schedulers.io())
@@ -45,17 +57,14 @@ class BuildingActivity : AppCompatActivity() {
                     Storage.setLectures(it)
                 }, onError = {
                     log.info("got error ${it.message}")
-                }, onComplete = {})
+                }, onComplete = {
+                    spinnerWrapper.visibility = View.GONE
+                })
         }
 
         val floors = Storage.findFloors(buildingId)
         val groundFloor = floors?.filterValues { it -> it.first.level.trim() == "EG" }
 
-        val imageView = findViewById<ImageView>(R.id.imageView)
-        imageView.setOnClickListener {
-            //val intent = Intent(this, RoomDetailActivity::class.java)
-            //startActivity(intent)
-        }
     }
 
     private fun loadLectures(building: String): Observable<List<Lecture>> {
