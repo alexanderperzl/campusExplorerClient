@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Veranstaltungen" android:id="@+id/action_events"
+          android:icon="@drawable/ic_dashboard_black_24dp"/>
+    <item android:title="Freie Räume" android:id="@+id/action_free_rooms"
+          android:icon="@drawable/ic_crop_free_black_24dp"/>
+</menu>
