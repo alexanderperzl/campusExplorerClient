@@ -38,7 +38,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             .registerReceiver(LocalBroadcastReceiver(), IntentFilter("STORAGE_INITIALIZED"));
         initStorage()
         setContentView(R.layout.activity_main)
-        setSupportActionBar(findViewById(R.id.my_toolbar))
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
