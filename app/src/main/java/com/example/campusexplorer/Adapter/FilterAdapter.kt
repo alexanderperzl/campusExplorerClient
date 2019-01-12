@@ -1,35 +1,39 @@
 package com.example.campusexplorer.Adapter
 
-class FilterAdapter : ListAdapter<${Model_Class}, ${NAME}.ItemViewholder>(DiffCallback())  {
+import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.widget.Switch
+import android.widget.TextView
+import com.example.campusexplorer.R
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewholder {
-        return ItemViewholder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.${Item_Layout_ID}, parent, false)
-        )
+class FilterAdapter(private val myDataset: Array<String>) :
+    RecyclerView.Adapter<FilterAdapter.MyViewHolder>() {
+
+    // Provide a reference to the views for each data item
+    // Complex data items may need more than one view per item, and
+    // you provide access to all the views for a data item in a view holder.
+    // Each data item is just a string in this case that is shown in a TextView.
+    class MyViewHolder(val switch: Switch) : RecyclerView.ViewHolder(switch)
+
+
+    // Create new views (invoked by the layout manager)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilterAdapter.MyViewHolder {
+        // create a new view
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.filter_list_item, parent, false)
+        val switch = view.findViewById<Switch>(R.id.toggle)
+
+        return MyViewHolder(switch)
     }
 
-    override fun onBindViewHolder(holder: ${NAME}.ItemViewholder, position: Int) {
-        holder.bind(getItem(position))
+    // Replace the contents of a view (invoked by the layout manager)
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+        // - get element from your dataset at this position
+        // - replace the contents of the view with that element
+        holder.switch.text = myDataset[position]
     }
 
-    class ItemViewholder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(item: ${Model_Class}) = with(itemView) {
-            // TODO: Bind the data with View
-
-            setOnClickListener {
-                // TODO: Handle on click
-            }
-        }
-    }
-}
-
-class DiffCallback : DiffUtil.ItemCallback<${Model_Class}>() {
-    override fun areItemsTheSame(oldItem: ${Model_Class}?, newItem: ${Model_Class}?): Boolean {
-        return oldItem?.id == newItem?.id
-    }
-
-    override fun areContentsTheSame(oldItem: ${Model_Class}?, newItem: ${Model_Class}?): Boolean {
-        return oldItem == newItem
-    }
+    // Return the size of your dataset (invoked by the layout manager)
+    override fun getItemCount() = myDataset.size
 }
