@@ -44,6 +44,10 @@ object Storage {
         }
     }
 
+    fun hasLectures(): Boolean {
+        return !lectures.isEmpty()
+    }
+
     fun setLectures(lectures: List<Lecture>) {
         this.lectures = lectures
     }
