@@ -8,19 +8,22 @@
         tools:context=".BuildingActivity">
 
     <fragment
-            android:layout_width="0dp"
-            android:layout_height="0dp" android:name="com.example.campusexplorer.fragment.BuildingMapFragment"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:name="com.example.campusexplorer.fragment.BuildingMapFragment"
             android:id="@+id/buildingMapFragment" app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" tools:layout="@layout/fragment_building_map"
             app:layout_constraintEnd_toStartOf="@+id/spinnerWrapper"/>
 
     <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" android:visibility="visible" app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" android:background="#cc000000" android:elevation="2dp"
-            android:id="@+id/spinnerWrapper">
+            android:layout_width="0dp"
+            android:layout_height="0dp" android:visibility="gone"
+            android:background="#cc000000" android:elevation="2dp"
+            android:id="@+id/spinnerWrapper" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
         <ProgressBar
                 style="?android:attr/progressBarStyle"

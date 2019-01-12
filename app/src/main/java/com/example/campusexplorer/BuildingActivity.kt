@@ -46,22 +46,7 @@ class BuildingActivity : AppCompatActivity() {
         val buildingIdServer = BuildingIDConverter.fromClientToServer(buildingId)
 
         spinnerWrapper.visibility = View.VISIBLE
-        val mapView = findViewById<ImageView>(R.id.mapView) as PinView
-        mapView.setMinimumTileDpi(120)
-        val assetStream = assets.open("maps/0000_d_00.pdf")
-        val mapFile = File(filesDir, "temp_building.pdf")
-        assetStream.toFile(mapFile)
-        mapView.setBitmapDecoderFactory { PDFDecoder(0, mapFile, 8f) }
-        mapView.setRegionDecoderFactory { PDFRegionDecoder(0, mapFile, 8f) }
-        val source = ImageSource.uri(mapFile.absolutePath)
-        mapView.setImage(source)
-        mapView.addPin(PointF(5500f, 4250f), mutableMapOf(Pair("room", "23")))
-        mapView.addPin(PointF(8000f, 3800f), mutableMapOf(Pair("room", "24")))
-        mapView.addPin(PointF(4500f, 5500f), mutableMapOf(Pair("room", "25")))
-        mapView.setOnClickListener {
 
-        }
-        
         if (Storage.hasLectures()) {
             log.info("lectures already loaded")
             spinnerWrapper.visibility = View.GONE
