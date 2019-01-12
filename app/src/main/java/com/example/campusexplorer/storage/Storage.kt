@@ -9,10 +9,14 @@ import java.util.logging.Logger
 object Storage {
 
     private val log = Logger.getLogger(Storage::class.java.name)
-    private var roomData: MutableMap<String, Pair<Building, MutableMap<String, Pair<Floor, MutableMap<String, Room>>>>> = HashMap()
+    private var roomData: MutableMap<String, Pair<Building, MutableMap<String, Pair<Floor, MutableMap<String, Room>>>>> =
+        HashMap()
     private var floorById: MutableMap<String, Floor> = HashMap()
     private var roomById: MutableMap<String, Room> = HashMap()
+    // TODO remove this after buildingLectures works
     private var lectures: List<Lecture> = emptyList()
+    private var buildingLectures: MutableList<Pair<Building, List<Lecture>>> = mutableListOf()
+
 
     fun init(initBuildings: List<Building>, initFloors: List<Floor>, initRooms: List<Room>) {
         initBuildings(initBuildings)
@@ -36,7 +40,7 @@ object Storage {
 
     private fun initRooms(initRooms: List<Room>) {
         initRooms.forEach { room ->
-            val building = findBuilding(room.floor)
+            val building = findBuildingForFloor(room.floor)
             if (building != null) {
                 roomData[building._id]!!.second[room.floor]!!.second[room._id] = room
                 roomById[room._id] = room
@@ -56,8 +60,40 @@ object Storage {
         return lectures
     }
 
-    fun findBuilding(floorId: String): Building? {
+    /**
+     * Returns the List of Lectures for a particular Building
+     */
+    fun getBuildingLectures(building: Building): List<Lecture>? {
+        return buildingLectures.first { pair -> pair.first._id == building._id }.second
+    }
+
+    fun setBuildingLectures(building: Building, lectures: List<Lecture>) {
+        // if we already have the building in our buildingLectures, update it
+        if (hasLecturesForBuilding(building)) {
+            buildingLectures.map { pair ->
+                if (pair.first._id == building._id) {
+                    Pair(pair.first, lectures)
+                } else {
+                    pair
+                }
+            }
+        }
+        // otherwise, just add the building / lectures pair
+        else {
+            buildingLectures.add(Pair(building, lectures))
+        }
+    }
+
+    fun hasLecturesForBuilding(building : Building) : Boolean{
+        return buildingLectures.any { pair -> pair.first._id == building._id }
+    }
+
+    fun findBuildingForFloor(floorId: String): Building? {
         val buildingId = floorById[floorId]?.building ?: return null
+        return roomData[buildingId]?.first
+    }
+
+    fun findBuilding(buildingId : String) : Building?{
         return roomData[buildingId]?.first
     }
 

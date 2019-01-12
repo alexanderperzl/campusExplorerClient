@@ -90,7 +90,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private class LocalBroadcastReceiver : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
-            val buildings = Storage.getAllBuildings()
+            // get all buildings of which we have buildingId in our BuildingIDConverter
+            val buildings = Storage.getAllBuildings()?.filter{buildingId -> BuildingIDConverter.getKeys().contains(buildingId.key)}
 
             buildings?.forEach { building ->
                 val lat = building.value.first.lat

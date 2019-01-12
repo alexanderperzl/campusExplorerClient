@@ -9,4 +9,8 @@ object BuildingIDConverter {
     fun fromClientToServer(id: String): String? {
         return mapping[id]
     }
+
+    fun getKeys() : List<String>{
+        return (mapping.keys).toList()
+    }
 }

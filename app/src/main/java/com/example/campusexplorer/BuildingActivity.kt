@@ -4,12 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
-import android.widget.Toast
+import com.example.campusexplorer.filter.FilterData
 import com.example.campusexplorer.model.Lecture
 import com.example.campusexplorer.storage.Storage
 import com.google.gson.Gson
@@ -23,7 +22,6 @@ import java.io.BufferedOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.logging.Logger
-import kotlin.collections.HashMap
 
 class BuildingActivity : AppCompatActivity() {
     val gson = Gson()
@@ -38,6 +36,8 @@ class BuildingActivity : AppCompatActivity() {
 
         val buildingId = intent.getStringExtra("id")
 
+        val building = Storage.findBuilding(buildingId)!!
+
         val buildingIdServer = BuildingIDConverter.fromClientToServer(buildingId)
 
         spinnerWrapper.visibility = View.VISIBLE
@@ -47,17 +47,19 @@ class BuildingActivity : AppCompatActivity() {
             //startActivity(intent)
         }
         
-        if (Storage.hasLectures()) {
+        if (Storage.hasLecturesForBuilding(building)) {
             log.info("lectures already loaded")
             spinnerWrapper.visibility = View.GONE
-
+            FilterData.getFilteredData(building)
         } else {
             loadLectures(buildingIdServer ?: "")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(onNext = {
                     log.info("lectures loaded")
-                    Storage.setLectures(it)
+                    Storage.setBuildingLectures(building, it)
+//                    Storage.setLectures(it)
+                    FilterData.getFilteredData(building)
                 }, onError = {
                     log.info("got error ${it.message}")
                 }, onComplete = {
