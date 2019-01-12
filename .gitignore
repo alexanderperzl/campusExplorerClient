@@ -66,3 +66,5 @@ fastlane/test_output
 fastlane/readme.md
 
 .DS_Store
+
+cygwin_android_studio.bat
