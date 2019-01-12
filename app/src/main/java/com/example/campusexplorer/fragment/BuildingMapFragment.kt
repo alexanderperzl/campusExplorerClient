@@ -51,16 +51,17 @@ class BuildingMapFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val mapView = view.findViewById(R.id.mapView) as PinView
         mapView.setMinimumTileDpi(120)
-        val assetStream = activity!!.assets.open("maps/0000_d_00.pdf")
+        val assetStream = activity!!.assets.open("maps/7070_d_00.pdf")
         val mapFile = File(activity!!.filesDir, "temp_building.pdf")
         assetStream.toFile(mapFile)
-        mapView.setBitmapDecoderFactory { PDFDecoder(0, mapFile, 1f) }
-        mapView.setRegionDecoderFactory { PDFRegionDecoder(0, mapFile, 1f) }
+        mapView.setBitmapDecoderFactory { PDFDecoder(0, mapFile, 4.18f) }
+        mapView.setRegionDecoderFactory { PDFRegionDecoder(0, mapFile, 4.18f) }
         val source = ImageSource.uri(mapFile.absolutePath)
         mapView.setImage(source)
-        mapView.addPin(PointF(550f, 425f), mutableMapOf(Pair("room", "23")))
-        mapView.addPin(PointF(800f, 380f), mutableMapOf(Pair("room", "24")))
-        mapView.addPin(PointF(450f, 550f), mutableMapOf(Pair("room", "25")))
+        val rooms = Storage.findAllRooms("g7070-1")
+        rooms.forEach {
+            mapView.addPin(PointF(it.mapX.toFloat() - 50f, it.mapY.toFloat() + 25f), mutableMapOf(Pair("room", it.name)))
+        }
         val gestureDetector = GestureDetector(activity, object : GestureDetector.SimpleOnGestureListener() {
             override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                 mapView.viewToSourceCoord(e.x, e.y)?.let {
