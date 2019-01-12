@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.PointF
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
+import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -35,11 +36,13 @@ class BuildingActivity : AppCompatActivity() {
 
     private val log = Logger.getLogger(BuildingActivity::class.java.name)
     private lateinit var spinnerWrapper: ConstraintLayout
+    private lateinit var bottomNavigation: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_building)
         spinnerWrapper = findViewById(R.id.spinnerWrapper)
+        bottomNavigation = findViewById(R.id.bottomNavigationView)
 
         val buildingId = intent.getStringExtra("id")
 
