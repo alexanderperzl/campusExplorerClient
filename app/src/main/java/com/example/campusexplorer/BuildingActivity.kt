@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.ImageView
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.example.campusexplorer.extensions.toFile
+import com.example.campusexplorer.model.Floor
 import com.example.campusexplorer.model.Lecture
 import com.example.campusexplorer.storage.Storage
 import com.example.campusexplorer.view.PinView
@@ -29,7 +30,6 @@ import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.logging.Logger
-import kotlin.collections.HashMap
 
 class BuildingActivity : AppCompatActivity() {
     val gson = Gson()
@@ -67,8 +67,14 @@ class BuildingActivity : AppCompatActivity() {
                 })
         }
 
-        val floors = Storage.findFloors(buildingId)
-        val groundFloor = floors?.filterValues { it -> it.first.level.trim() == "EG" }
+        val building = Storage.findBuildingById(buildingId)?.second
+
+        var floorList = ArrayList<Floor>()
+        building?.forEach { it ->
+            floorList.add(it.value.first)
+        }
+
+        floorList.sortedWith(compareBy { it.levelDouble })
 
     }
 
