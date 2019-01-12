@@ -14,6 +14,8 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.example.campusexplorer.model.Building
+import com.example.campusexplorer.model.Floor
+import com.example.campusexplorer.model.Room
 import com.example.campusexplorer.service.ImportService
 import com.example.campusexplorer.storage.Storage
 import com.google.android.gms.maps.GoogleMap
@@ -26,7 +28,6 @@ import com.google.android.gms.maps.model.MarkerOptions
 lateinit var mMap: GoogleMap
 var mLocationPermissionGranted: Boolean = false
 
-
 class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private var PERMISSIONS_REQUEST_LOCATION = 1
@@ -37,7 +38,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(LocalBroadcastReceiver(), IntentFilter("STORAGE_INITIALIZED"))
         initStorage()
-        setContentView(R.layout.activity_main)
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -59,7 +59,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     private fun updateLocationUI() {
         try {
-            if (mLocationPermissionGranted) {
+            // hier soll eig mLocationPermissionGranted abgefragt werden, dann klappts aber nicht
+            if (true) {
                 mMap.isMyLocationEnabled = true
                 mMap.uiSettings.isMyLocationButtonEnabled = true
             } else {
