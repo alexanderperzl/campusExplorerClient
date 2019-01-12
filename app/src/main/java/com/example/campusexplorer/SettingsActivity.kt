@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.Menu
 import android.view.MenuItem
-import com.example.campusexplorer.Adapter.FilterAdapter
+import com.example.campusexplorer.adapter.FilterAdapter
+import com.example.campusexplorer.filter.FilterData
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -26,7 +26,7 @@ class SettingsActivity : AppCompatActivity() {
         actionBar!!.setDisplayHomeAsUpEnabled(true)
 
         fakultaetManager = LinearLayoutManager(this)
-        fakultaetAdapter = FilterAdapter(myDataset)
+        fakultaetAdapter = FilterAdapter(FilterData.faculties)
 
         fakultaetView = findViewById<RecyclerView>(R.id.filter_list_fakultaeten).apply {
             // use this setting to improve performance if you know that changes
@@ -42,7 +42,7 @@ class SettingsActivity : AppCompatActivity() {
 
 
             veranstaltungsManager = LinearLayoutManager(this)
-            veranstaltungsAdapter = FilterAdapter(myDataset)
+            veranstaltungsAdapter = FilterAdapter(FilterData.eventTypes)
 
             veranstaltungsView = findViewById<RecyclerView>(R.id.filter_list_veranstaltungen).apply {
                 // use this setting to improve performance if you know that changes

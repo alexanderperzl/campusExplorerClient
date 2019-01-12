@@ -1,7 +1,14 @@
 package com.example.campusexplorer.filter
 
-object FilterObject {
+import kotlin.properties.Delegates
 
-    private var name = ""
-    private var active = false
+class FilterObject(name: String, active: Boolean) {
+
+    var name: String by Delegates.notNull()
+    var active: Boolean by Delegates.notNull()
+
+    init {
+        this.name = name;
+        this.active = active
+    }
 }
