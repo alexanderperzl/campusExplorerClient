@@ -84,4 +84,7 @@ object Storage {
         return roomById[roomId]
     }
 
+    fun findBuildingById(buildingId: String): Pair<Building, MutableMap<String, Pair<Floor, MutableMap<String, Room>>>>? {
+        return roomData[buildingId]
+    }
 }
