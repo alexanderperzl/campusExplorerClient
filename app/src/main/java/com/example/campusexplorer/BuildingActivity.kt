@@ -3,12 +3,13 @@ package com.example.campusexplorer
 import android.content.Intent
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
+import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.ImageView
 import com.example.campusexplorer.filter.FilterData
+import com.example.campusexplorer.model.Floor
 import com.example.campusexplorer.model.Lecture
 import com.example.campusexplorer.storage.Storage
 import com.google.gson.Gson
@@ -28,11 +29,13 @@ class BuildingActivity : AppCompatActivity() {
 
     private val log = Logger.getLogger(BuildingActivity::class.java.name)
     private lateinit var spinnerWrapper: ConstraintLayout
+    private lateinit var bottomNavigation: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_building)
         spinnerWrapper = findViewById(R.id.spinnerWrapper)
+        bottomNavigation = findViewById(R.id.bottomNavigationView)
 
         val buildingId = intent.getStringExtra("id")
 
@@ -41,13 +44,9 @@ class BuildingActivity : AppCompatActivity() {
         val buildingIdServer = BuildingIDConverter.fromClientToServer(buildingId)
 
         spinnerWrapper.visibility = View.VISIBLE
-        val imageView = findViewById<ImageView>(R.id.imageView)
-        imageView.setOnClickListener {
-            //val intent = Intent(this, RoomDetailActivity::class.java)
-            //startActivity(intent)
-        }
-        
+
         if (Storage.hasLecturesForBuilding(building)) {
+
             log.info("lectures already loaded")
             spinnerWrapper.visibility = View.GONE
             FilterData.getFilteredData(building)
@@ -67,8 +66,14 @@ class BuildingActivity : AppCompatActivity() {
                 })
         }
 
-        val floors = Storage.findFloors(buildingId)
-        val groundFloor = floors?.filterValues { it -> it.first.level.trim() == "EG" }
+        val buildingMap = Storage.findBuildingById(buildingId)?.second
+
+        var floorList = ArrayList<Floor>()
+        buildingMap?.forEach { it ->
+            floorList.add(it.value.first)
+        }
+
+        floorList.sortedWith(compareBy { it.levelDouble })
 
     }
 

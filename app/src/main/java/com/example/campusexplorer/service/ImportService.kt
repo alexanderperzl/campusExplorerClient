@@ -62,7 +62,7 @@ class ImportService : IntentService("ImportService") {
         val floorJson = resources.assets.open("floors.json").bufferedReader().use {
             it.readText()
         }
-        return gson.fromJson(floorJson, Array<Floor>::class.java).toList()
+        return gson.fromJson(floorJson, Array<Floor>::class.java).toList().map { floor -> floor.setLevelDouble() }
     }
 
     private fun loadBuildings(): List<Building> {
