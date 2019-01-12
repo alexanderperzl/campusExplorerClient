@@ -106,7 +106,7 @@ object Storage {
     }
 
     fun findAllRooms(floorId: String): List<Room> {
-        val buildingId = findBuilding(floorId)?._id ?: return emptyList()
+        val buildingId = findBuildingForFloor(floorId)?._id ?: return emptyList()
         val floors = roomData[buildingId]?.second ?: return emptyList()
         val rooms = floors[floorId]?.second
         return if (rooms != null) {
