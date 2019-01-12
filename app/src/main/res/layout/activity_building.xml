@@ -16,11 +16,10 @@
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
-    <ImageView
+    <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:id="@+id/imageView"
-            android:src="@drawable/oettingen_tmp"
+            android:id="@+id/mapView"
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="8dp"
