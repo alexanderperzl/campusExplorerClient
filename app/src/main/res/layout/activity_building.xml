@@ -7,143 +7,14 @@
         android:layout_height="match_parent"
         tools:context=".BuildingActivity">
 
-    <android.support.v7.widget.Toolbar
-            android:id="@+id/my_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
-            android:elevation="4dp"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
-
-    <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+    <fragment
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:id="@+id/mapView"
-            android:layout_marginTop="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_height="0dp" android:name="com.example.campusexplorer.fragment.BuildingMapFragment"
+            android:id="@+id/buildingMapFragment" app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/my_toolbar"/>
+            app:layout_constraintStart_toStartOf="parent" tools:layout="@layout/fragment_building_map"
+            app:layout_constraintEnd_toStartOf="@+id/spinnerWrapper"/>
 
-    <Button
-            android:text="1.OG"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/my_toolbar"/>
-
-    <Button
-            android:text="EG"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button2"
-            android:layout_marginStart="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/button"/>
-
-    <Button
-            android:text="UG"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button3"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/button2"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="8dp"/>
-
-    <SeekBar
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/seekBar"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
-    <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="368dp"
-            android:layout_height="0dp"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/seekBar">
-
-        <TextView
-                android:text="8:00"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                tools:layout_editor_absoluteY="521dp"
-                tools:layout_editor_absoluteX="8dp"
-                android:id="@+id/textView3"
-                android:layout_weight="1"/>
-
-        <TextView
-                android:text="10:00"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                tools:layout_editor_absoluteY="521dp"
-                tools:layout_editor_absoluteX="45dp"
-                android:id="@+id/textView4"
-                android:layout_weight="1"/>
-
-        <TextView
-                android:text="12:00"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                tools:layout_editor_absoluteY="521dp"
-                tools:layout_editor_absoluteX="120dp"
-                android:id="@+id/textView6"
-                android:layout_weight="1"/>
-
-        <TextView
-                android:text="14:00"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                tools:layout_editor_absoluteY="521dp"
-                tools:layout_editor_absoluteX="210dp"
-                android:id="@+id/textView8"
-                android:layout_weight="1"/>
-
-        <TextView
-                android:text="16:00"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                tools:layout_editor_absoluteY="521dp"
-                tools:layout_editor_absoluteX="84dp"
-                android:id="@+id/textView5"
-                android:layout_weight="1"/>
-
-        <TextView
-                android:text="18:00"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                tools:layout_editor_absoluteY="522dp"
-                tools:layout_editor_absoluteX="161dp"
-                android:id="@+id/textView7"
-                android:layout_weight="1"/>
-
-        <TextView
-                android:text="20:00"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                tools:layout_editor_absoluteY="521dp"
-                tools:layout_editor_absoluteX="255dp"
-                android:id="@+id/textView9"
-                android:layout_weight="1"/>
-
-    </LinearLayout>
     <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent" android:visibility="visible" app:layout_constraintTop_toTopOf="parent"
@@ -160,5 +31,9 @@
                 app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
     </android.support.constraint.ConstraintLayout>
+    <android.support.design.widget.BottomNavigationView
+            android:layout_width="368dp"
+            android:layout_height="match_parent" tools:layout_editor_absoluteY="8dp"
+            tools:layout_editor_absoluteX="8dp"/>
 
 </android.support.constraint.ConstraintLayout>

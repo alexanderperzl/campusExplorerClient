@@ -1,6 +1,7 @@
 package com.example.campusexplorer
 
 import android.content.Intent
+import android.graphics.PointF
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.v7.app.AppCompatActivity
@@ -9,10 +10,10 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import com.davemorrissey.labs.subscaleview.ImageSource
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.example.campusexplorer.extensions.toFile
 import com.example.campusexplorer.model.Lecture
 import com.example.campusexplorer.storage.Storage
+import com.example.campusexplorer.view.PinView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import de.number42.subsampling_pdf_decoder.PDFDecoder
@@ -45,7 +46,7 @@ class BuildingActivity : AppCompatActivity() {
         val buildingIdServer = BuildingIDConverter.fromClientToServer(buildingId)
 
         spinnerWrapper.visibility = View.VISIBLE
-        val mapView = findViewById<ImageView>(R.id.mapView) as SubsamplingScaleImageView
+        val mapView = findViewById<ImageView>(R.id.mapView) as PinView
         mapView.setMinimumTileDpi(120)
         val assetStream = assets.open("maps/0000_d_00.pdf")
         val mapFile = File(filesDir, "temp_building.pdf")
@@ -54,6 +55,12 @@ class BuildingActivity : AppCompatActivity() {
         mapView.setRegionDecoderFactory { PDFRegionDecoder(0, mapFile, 8f) }
         val source = ImageSource.uri(mapFile.absolutePath)
         mapView.setImage(source)
+        mapView.addPin(PointF(5500f, 4250f), mutableMapOf(Pair("room", "23")))
+        mapView.addPin(PointF(8000f, 3800f), mutableMapOf(Pair("room", "24")))
+        mapView.addPin(PointF(4500f, 5500f), mutableMapOf(Pair("room", "25")))
+        mapView.setOnClickListener {
+
+        }
         
         if (Storage.hasLectures()) {
             log.info("lectures already loaded")
