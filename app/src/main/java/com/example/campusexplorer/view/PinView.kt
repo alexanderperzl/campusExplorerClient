@@ -48,18 +48,8 @@ class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = 
             markerYToCanvasY(sPin.first.y)
             )
         }
-        log.info("sWidth: $sWidth, sHeight: $sHeight")
-        log.info("originalWidth: $originalWidth, originalHeight: $originalHeight")
-        val ratio = originalWidth.toFloat() / sWidth
-        log.info("ratio: $ratio")
-
-        log.info("width: $width, height: $height")
-        log.info("x: $x, y: $y")
-        log.info("center: $center")
 
         paint.isAntiAlias = true
-
-        log.info("scale: $scale")
 
         scaledMarkers.forEach {sPin ->
             sourceToViewCoord(sPin, vPin)
@@ -69,6 +59,28 @@ class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = 
             canvas.drawBitmap(pin, vX, vY, paint)
         }
 
+    }
+
+    fun dataForClick(x: Float, y: Float): Map<String, String>? {
+        val scaledMarkers = sPinList.map {sPin ->
+            Pair(PointF(markerXToCanvasX(sPin.first.x),
+                markerYToCanvasY(sPin.first.y)),
+                sPin.second)
+
+        }
+        scaledMarkers.forEach {sPin ->
+            sourceToViewCoord(sPin.first, vPin)
+            val vX = vPin.x - pin.width / 2
+            val vY = vPin.y - pin.height
+            if (x >= vX && x <= vX + pin.width && y >= vY && y <= vY + pin.height) {
+                log.info("clicked on pin with data ${sPin.second}")
+            }
+            //log.info("originalMarker: ${vPin.x}:${vPin.y}; scaledMarker: $vX:$vY")
+        }
+
+
+
+        return null
     }
 
     private fun markerXToCanvasX(markerX: Float): Float {

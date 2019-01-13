@@ -74,6 +74,7 @@ class BuildingMapFragment : Fragment() {
             override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                 mapView.viewToSourceCoord(e.x, e.y)?.let {
                     log.info("Got click on ${e.x}:${e.y}")
+                    mapView.dataForClick(e.x, e.y)
                 } ?: run {
                     log.info("Not ready for clicking")
                 }
