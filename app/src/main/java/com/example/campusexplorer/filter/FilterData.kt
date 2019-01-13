@@ -4,6 +4,11 @@ import android.util.Log
 import com.example.campusexplorer.model.*
 import com.example.campusexplorer.storage.Storage
 import com.google.gson.Gson
+import java.time.LocalDate
+import java.time.format.TextStyle
+import java.util.*
+import java.time.temporal.WeekFields
+
 
 object FilterData {
 
@@ -29,13 +34,22 @@ object FilterData {
 //
 //    }
 
+    fun getWeekDay():String{
+        val date = LocalDate.now()
+        val dow = date.dayOfWeek
+        val dayName = dow.getDisplayName(TextStyle.SHORT, Locale.GERMAN);
+        Log.d(TAG, "day: $dayName")
+        return dayName
+    }
+
     fun getFilteredFloors(building: Building, floor: Floor) : List<Room>{
         val filteredLectures = getFilteredDataForFloor(building, floor)
         val rooms = Storage.findAllRooms(floor._id)
+        getWeekDay()
         return rooms.filter{room ->
             filteredLectures.any { lecture ->
                 lecture.events.any { event ->
-                    event.room == room.name
+                    event.room == room.name && event.dayOfWeek == "Mo."
                 }
             }
         }
