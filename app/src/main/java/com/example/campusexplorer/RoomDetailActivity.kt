@@ -6,12 +6,13 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
-import com.example.campusexplorer.adapter.FilterAdapter
 import com.example.campusexplorer.adapter.RoomDetailAdapter
 import com.example.campusexplorer.filter.FilterData
+import com.example.campusexplorer.storage.Storage
 
 class RoomDetailActivity : AppCompatActivity() {
 
@@ -23,26 +24,36 @@ class RoomDetailActivity : AppCompatActivity() {
     private lateinit var floorName: TextView
     private lateinit var buildingName: TextView
 
+    private val TAG = "RoomDetailActivity"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_room_detail)
 
-        /*var room:String = intent.getStringExtra("")
-        var floor:String = intent.getStringExtra("")
-        var building:String = intent.getStringExtra("")
+        roomName = findViewById(R.id.room_name)
+        floorName= findViewById(R.id.floor)
+        buildingName= findViewById(R.id.building_name)
 
-        roomName.setText(room)
-        floorName.setText(floor)
-        buildingName.setText(building)*/
+
+        val roomID:String = intent.getStringExtra("room")
+        val buildingID:String = intent.getStringExtra("building")
+        Log.d(TAG, "buildingID $buildingID")
+        val building = Storage.findBuilding(buildingID)
+        val room = Storage.findRoom(roomID)
+        val roomTriple = FilterData.getRoomTriple(room!!, FilterData.getFilteredDataForBuilding(building!!))
+
+        roomName.text = room.name
+        floorName.text = room.floor
+        buildingName.text = building!!.name
 
 
         val actionBar = supportActionBar
         actionBar!!.setDisplayHomeAsUpEnabled(true)
 
         eventManager = LinearLayoutManager(this)
-        //eventAdapter = RoomDetailAdapter(myData)
+        eventAdapter = RoomDetailAdapter(roomTriple.second)
 
-        eventView = findViewById<RecyclerView>(R.id.filter_list_veranstaltungen).apply {
+        eventView = findViewById<RecyclerView>(R.id.lecture_list_detail).apply {
             // use this setting to improve performance if you know that changes
             // in content do not change the layout size of the RecyclerView
             setHasFixedSize(true)

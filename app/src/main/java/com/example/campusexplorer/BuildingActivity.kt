@@ -11,6 +11,8 @@ import android.view.View
 import com.example.campusexplorer.filter.FilterData
 import com.example.campusexplorer.fragment.BuildingMapFragment
 import com.example.campusexplorer.model.Lecture
+import com.example.campusexplorer.model.Room
+import com.example.campusexplorer.server.IpAddress
 import com.example.campusexplorer.storage.Storage
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -54,8 +56,9 @@ class BuildingActivity : AppCompatActivity() {
         if (Storage.hasLecturesForBuilding(building)) {
 
             log.info("lectures already loaded")
+//            FilterData.getFilteredDataForFloor(building)
+            FilterData.getRoomTriple(Room("", "B 001", "", 0, 0), FilterData.getFilteredDataForFloor(building))
             spinnerWrapper.visibility = View.GONE
-            FilterData.getFilteredData(building)
         } else {
             loadLectures(buildingIdServer ?: "")
                 .subscribeOn(Schedulers.io())
@@ -64,7 +67,8 @@ class BuildingActivity : AppCompatActivity() {
                     log.info("lectures loaded")
                     Storage.setBuildingLectures(building, it)
 //                    Storage.setLectures(it)
-                    FilterData.getFilteredData(building)
+//                    FilterData.getFilteredDataForFloor(building)
+                    FilterData.getRoomTriple(Room("", "B 001", "", 0, 0), FilterData.getFilteredDataForFloor(building))
                 }, onError = {
                     log.info("got error ${it.message}")
                 }, onComplete = {
@@ -79,7 +83,7 @@ class BuildingActivity : AppCompatActivity() {
 
     private fun loadLectures(building: String): Observable<List<Lecture>> {
         return Observable.just(building).map {
-            val url = URL("$SERVER_URL/postBuilding")
+            val url = URL("http://${IpAddress.IP}:8080/postBuilding")
             val conn = url.openConnection() as HttpURLConnection
             conn.doOutput = true
             conn.setRequestProperty("Content-Type", "application/json")
@@ -113,6 +117,13 @@ class BuildingActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_settings -> {
             val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+            true
+        }
+        R.id.action_testing-> {
+            val intent = Intent(this, RoomDetailActivity::class.java)
+            intent.putExtra("room", "708000001_")
+            intent.putExtra("building", "bw7070")
             startActivity(intent)
             true
         }

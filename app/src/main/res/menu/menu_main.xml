@@ -7,5 +7,6 @@
             android:icon="@drawable/ic_filter_list_black_24dp"
             android:title="Settings"
             app:showAsAction="ifRoom"/>
+    <item android:title="actionTesting" android:id="@+id/action_testing"/>
 
 </menu>
