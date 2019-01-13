@@ -11,6 +11,7 @@ import android.view.View
 import com.example.campusexplorer.filter.FilterData
 import com.example.campusexplorer.model.Floor
 import com.example.campusexplorer.model.Lecture
+import com.example.campusexplorer.model.Room
 import com.example.campusexplorer.server.IpAddress
 import com.example.campusexplorer.storage.Storage
 import com.google.gson.Gson
@@ -49,7 +50,8 @@ class BuildingActivity : AppCompatActivity() {
         if (Storage.hasLecturesForBuilding(building)) {
 
             log.info("lectures already loaded")
-            FilterData.getFilteredDataForFloor(building)
+//            FilterData.getFilteredDataForFloor(building)
+            FilterData.getRoomTriple(Room("", "B 001", "", 0, 0), FilterData.getFilteredDataForFloor(building))
             spinnerWrapper.visibility = View.GONE
         } else {
             loadLectures(buildingIdServer ?: "")
@@ -59,7 +61,8 @@ class BuildingActivity : AppCompatActivity() {
                     log.info("lectures loaded")
                     Storage.setBuildingLectures(building, it)
 //                    Storage.setLectures(it)
-                    FilterData.getFilteredDataForFloor(building)
+//                    FilterData.getFilteredDataForFloor(building)
+                    FilterData.getRoomTriple(Room("", "B 001", "", 0, 0), FilterData.getFilteredDataForFloor(building))
                 }, onError = {
                     log.info("got error ${it.message}")
                 }, onComplete = {

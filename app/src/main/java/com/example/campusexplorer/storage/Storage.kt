@@ -48,18 +48,6 @@ object Storage {
         }
     }
 
-    fun hasLectures(): Boolean {
-        return !lectures.isEmpty()
-    }
-
-    fun setLectures(lectures: List<Lecture>) {
-        this.lectures = lectures
-    }
-
-    fun getLectures(): List<Lecture>? {
-        return lectures
-    }
-
     /**
      * Returns the List of Lectures for a particular Building
      */

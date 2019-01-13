@@ -1,10 +1,7 @@
 package com.example.campusexplorer.filter
 
 import android.util.Log
-import com.example.campusexplorer.model.Building
-import com.example.campusexplorer.model.Event
-import com.example.campusexplorer.model.Floor
-import com.example.campusexplorer.model.Lecture
+import com.example.campusexplorer.model.*
 import com.example.campusexplorer.storage.Storage
 import com.google.gson.Gson
 
@@ -27,6 +24,10 @@ object FilterData {
             eventTypes.first { eventType -> eventType.name == name }.active = value
         }
     }
+
+//    fun getRoomTriples(building: Building, floor: Floor) : List<Triple<Room, List<Lecture>, Lecture>>{
+//
+//    }
 
     fun getFilteredDataForFloor(
         building: Building,
@@ -52,6 +53,27 @@ object FilterData {
             .toList()
         Log.d(TAG, gson.toJson(filteredLectures))
         return filteredLectures
+    }
+
+    fun getRoomTriple(room: Room, filteredLectures : List<Lecture>) : Triple<Room, List<Lecture>, Lecture>{
+        val roomLectures = filteredLectures.asSequence()
+            // remove all events which are not in this room
+            .map { lecture ->
+                Lecture(lecture.id, lecture.name, lecture.events.filter { event ->
+                    room.name == event.room
+                }, lecture.department, lecture.type, lecture.faculty, lecture.link)
+            }
+            // filter out all lectures which don't have lectures in this room
+            .filter { lecture ->
+                // check if this lecture has events in the given room
+                lecture.events.any { event -> room.name == event.room}
+            }
+            .toList()
+        val gson = Gson()
+
+        Log.d(TAG, "room triple:")
+        Log.d(TAG, gson.toJson(Triple(room, roomLectures , roomLectures.first())))
+        return Triple(room, roomLectures , roomLectures.first())
     }
 
     fun getFilteredDataForBuilding(building: Building): List<Lecture> {
