@@ -14,9 +14,9 @@
     <TextView
             android:text="TextView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:id="@+id/event_department"/>
+            android:layout_height="wrap_content" android:id="@+id/event_time"/>
     <TextView
             android:text="TextView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:id="@+id/event_time"/>
+            android:layout_height="wrap_content" android:id="@+id/event_link"/>
 </LinearLayout>
