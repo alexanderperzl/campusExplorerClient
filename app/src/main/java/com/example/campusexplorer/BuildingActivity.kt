@@ -57,7 +57,8 @@ class BuildingActivity : AppCompatActivity() {
 
             log.info("lectures already loaded")
 //            FilterData.getFilteredDataForFloor(building)
-            FilterData.getRoomTriple(Room("", "B 001", "", 0, 0), FilterData.getFilteredDataForFloor(building))
+//            FilterData.getRoomTriple(Room("", "B 001", "", 0, 0), FilterData.getFilteredDataForFloor(building))
+            startFragment()
             spinnerWrapper.visibility = View.GONE
         } else {
             loadLectures(buildingIdServer ?: "")
@@ -68,13 +69,21 @@ class BuildingActivity : AppCompatActivity() {
                     Storage.setBuildingLectures(building, it)
 //                    Storage.setLectures(it)
 //                    FilterData.getFilteredDataForFloor(building)
-                    FilterData.getRoomTriple(Room("", "B 001", "", 0, 0), FilterData.getFilteredDataForFloor(building))
+//                    FilterData.getRoomTriple(Room("", "B 001", "", 0, 0), FilterData.getFilteredDataForFloor(building))
+                    startFragment()
                 }, onError = {
                     log.info("got error ${it.message}")
                 }, onComplete = {
                     spinnerWrapper.visibility = View.GONE
                 })
         }
+    }
+
+    private fun startFragment(){
+        val fragment = BuildingMapFragment()
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.buildingMapFragmentContainer, fragment)
+        transaction.commit()
     }
 
     fun getBuildingId(): String {

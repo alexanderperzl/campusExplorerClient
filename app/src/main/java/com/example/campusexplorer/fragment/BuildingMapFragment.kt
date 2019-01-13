@@ -11,6 +11,8 @@ import com.davemorrissey.labs.subscaleview.ImageSource
 
 import com.example.campusexplorer.R
 import com.example.campusexplorer.extensions.toFile
+import com.example.campusexplorer.filter.FilterData
+import com.example.campusexplorer.filter.FilterData.getFilteredFloors
 import com.example.campusexplorer.model.Floor
 import com.example.campusexplorer.model.Room
 import com.example.campusexplorer.storage.Storage
@@ -68,7 +70,9 @@ class BuildingMapFragment : Fragment() {
         mapView.setMinimumTileDpi(120)
 
         setPDF(mapView, floorList[currentFloorIndex].mapFileName)
-        val rooms = Storage.findAllRooms(floorList[currentFloorIndex]._id)
+//        val rooms = Storage.findAllRooms(floorList[currentFloorIndex]._id)
+        val building = Storage.findBuilding(buildingId)
+        val rooms = FilterData.getFilteredFloors(building!!, floorList[currentFloorIndex])
         Log.d(TAG, rooms.toString())
         setMarkers(rooms)
         val gestureDetector = GestureDetector(activity, object : GestureDetector.SimpleOnGestureListener() {
@@ -133,7 +137,9 @@ class BuildingMapFragment : Fragment() {
         textFloor.text = floorList[currentFloorIndex].level
         mapView.clearAllPins()
         setPDF(mapView, floorList[currentFloorIndex].mapFileName)
-        val rooms = Storage.findAllRooms(floorList[currentFloorIndex]._id)
+//        val rooms = Storage.findAllRooms(floorList[currentFloorIndex]._id)
+        val building = Storage.findBuilding(buildingId)
+        val rooms = FilterData.getFilteredFloors(building!!, floorList[currentFloorIndex])
         setMarkers(rooms)
     }
 
