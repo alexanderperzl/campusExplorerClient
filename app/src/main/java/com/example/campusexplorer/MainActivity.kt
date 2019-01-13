@@ -1,5 +1,6 @@
 package com.example.campusexplorer
 
+import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -33,6 +34,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,
 
     private var PERMISSIONS_REQUEST_LOCATION = 1
 
+    private val TAG = "MainActivity"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -53,15 +56,28 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        mMap.setOnInfoWindowClickListener(this);
-        updateLocationUI()
+        mMap.setOnInfoWindowClickListener(this)
+        getLocationPermission()
+
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+        mMap.isMyLocationEnabled = true
+        mMap.uiSettings.isMyLocationButtonEnabled = true
+
     }
 
 
     private fun updateLocationUI() {
         try {
-            // hier soll eig mLocationPermissionGranted abgefragt werden, dann klappts aber nicht
-            if (true) {
+            if (mLocationPermissionGranted) {
                 mMap.isMyLocationEnabled = true
                 mMap.uiSettings.isMyLocationButtonEnabled = true
             } else {
