@@ -59,24 +59,11 @@ class BuildingMapFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mapView = view.findViewById(R.id.mapView) as PinView
-
-        buttonFloorUp = view.findViewById(R.id.button_floor_up)
-        buttonFloorDown = view.findViewById(R.id.button_floor_down)
-        textFloor = view.findViewById(R.id.text_floor)
+        initUIElements(view)
 
         floorList = getOrderedFloors(buildingId)
         currentFloorIndex = floorList.indexOf(floorList.first { it -> it.levelDouble == 0.0 })
         updateFloor()
-
-        buttonFloorUp.setOnClickListener {
-            onFloorUp()
-        }
-
-        buttonFloorDown.setOnClickListener {
-            onFloorDown()
-        }
-
 
         mapView.setMinimumTileDpi(120)
 
@@ -96,6 +83,17 @@ class BuildingMapFragment : Fragment() {
 
         })
         mapView.setOnTouchListener { _, motionEvent -> gestureDetector.onTouchEvent(motionEvent) }
+    }
+
+    private fun initUIElements(view: View) {
+        mapView = view.findViewById(R.id.mapView) as PinView
+
+        buttonFloorUp = view.findViewById(R.id.button_floor_up)
+        buttonFloorDown = view.findViewById(R.id.button_floor_down)
+        textFloor = view.findViewById(R.id.text_floor)
+
+        buttonFloorUp.setOnClickListener { onFloorUp() }
+        buttonFloorDown.setOnClickListener { onFloorDown() }
     }
 
     private fun setMarkers(rooms: List<Room>) {
@@ -133,6 +131,7 @@ class BuildingMapFragment : Fragment() {
 
     private fun updateFloor() {
         textFloor.text = floorList[currentFloorIndex].level
+        mapView.clearAllPins()
         setPDF(mapView, floorList[currentFloorIndex].mapFileName)
         val rooms = Storage.findAllRooms(floorList[currentFloorIndex]._id)
         setMarkers(rooms)

@@ -43,5 +43,9 @@ class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = 
 
     }
 
+    fun clearAllPins() {
+        sPinList = ArrayList()
+    }
+
 
 }
