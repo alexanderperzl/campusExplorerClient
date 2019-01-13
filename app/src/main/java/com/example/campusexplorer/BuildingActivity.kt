@@ -49,7 +49,7 @@ class BuildingActivity : AppCompatActivity() {
         if (Storage.hasLecturesForBuilding(building)) {
 
             log.info("lectures already loaded")
-            FilterData.getFilteredData(building)
+            FilterData.getFilteredDataForFloor(building)
             spinnerWrapper.visibility = View.GONE
         } else {
             loadLectures(buildingIdServer ?: "")
@@ -59,7 +59,7 @@ class BuildingActivity : AppCompatActivity() {
                     log.info("lectures loaded")
                     Storage.setBuildingLectures(building, it)
 //                    Storage.setLectures(it)
-                    FilterData.getFilteredData(building)
+                    FilterData.getFilteredDataForFloor(building)
                 }, onError = {
                     log.info("got error ${it.message}")
                 }, onComplete = {
