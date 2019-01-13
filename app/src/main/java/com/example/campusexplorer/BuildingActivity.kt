@@ -1,10 +1,13 @@
 package com.example.campusexplorer
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.design.widget.BottomNavigationView
+import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -27,6 +30,7 @@ import java.net.URL
 import java.util.logging.Logger
 
 class BuildingActivity : AppCompatActivity() {
+    val TAG = "BuildingActivity"
     val gson = Gson()
 
     private val log = Logger.getLogger(BuildingActivity::class.java.name)
@@ -44,12 +48,17 @@ class BuildingActivity : AppCompatActivity() {
 
         val building = Storage.findBuilding(buildingId)!!
 
+        Log.d(TAG,buildingId)
+
         val buildingIdServer = BuildingIDConverter.fromClientToServer(buildingId)
 
-        val bundle = Bundle()
+        /*val bundle = Bundle()
         bundle.putString("buildingId", buildingId)
         val fragobj = BuildingMapFragment()
         fragobj.arguments = bundle
+*/
+        val fragobj = BuildingMapFragment.newInstance(buildingId)
+
 
         spinnerWrapper.visibility = View.VISIBLE
 
@@ -58,7 +67,7 @@ class BuildingActivity : AppCompatActivity() {
             log.info("lectures already loaded")
 //            FilterData.getFilteredDataForFloor(building)
 //            FilterData.getRoomTriple(Room("", "B 001", "", 0, 0), FilterData.getFilteredDataForFloor(building))
-            startFragment()
+            startFragment(fragobj)
             spinnerWrapper.visibility = View.GONE
         } else {
             loadLectures(buildingIdServer ?: "")
@@ -70,7 +79,7 @@ class BuildingActivity : AppCompatActivity() {
 //                    Storage.setLectures(it)
 //                    FilterData.getFilteredDataForFloor(building)
 //                    FilterData.getRoomTriple(Room("", "B 001", "", 0, 0), FilterData.getFilteredDataForFloor(building))
-                    startFragment()
+                    startFragment(fragobj)
                 }, onError = {
                     log.info("got error ${it.message}")
                 }, onComplete = {
@@ -79,8 +88,11 @@ class BuildingActivity : AppCompatActivity() {
         }
     }
 
-    private fun startFragment(){
-        val fragment = BuildingMapFragment()
+    override fun onResume() {
+        super.onResume()
+    }
+
+    private fun startFragment(fragment: BuildingMapFragment){
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.buildingMapFragmentContainer, fragment)
         transaction.commit()
