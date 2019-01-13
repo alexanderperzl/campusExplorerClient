@@ -44,6 +44,9 @@ class BuildingActivity : AppCompatActivity() {
         spinnerWrapper = findViewById(R.id.spinnerWrapper)
         bottomNavigation = findViewById(R.id.bottomNavigationView)
 
+        val actionBar = supportActionBar
+        actionBar!!.setDisplayHomeAsUpEnabled(true)
+
         val buildingId = intent.getStringExtra("id")
 
         val building = Storage.findBuilding(buildingId)!!
@@ -95,6 +98,7 @@ class BuildingActivity : AppCompatActivity() {
     private fun startFragment(fragment: BuildingMapFragment){
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.buildingMapFragmentContainer, fragment)
+        transaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
         transaction.commit()
     }
 
@@ -148,6 +152,10 @@ class BuildingActivity : AppCompatActivity() {
             startActivity(intent)
             true
         }
+        android.R.id.home-> {
+            finish()
+            true
+        }
 
         else -> {
             // If we got here, the user's action was not recognized.
@@ -155,4 +163,5 @@ class BuildingActivity : AppCompatActivity() {
             super.onOptionsItemSelected(item)
         }
     }
+
 }

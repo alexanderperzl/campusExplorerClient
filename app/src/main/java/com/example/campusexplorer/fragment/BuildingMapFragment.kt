@@ -33,7 +33,7 @@ import java.util.logging.Logger
  * create an instance of this fragment.
  *
  */
-class BuildingMapFragment() : Fragment() {
+class BuildingMapFragment: Fragment() {
     private val TAG = "BuildingMapFragment"
     private lateinit var mapView: PinView
     private val log = Logger.getLogger(BuildingMapFragment::class.java.name)
