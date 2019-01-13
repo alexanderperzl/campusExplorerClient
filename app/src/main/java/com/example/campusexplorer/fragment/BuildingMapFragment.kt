@@ -98,7 +98,7 @@ class BuildingMapFragment : Fragment() {
     private fun setMarkers(rooms: List<Room>) {
         rooms.forEach {
             mapView.addPin(
-                PointF(it.mapX.toFloat()/* - 90f */, it.mapY.toFloat() /* + 15f */),
+                PointF(it.mapX.toFloat() - 90f , it.mapY.toFloat() + 15f),
                 mutableMapOf(Pair("room", it.name))
             )
         }
@@ -111,7 +111,7 @@ class BuildingMapFragment : Fragment() {
         mapView.setBitmapDecoderFactory { PDFDecoder(0, mapFile, 1f) }
         mapView.setRegionDecoderFactory { PDFRegionDecoder(0, mapFile, 1f) }
         val source = ImageSource.uri(mapFile.absolutePath)
-        mapView.setNewImage(source)
+        mapView.setImage(source)
     }
 
     private fun onFloorDown() {

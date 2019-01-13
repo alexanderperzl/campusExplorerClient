@@ -17,7 +17,6 @@ class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = 
     private var pin: Bitmap
     private var originalHeight: Int = 0
     private var originalWidth: Int = 0
-    private var markerAreRescaled = false
 
     init {
         val density = resources.displayMetrics.densityDpi.toFloat()
@@ -29,17 +28,10 @@ class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = 
         pin = Bitmap.createScaledBitmap(bitmap, w.toInt(), h.toInt(), true)
     }
 
-    fun setNewImage(source: ImageSource) {
-        super.setImage(source)
-        markerAreRescaled = false
-    }
-
     fun addPin(sPin: PointF, data: Map<String, String>) {
         sPinList.add(Pair(sPin, data))
         invalidate()
     }
-
-
 
     fun setOriginalDimensions(width: Int, height: Int) {
         originalWidth = width
@@ -51,12 +43,10 @@ class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = 
 
         // Don't draw pin before image is ready so it doesn't move around during setup.
         if (!isReady) return
-        if (!markerAreRescaled) {
-            sPinList.forEach {sPin ->
-                sPin.first.x = markerXToCanvasX(sPin.first.x)
-                sPin.first.y = markerYToCanvasY(sPin.first.y)
-                markerAreRescaled = true
-            }
+        val scaledMarkers = sPinList.map {sPin ->
+            PointF(markerXToCanvasX(sPin.first.x),
+            markerYToCanvasY(sPin.first.y)
+            )
         }
         log.info("sWidth: $sWidth, sHeight: $sHeight")
         log.info("originalWidth: $originalWidth, originalHeight: $originalHeight")
@@ -71,8 +61,8 @@ class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = 
 
         log.info("scale: $scale")
 
-        sPinList.forEach {sPin ->
-            sourceToViewCoord(sPin.first, vPin)
+        scaledMarkers.forEach {sPin ->
+            sourceToViewCoord(sPin, vPin)
             val vX = vPin.x - pin.width / 2
             val vY = vPin.y - pin.height
             //log.info("originalMarker: ${vPin.x}:${vPin.y}; scaledMarker: $vX:$vY")
@@ -90,7 +80,6 @@ class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = 
         val canonicalY = markerY / originalHeight
         return canonicalY * sHeight
     }
-
 
     fun clearAllPins() {
         sPinList = ArrayList()
