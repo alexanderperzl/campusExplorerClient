@@ -1,10 +1,8 @@
 package com.example.campusexplorer
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -18,30 +16,97 @@ import com.example.campusexplorer.model.Floor
 import com.example.campusexplorer.model.Room
 import com.example.campusexplorer.service.ImportService
 import com.example.campusexplorer.storage.Storage
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.*
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.tasks.Task
 
-lateinit var mMap: GoogleMap
-var mLocationPermissionGranted: Boolean = false
+private lateinit var mMap: GoogleMap
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback,
     GoogleMap.OnInfoWindowClickListener {
 
+    private var mLocationPermissionGranted = true
     private var PERMISSIONS_REQUEST_LOCATION = 1
+    private var TAG = "MainActivity"
+    private lateinit var mFusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var mLastKnownLocation: Location
+    private lateinit var locationRequest: LocationRequest
+    private lateinit var locationCallback: LocationCallback
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(LocalBroadcastReceiver(), IntentFilter("STORAGE_INITIALIZED"))
         initStorage()
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult?) {
+                locationResult ?: return
+                for (location in locationResult.locations) {
+                    // Update UI with location data
+                    // ...
+                }
+            }
+        }
+
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest)
+        val client: SettingsClient = LocationServices.getSettingsClient(this)
+        val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
+        task.addOnSuccessListener { locationSettingsResponse ->
+            // All location settings are satisfied. The client can initialize
+            // location requests here.
+            // ...
+            locationRequest = createLocationRequest()!!
+        }
+
+        task.addOnFailureListener { exception ->
+            if (exception is ResolvableApiException) {
+                try {
+                    exception.startResolutionForResult(
+                        this@MainActivity,
+                        2
+                    )
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    // Ignore the error.
+                }
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (mLocationPermissionGranted) startLocationUpdates()
+    }
+
+    private fun startLocationUpdates() {
+        try {
+            mFusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
+        } catch (e: SecurityException) {
+            Log.e("Exception: %s", e.message)
+        }
+    }
+
+
+    fun createLocationRequest(): LocationRequest? {
+        val locationRequest = LocationRequest.create()?.apply {
+            interval = 10000
+            fastestInterval = 5000
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+        return locationRequest
     }
 
 
@@ -55,13 +120,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,
         mMap = googleMap
         mMap.setOnInfoWindowClickListener(this);
         updateLocationUI()
+        getDeviceLocation()
     }
 
 
     private fun updateLocationUI() {
         try {
-            // hier soll eig mLocationPermissionGranted abgefragt werden, dann klappts aber nicht
-            if (true) {
+            if (mLocationPermissionGranted) {
                 mMap.isMyLocationEnabled = true
                 mMap.uiSettings.isMyLocationButtonEnabled = true
             } else {
@@ -112,6 +177,34 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,
             }
         }
         updateLocationUI()
+    }
+
+    private fun getDeviceLocation() {
+        try {
+            if (mLocationPermissionGranted) {
+                val locationResult = mFusedLocationProviderClient.lastLocation
+                locationResult.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        // Set the map's camera position to the current location of the device.
+                        mLastKnownLocation = task.result!!
+                        mMap.moveCamera(
+                            CameraUpdateFactory.newLatLngZoom(
+                                LatLng(
+                                    mLastKnownLocation.latitude,
+                                    mLastKnownLocation.longitude
+                                ), 15.0f
+                            )
+                        )
+                    } else {
+                        Log.d(TAG, "Current location is null. Using defaults.")
+                        Log.e(TAG, "Exception: %s", task.exception)
+                        mMap.uiSettings.isMyLocationButtonEnabled = false
+                    }
+                }
+            }
+        } catch (e: SecurityException) {
+            Log.e("Exception: %s", e.message)
+        }
     }
 
 
