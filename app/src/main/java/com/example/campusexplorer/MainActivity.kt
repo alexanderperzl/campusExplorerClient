@@ -28,7 +28,8 @@ import com.google.android.gms.maps.model.MarkerOptions
 lateinit var mMap: GoogleMap
 var mLocationPermissionGranted: Boolean = false
 
-class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+class MainActivity : AppCompatActivity(), OnMapReadyCallback,
+    GoogleMap.OnInfoWindowClickListener {
 
     private var PERMISSIONS_REQUEST_LOCATION = 1
 
@@ -52,7 +53,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        mMap.setOnMarkerClickListener(this)
+        mMap.setOnInfoWindowClickListener(this);
         updateLocationUI()
     }
 
@@ -118,7 +119,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         override fun onReceive(context: Context, intent: Intent) {
             // get all buildings of which we have buildingId in our BuildingIDConverter
-            val buildings = Storage.getAllBuildings()?.filter{buildingId -> BuildingIDConverter.getKeys().contains(buildingId.key)}
+            val buildings = Storage.getAllBuildings()
+                ?.filter { buildingId -> BuildingIDConverter.getKeys().contains(buildingId.key) }
 
             buildings?.forEach { building ->
                 setMarker(building)
@@ -134,13 +136,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
     }
 
-
-    override fun onMarkerClick(marker: Marker): Boolean {
+    override fun onInfoWindowClick(marker: Marker) {
         val buildingId = marker.tag
         val intent = Intent(this, BuildingActivity::class.java)
         intent.putExtra("id", buildingId.toString())
         startActivity(intent)
-        return true
     }
 
     /* Tool Bar */
@@ -154,6 +154,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_settings -> {
             val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+            true
+        }
+        R.id.action_testing-> {
+            val intent = Intent(this, RoomDetailActivity::class.java)
+            intent.putExtra("room", "708000001_")
+            intent.putExtra("building", "bw7070")
             startActivity(intent)
             true
         }

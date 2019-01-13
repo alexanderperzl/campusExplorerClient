@@ -11,6 +11,9 @@ import com.davemorrissey.labs.subscaleview.ImageSource
 
 import com.example.campusexplorer.R
 import com.example.campusexplorer.extensions.toFile
+import com.example.campusexplorer.filter.FilterData
+import com.example.campusexplorer.filter.FilterData.getFilteredFloors
+import com.example.campusexplorer.model.Building
 import com.example.campusexplorer.model.Floor
 import com.example.campusexplorer.model.Room
 import com.example.campusexplorer.storage.Storage
@@ -30,12 +33,13 @@ import java.util.logging.Logger
  * create an instance of this fragment.
  *
  */
-class BuildingMapFragment : Fragment() {
+class BuildingMapFragment() : Fragment() {
+    private val TAG = "BuildingMapFragment"
     private lateinit var mapView: PinView
     private val log = Logger.getLogger(BuildingMapFragment::class.java.name)
     private var currentFloorIndex: Int = 0
     private var floorList = ArrayList<Floor>()
-    private var buildingId = "bw0000"
+    private var buildingId: String? = ""
     private lateinit var textFloor: TextView
     private lateinit var buttonFloorUp: ImageButton
     private lateinit var buttonFloorDown: ImageButton
@@ -43,12 +47,24 @@ class BuildingMapFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        buildingId = arguments?.getString("buildingId")
+        Log.d(TAG,buildingId)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    companion object {
+        fun newInstance(id: String): BuildingMapFragment {
+            val fragment = BuildingMapFragment ()
+            val args = Bundle()
+            args.putString("buildingId", id)
+            fragment.arguments = args
+            return fragment
+        }
+    }
+
+
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_building_map, container, false)
 
@@ -60,15 +76,16 @@ class BuildingMapFragment : Fragment() {
 
         initUIElements(view)
 
-        floorList = getOrderedFloors(buildingId)
+        floorList = getOrderedFloors(buildingId!!)
         currentFloorIndex = floorList.indexOf(floorList.first { it -> it.levelDouble == 0.0 })
         updateFloor()
 
         mapView.setMinimumTileDpi(120)
 
         setPDF(mapView, floorList[currentFloorIndex].mapFileName)
-        val rooms = Storage.findAllRooms(floorList[currentFloorIndex]._id)
-        log.info("${rooms}")
+        val building = Storage.findBuilding(buildingId!!)
+        val rooms = FilterData.getFilteredFloors(building!!, floorList[currentFloorIndex])
+        Log.d(TAG, rooms.toString())
         setMarkers(rooms)
         val gestureDetector = GestureDetector(activity, object : GestureDetector.SimpleOnGestureListener() {
             override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
@@ -139,7 +156,8 @@ class BuildingMapFragment : Fragment() {
         setPDF(mapView, floorList[currentFloorIndex].mapFileName)
         val currFloor = floorList[currentFloorIndex]
         mapView.setOriginalDimensions(currFloor.mapWidth, currFloor.mapHeight)
-        val rooms = Storage.findAllRooms(currFloor._id)
+        val building = Storage.findBuilding(buildingId!!)
+        val rooms = FilterData.getFilteredFloors(building!!, floorList[currentFloorIndex])
         setMarkers(rooms)
     }
 

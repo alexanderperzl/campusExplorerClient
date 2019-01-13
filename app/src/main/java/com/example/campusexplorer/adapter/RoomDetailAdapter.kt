@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Switch
+import android.widget.TextView
 import com.example.campusexplorer.R
 import com.example.campusexplorer.model.Event
 import com.example.campusexplorer.model.Lecture
@@ -17,10 +18,10 @@ class RoomDetailAdapter(private val myDataset: List<Lecture>) :
     // you provide access to all the views for a data item in a view holder.
     // Each data item is just a string in this case that is shown in a TextView.
     class MyViewHolder(view: View) : RecyclerView.ViewHolder(view){
-        val event_name = view.findViewById<Switch>(R.id.event_name)
-        val event_times = view.findViewById<Switch>(R.id.event_time)
-        val event_department = view.findViewById<Switch>(R.id.event_department)
-        val event_faculty = view.findViewById<Switch>(R.id.event_faculty)
+        val event_name = view.findViewById<TextView>(R.id.event_name)
+        val event_times = view.findViewById<TextView>(R.id.event_time)
+        val event_department = view.findViewById<TextView>(R.id.event_department)
+        val event_faculty = view.findViewById<TextView>(R.id.event_faculty)
     }
 
 
@@ -28,7 +29,7 @@ class RoomDetailAdapter(private val myDataset: List<Lecture>) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RoomDetailAdapter.MyViewHolder {
         // create a new view
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.filter_list_item, parent, false)
+            .inflate(R.layout.room_detail_list_item, parent, false)
         return MyViewHolder(view)
     }
 
@@ -38,11 +39,11 @@ class RoomDetailAdapter(private val myDataset: List<Lecture>) :
         // - replace the contents of the view with that element
         holder.event_name.text = myDataset[position].name
         holder.event_faculty.text = myDataset[position].faculty
-        holder.event_department.text = myDataset[position].department
+        holder.event_department.text = myDataset[position].link
 
-        var eventTimes = ""
+
         var list : List<Event> = myDataset[position].events
-        list.forEach { item -> eventTimes + item.cycle + item.dayOfWeek + item.time + "\n"  }
+        val eventTimes = list.fold("") { accumulator,item -> accumulator + "${item.cycle}, ${item.dayOfWeek}, ${item.time} \n"}
 
         holder.event_times.text = eventTimes
     }
