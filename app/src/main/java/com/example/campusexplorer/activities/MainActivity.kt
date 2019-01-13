@@ -1,4 +1,4 @@
-package com.example.campusexplorer
+package com.example.campusexplorer.activities
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -13,6 +13,8 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import com.example.campusexplorer.BuildingIDConverter
+import com.example.campusexplorer.R
 import com.example.campusexplorer.model.Building
 import com.example.campusexplorer.model.Floor
 import com.example.campusexplorer.model.Room
@@ -157,7 +159,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,
             startActivity(intent)
             true
         }
-        R.id.action_testing-> {
+        R.id.action_testing -> {
             val intent = Intent(this, RoomDetailActivity::class.java)
             intent.putExtra("room", "708000001_")
             intent.putExtra("building", "bw7070")

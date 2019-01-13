@@ -1,4 +1,4 @@
-package com.example.campusexplorer
+package com.example.campusexplorer.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
+import com.example.campusexplorer.R
 import com.example.campusexplorer.adapter.RoomDetailAdapter
 import com.example.campusexplorer.filter.FilterData
 import com.example.campusexplorer.storage.Storage
@@ -80,6 +81,11 @@ class RoomDetailActivity : AppCompatActivity() {
         R.id.action_settings -> {
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
+            true
+        }
+
+        android.R.id.home -> {
+            finish()
             true
         }
 

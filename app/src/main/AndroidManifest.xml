@@ -18,19 +18,19 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.AppCompat.Light"
             android:usesCleartextTraffic="true">
-        <activity android:name=".SplashScreenActivity">
+        <activity android:name=".activities.SplashScreenActivity">
         </activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".BuildingActivity">
+        <activity android:name=".activities.BuildingActivity">
         </activity>
         <activity
-                android:name=".SettingsActivity">
+                android:name=".activities.SettingsActivity">
         </activity>
 
         <service android:name=".service.ImportService"/>
@@ -50,7 +50,7 @@
                 android:name="org.apache.http.legacy"
                 android:required="false"/>
 
-        <activity android:name=".RoomDetailActivity">
+        <activity android:name=".activities.RoomDetailActivity">
         </activity>
     </application>
 

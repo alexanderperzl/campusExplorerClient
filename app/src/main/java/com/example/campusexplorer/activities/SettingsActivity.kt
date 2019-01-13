@@ -1,14 +1,14 @@
-package com.example.campusexplorer
+package com.example.campusexplorer.activities
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.MenuItem
+import com.example.campusexplorer.R
 import com.example.campusexplorer.adapter.FilterAdapter
 import com.example.campusexplorer.filter.FilterData
-import android.support.v7.widget.DividerItemDecoration
-import java.security.AccessController.getContext
 
 
 class SettingsActivity : AppCompatActivity() {

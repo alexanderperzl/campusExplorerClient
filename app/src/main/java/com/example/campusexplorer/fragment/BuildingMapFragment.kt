@@ -1,5 +1,6 @@
 package com.example.campusexplorer.fragment
 
+import android.content.Intent
 import android.graphics.PointF
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -10,10 +11,9 @@ import android.widget.TextView
 import com.davemorrissey.labs.subscaleview.ImageSource
 
 import com.example.campusexplorer.R
+import com.example.campusexplorer.activities.RoomDetailActivity
 import com.example.campusexplorer.extensions.toFile
 import com.example.campusexplorer.filter.FilterData
-import com.example.campusexplorer.filter.FilterData.getFilteredFloors
-import com.example.campusexplorer.model.Building
 import com.example.campusexplorer.model.Floor
 import com.example.campusexplorer.model.Room
 import com.example.campusexplorer.storage.Storage
@@ -91,10 +91,14 @@ class BuildingMapFragment: Fragment() {
             override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                 mapView.viewToSourceCoord(e.x, e.y)?.let {
                     val roomData = mapView.dataForClick(e.x, e.y)
-                    if (roomData != null && roomData.containsKey("room")) {
+                    if (roomData != null && roomData.containsKey("roomId")) {
                         // open room activity
-                        val roomName = roomData["room"]!!
-                        log.info("Clicked room $roomName")
+                        val roomId = roomData["roomId"]!!
+                        log.info("Clicked room $roomId")
+                        val intent = Intent(context, RoomDetailActivity::class.java)
+                        intent.putExtra("room", roomId)
+                        intent.putExtra("building", buildingId)
+                        startActivity(intent)
                     }
                 } ?: run {
                     log.info("Not ready for clicking")
@@ -121,7 +125,7 @@ class BuildingMapFragment: Fragment() {
         rooms.forEach {
             mapView.addPin(
                 PointF(it.mapX.toFloat() - 90f , it.mapY.toFloat() + 15f),
-                mutableMapOf(Pair("room", it.name))
+                mutableMapOf(Pair("roomId", it._id))
             )
         }
     }
