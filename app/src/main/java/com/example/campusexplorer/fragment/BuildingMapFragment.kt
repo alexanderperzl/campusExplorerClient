@@ -31,7 +31,6 @@ import java.util.logging.Logger
  *
  */
 class BuildingMapFragment : Fragment() {
-    private val TAG = "BuildingMapFragment"
     private lateinit var mapView: PinView
     private val log = Logger.getLogger(BuildingMapFragment::class.java.name)
     private var currentFloorIndex: Int = 0
@@ -69,7 +68,7 @@ class BuildingMapFragment : Fragment() {
 
         setPDF(mapView, floorList[currentFloorIndex].mapFileName)
         val rooms = Storage.findAllRooms(floorList[currentFloorIndex]._id)
-        Log.d(TAG, rooms.toString())
+        log.info("${rooms}")
         setMarkers(rooms)
         val gestureDetector = GestureDetector(activity, object : GestureDetector.SimpleOnGestureListener() {
             override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
@@ -99,7 +98,7 @@ class BuildingMapFragment : Fragment() {
     private fun setMarkers(rooms: List<Room>) {
         rooms.forEach {
             mapView.addPin(
-                PointF(it.mapX.toFloat() - 50f, it.mapY.toFloat() + 25f),
+                PointF(it.mapX.toFloat()/* - 90f */, it.mapY.toFloat() /* + 15f */),
                 mutableMapOf(Pair("room", it.name))
             )
         }
@@ -109,10 +108,10 @@ class BuildingMapFragment : Fragment() {
         val assetStream = activity!!.assets.open("maps/$floorPlan")
         val mapFile = File(activity!!.filesDir, "temp_building.pdf")
         assetStream.toFile(mapFile)
-        mapView.setBitmapDecoderFactory { PDFDecoder(0, mapFile, 4.18f) }
-        mapView.setRegionDecoderFactory { PDFRegionDecoder(0, mapFile, 4.18f) }
+        mapView.setBitmapDecoderFactory { PDFDecoder(0, mapFile, 1f) }
+        mapView.setRegionDecoderFactory { PDFRegionDecoder(0, mapFile, 1f) }
         val source = ImageSource.uri(mapFile.absolutePath)
-        mapView.setImage(source)
+        mapView.setNewImage(source)
     }
 
     private fun onFloorDown() {
@@ -133,7 +132,9 @@ class BuildingMapFragment : Fragment() {
         textFloor.text = floorList[currentFloorIndex].level
         mapView.clearAllPins()
         setPDF(mapView, floorList[currentFloorIndex].mapFileName)
-        val rooms = Storage.findAllRooms(floorList[currentFloorIndex]._id)
+        val currFloor = floorList[currentFloorIndex]
+        mapView.setOriginalDimensions(currFloor.mapWidth, currFloor.mapHeight)
+        val rooms = Storage.findAllRooms(currFloor._id)
         setMarkers(rooms)
     }
 
