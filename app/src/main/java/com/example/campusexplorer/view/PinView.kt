@@ -73,13 +73,9 @@ class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = 
             val vX = vPin.x - pin.width / 2
             val vY = vPin.y - pin.height
             if (x >= vX && x <= vX + pin.width && y >= vY && y <= vY + pin.height) {
-                log.info("clicked on pin with data ${sPin.second}")
+                return sPin.second
             }
-            //log.info("originalMarker: ${vPin.x}:${vPin.y}; scaledMarker: $vX:$vY")
         }
-
-
-
         return null
     }
 

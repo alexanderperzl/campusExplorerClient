@@ -73,8 +73,12 @@ class BuildingMapFragment : Fragment() {
         val gestureDetector = GestureDetector(activity, object : GestureDetector.SimpleOnGestureListener() {
             override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                 mapView.viewToSourceCoord(e.x, e.y)?.let {
-                    log.info("Got click on ${e.x}:${e.y}")
-                    mapView.dataForClick(e.x, e.y)
+                    val roomData = mapView.dataForClick(e.x, e.y)
+                    if (roomData != null && roomData.containsKey("room")) {
+                        // open room activity
+                        val roomName = roomData["room"]!!
+                        log.info("Clicked room $roomName")
+                    }
                 } ?: run {
                     log.info("Not ready for clicking")
                 }
