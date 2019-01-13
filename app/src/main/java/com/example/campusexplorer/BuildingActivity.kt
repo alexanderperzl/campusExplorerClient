@@ -11,6 +11,7 @@ import android.view.View
 import com.example.campusexplorer.filter.FilterData
 import com.example.campusexplorer.model.Floor
 import com.example.campusexplorer.model.Lecture
+import com.example.campusexplorer.server.IpAddress
 import com.example.campusexplorer.storage.Storage
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -48,8 +49,8 @@ class BuildingActivity : AppCompatActivity() {
         if (Storage.hasLecturesForBuilding(building)) {
 
             log.info("lectures already loaded")
-            spinnerWrapper.visibility = View.GONE
             FilterData.getFilteredData(building)
+            spinnerWrapper.visibility = View.GONE
         } else {
             loadLectures(buildingIdServer ?: "")
                 .subscribeOn(Schedulers.io())
@@ -79,7 +80,7 @@ class BuildingActivity : AppCompatActivity() {
 
     private fun loadLectures(building: String): Observable<List<Lecture>> {
         return Observable.just(building).map {
-            val url = URL("$SERVER_URL/postBuilding")
+            val url = URL("http://${IpAddress.IP}:8080/postBuilding")
             val conn = url.openConnection() as HttpURLConnection
             conn.doOutput = true
             conn.setRequestProperty("Content-Type", "application/json")

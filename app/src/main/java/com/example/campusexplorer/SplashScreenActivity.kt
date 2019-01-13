@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import com.google.gson.Gson
 
 
-const val SERVER_URL = "http://10.181.50.61:8080"
+//const val SERVER_URL = "http://192.168.178.98:8080"
 
 class SplashScreenActivity : AppCompatActivity() {
     val gson = Gson()

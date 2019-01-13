@@ -68,3 +68,5 @@ fastlane/readme.md
 .DS_Store
 
 cygwin_android_studio.bat
+
+app/src/main/java/com/example/campusexplorer/server/ipAdress.kt
