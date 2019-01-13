@@ -175,13 +175,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,
             startActivity(intent)
             true
         }
-        R.id.action_testing -> {
-            val intent = Intent(this, RoomDetailActivity::class.java)
-            intent.putExtra("room", "708000001_")
-            intent.putExtra("building", "bw7070")
-            startActivity(intent)
-            true
-        }
 
         else -> {
             // If we got here, the user's action was not recognized.

@@ -32,7 +32,7 @@
                             android:text="TextView"
                             android:layout_marginTop="8dp"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" android:id="@+id/room_name"/>
+                            android:layout_height="wrap_content" android:id="@+id/building_name"/>
                     <TextView
                             android:text="TextView"
                             android:layout_marginTop="8dp"
@@ -42,7 +42,7 @@
                             android:text="TextView"
                             android:layout_marginTop="8dp"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" android:id="@+id/building_name"/>
+                            android:layout_height="wrap_content" android:id="@+id/room_name"/>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
             <android.support.v7.widget.CardView

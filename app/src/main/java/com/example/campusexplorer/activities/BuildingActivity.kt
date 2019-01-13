@@ -143,13 +143,6 @@ class BuildingActivity : AppCompatActivity() {
             startActivity(intent)
             true
         }
-        R.id.action_testing -> {
-            val intent = Intent(this, RoomDetailActivity::class.java)
-            intent.putExtra("room", "708000001_")
-            intent.putExtra("building", "bw7070")
-            startActivity(intent)
-            true
-        }
         android.R.id.home-> {
             finish()
             true

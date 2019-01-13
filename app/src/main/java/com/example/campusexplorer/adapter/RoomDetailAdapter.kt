@@ -45,8 +45,8 @@ class RoomDetailAdapter(private val myDataset: List<Lecture>) :
         holder.event_link.movementMethod = LinkMovementMethod.getInstance()
 
 
-        var list : List<Event> = myDataset[position].events
-        val eventTimes = list.fold("") { accumulator,item -> accumulator + "${item.cycle}, ${item.dayOfWeek}, ${item.time} \n"}.replaceAfterLast("t.", "")
+        var events : List<Event> = myDataset[position].events.distinctBy {it.dayOfWeek to it.time}
+        val eventTimes = events.fold("") { accumulator, item -> accumulator + "${item.cycle}, ${item.dayOfWeek}, ${item.time} \n"}.replaceAfterLast("t.", "")
 
         holder.event_times.text = eventTimes
     }

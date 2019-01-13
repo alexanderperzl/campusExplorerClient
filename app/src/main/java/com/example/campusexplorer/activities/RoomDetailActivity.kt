@@ -42,10 +42,11 @@ class RoomDetailActivity : AppCompatActivity() {
         val building = Storage.findBuilding(buildingID)
         val room = Storage.findRoom(roomID)
         val roomTriple = FilterData.getRoomTriple(room!!, FilterData.getFilteredDataForBuilding(building!!))
+        val floor = Storage.findFloor(room.floor)
 
-        roomName.text = room.name
-        floorName.text = room.floor
-        buildingName.text = building!!.name
+        buildingName.text = "Adresse: ${building!!.name}"
+        floorName.text = "Stockwerk: ${floor!!.level}"
+        roomName.text = "Raum: ${room.name}"
 
 
         val actionBar = supportActionBar

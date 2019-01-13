@@ -86,13 +86,13 @@ object FilterData {
             // remove all events which are not in this room
             .map { lecture ->
                 Lecture(lecture.id, lecture.name, lecture.events.filter { event ->
-                    room.name == event.room
+                    room.name == event.room && event.dayOfWeek == "Mo."
                 }, lecture.department, lecture.type, lecture.faculty, lecture.link)
             }
             // filter out all lectures which don't have lectures in this room
             .filter { lecture ->
                 // check if this lecture has events in the given room
-                lecture.events.any { event -> room.name == event.room}
+                lecture.events.any { event -> room.name == event.room && event.dayOfWeek == "Mo."}
             }
             .toList()
         val gson = Gson()
