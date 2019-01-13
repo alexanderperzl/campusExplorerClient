@@ -33,7 +33,7 @@ import java.util.logging.Logger
  * create an instance of this fragment.
  *
  */
-class BuildingMapFragment() : Fragment() {
+class BuildingMapFragment: Fragment() {
     private val TAG = "BuildingMapFragment"
     private lateinit var mapView: PinView
     private val log = Logger.getLogger(BuildingMapFragment::class.java.name)
@@ -83,7 +83,6 @@ class BuildingMapFragment() : Fragment() {
         mapView.setMinimumTileDpi(120)
 
         setPDF(mapView, floorList[currentFloorIndex].mapFileName)
-//        val rooms = Storage.findAllRooms(floorList[currentFloorIndex]._id)
         val building = Storage.findBuilding(buildingId!!)
         val rooms = FilterData.getFilteredFloors(building!!, floorList[currentFloorIndex])
         Log.d(TAG, rooms.toString())
@@ -91,7 +90,12 @@ class BuildingMapFragment() : Fragment() {
         val gestureDetector = GestureDetector(activity, object : GestureDetector.SimpleOnGestureListener() {
             override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                 mapView.viewToSourceCoord(e.x, e.y)?.let {
-                    log.info("Got click on ${e.x}:${e.y}")
+                    val roomData = mapView.dataForClick(e.x, e.y)
+                    if (roomData != null && roomData.containsKey("room")) {
+                        // open room activity
+                        val roomName = roomData["room"]!!
+                        log.info("Clicked room $roomName")
+                    }
                 } ?: run {
                     log.info("Not ready for clicking")
                 }
@@ -116,7 +120,7 @@ class BuildingMapFragment() : Fragment() {
     private fun setMarkers(rooms: List<Room>) {
         rooms.forEach {
             mapView.addPin(
-                PointF(it.mapX.toFloat() - 50f, it.mapY.toFloat() + 25f),
+                PointF(it.mapX.toFloat() - 90f , it.mapY.toFloat() + 15f),
                 mutableMapOf(Pair("room", it.name))
             )
         }
@@ -126,8 +130,8 @@ class BuildingMapFragment() : Fragment() {
         val assetStream = activity!!.assets.open("maps/$floorPlan")
         val mapFile = File(activity!!.filesDir, "temp_building.pdf")
         assetStream.toFile(mapFile)
-        mapView.setBitmapDecoderFactory { PDFDecoder(0, mapFile, 4.18f) }
-        mapView.setRegionDecoderFactory { PDFRegionDecoder(0, mapFile, 4.18f) }
+        mapView.setBitmapDecoderFactory { PDFDecoder(0, mapFile, 1f) }
+        mapView.setRegionDecoderFactory { PDFRegionDecoder(0, mapFile, 1f) }
         val source = ImageSource.uri(mapFile.absolutePath)
         mapView.setImage(source)
     }
@@ -150,7 +154,8 @@ class BuildingMapFragment() : Fragment() {
         textFloor.text = floorList[currentFloorIndex].level
         mapView.clearAllPins()
         setPDF(mapView, floorList[currentFloorIndex].mapFileName)
-//        val rooms = Storage.findAllRooms(floorList[currentFloorIndex]._id)
+        val currFloor = floorList[currentFloorIndex]
+        mapView.setOriginalDimensions(currFloor.mapWidth, currFloor.mapHeight)
         val building = Storage.findBuilding(buildingId!!)
         val rooms = FilterData.getFilteredFloors(building!!, floorList[currentFloorIndex])
         setMarkers(rooms)
