@@ -9,7 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import com.example.campusexplorer.filter.FilterData
-import com.example.campusexplorer.model.Floor
+import com.example.campusexplorer.fragment.BuildingMapFragment
 import com.example.campusexplorer.model.Lecture
 import com.example.campusexplorer.storage.Storage
 import com.google.gson.Gson
@@ -30,6 +30,7 @@ class BuildingActivity : AppCompatActivity() {
     private val log = Logger.getLogger(BuildingActivity::class.java.name)
     private lateinit var spinnerWrapper: ConstraintLayout
     private lateinit var bottomNavigation: BottomNavigationView
+    private lateinit var buildingId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +43,11 @@ class BuildingActivity : AppCompatActivity() {
         val building = Storage.findBuilding(buildingId)!!
 
         val buildingIdServer = BuildingIDConverter.fromClientToServer(buildingId)
+
+        val bundle = Bundle()
+        bundle.putString("buildingId", buildingId)
+        val fragobj = BuildingMapFragment()
+        fragobj.arguments = bundle
 
         spinnerWrapper.visibility = View.VISIBLE
 
@@ -65,16 +71,10 @@ class BuildingActivity : AppCompatActivity() {
                     spinnerWrapper.visibility = View.GONE
                 })
         }
+    }
 
-        val buildingMap = Storage.findBuildingById(buildingId)?.second
-
-        var floorList = ArrayList<Floor>()
-        buildingMap?.forEach { it ->
-            floorList.add(it.value.first)
-        }
-
-        floorList.sortedWith(compareBy { it.levelDouble })
-
+    fun getBuildingId(): String {
+        return buildingId
     }
 
     private fun loadLectures(building: String): Observable<List<Lecture>> {

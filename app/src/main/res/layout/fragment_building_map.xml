@@ -11,6 +11,28 @@
             android:id="@+id/mapView"
             app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"/>
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="51dp"
+            android:layout_height="112dp" app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="8dp" android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent"
+            android:gravity="center">
+        <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" tools:layout_editor_absoluteY="167dp"
+                tools:layout_editor_absoluteX="247dp" android:id="@+id/button_floor_up"
+                android:src="@drawable/ic_arrow_drop_up_black_24dp"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" tools:layout_editor_absoluteY="135dp"
+                tools:layout_editor_absoluteX="268dp" android:id="@+id/text_floor"
+                android:text="OG 01 Z" android:textAlignment="center"/>
+        <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" tools:layout_editor_absoluteY="74dp"
+                tools:layout_editor_absoluteX="247dp" android:id="@+id/button_floor_down"
+                android:src="@drawable/ic_arrow_drop_down_black_24dp"/>
+    </LinearLayout>
 
 
 </android.support.constraint.ConstraintLayout>
