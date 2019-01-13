@@ -1,10 +1,11 @@
 package com.example.campusexplorer.adapter
 
 import android.support.v7.widget.RecyclerView
+import android.text.Html
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Switch
 import android.widget.TextView
 import com.example.campusexplorer.R
 import com.example.campusexplorer.model.Event
@@ -20,7 +21,7 @@ class RoomDetailAdapter(private val myDataset: List<Lecture>) :
     class MyViewHolder(view: View) : RecyclerView.ViewHolder(view){
         val event_name = view.findViewById<TextView>(R.id.event_name)
         val event_times = view.findViewById<TextView>(R.id.event_time)
-        val event_department = view.findViewById<TextView>(R.id.event_department)
+        val event_link = view.findViewById<TextView>(R.id.event_link)
         val event_faculty = view.findViewById<TextView>(R.id.event_faculty)
     }
 
@@ -39,11 +40,13 @@ class RoomDetailAdapter(private val myDataset: List<Lecture>) :
         // - replace the contents of the view with that element
         holder.event_name.text = myDataset[position].name
         holder.event_faculty.text = myDataset[position].faculty
-        holder.event_department.text = myDataset[position].link
+        val linkText = Html.fromHtml("<a href=\"${myDataset[position].link}\">LSF-Link</a>", Html.FROM_HTML_MODE_LEGACY)
+        holder.event_link.text = linkText
+        holder.event_link.movementMethod = LinkMovementMethod.getInstance()
 
 
         var list : List<Event> = myDataset[position].events
-        val eventTimes = list.fold("") { accumulator,item -> accumulator + "${item.cycle}, ${item.dayOfWeek}, ${item.time} \n"}
+        val eventTimes = list.fold("") { accumulator,item -> accumulator + "${item.cycle}, ${item.dayOfWeek}, ${item.time} \n"}.replaceAfterLast("t.", "")
 
         holder.event_times.text = eventTimes
     }
