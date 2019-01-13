@@ -20,7 +20,7 @@ class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = 
 
     init {
         val density = resources.displayMetrics.densityDpi.toFloat()
-        val bitmap = BitmapFactory.decodeResource(this.resources, R.drawable.placeholder)
+        val bitmap = BitmapFactory.decodeResource(this.resources, R.drawable.pin_campus_explorer_32)
         val w = density / 360f * bitmap.width
         val h = density / 360f * bitmap.height
         log.info("width: $w, height: $h")

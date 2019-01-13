@@ -1,20 +1,18 @@
-package com.example.campusexplorer
+package com.example.campusexplorer.activities
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.design.widget.BottomNavigationView
-import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import com.example.campusexplorer.filter.FilterData
+import com.example.campusexplorer.BuildingIDConverter
+import com.example.campusexplorer.R
 import com.example.campusexplorer.fragment.BuildingMapFragment
 import com.example.campusexplorer.model.Lecture
-import com.example.campusexplorer.model.Room
 import com.example.campusexplorer.server.IpAddress
 import com.example.campusexplorer.storage.Storage
 import com.google.gson.Gson
@@ -145,7 +143,7 @@ class BuildingActivity : AppCompatActivity() {
             startActivity(intent)
             true
         }
-        R.id.action_testing-> {
+        R.id.action_testing -> {
             val intent = Intent(this, RoomDetailActivity::class.java)
             intent.putExtra("room", "708000001_")
             intent.putExtra("building", "bw7070")
