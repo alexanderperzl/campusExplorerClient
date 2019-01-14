@@ -8,7 +8,7 @@ class FilterObject(name: String, active: Boolean) {
     var active: Boolean by Delegates.notNull()
 
     init {
-        this.name = name;
+        this.name = name
         this.active = active
     }
 }

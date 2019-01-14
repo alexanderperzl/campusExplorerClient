@@ -53,11 +53,6 @@ class BuildingActivity : AppCompatActivity() {
 
         val buildingIdServer = BuildingIDConverter.fromClientToServer(buildingId)
 
-        /*val bundle = Bundle()
-        bundle.putString("buildingId", buildingId)
-        val fragobj = BuildingMapFragment()
-        fragobj.arguments = bundle
-*/
         val fragobj = BuildingMapFragment.newInstance(buildingId)
 
 
@@ -98,10 +93,6 @@ class BuildingActivity : AppCompatActivity() {
         transaction.replace(R.id.buildingMapFragmentContainer, fragment)
         transaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
         transaction.commit()
-    }
-
-    fun getBuildingId(): String {
-        return buildingId
     }
 
     private fun loadLectures(building: String): Observable<List<Lecture>> {

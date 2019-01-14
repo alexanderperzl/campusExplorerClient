@@ -43,6 +43,7 @@ class BuildingMapFragment: Fragment() {
     private lateinit var textFloor: TextView
     private lateinit var buttonFloorUp: ImageButton
     private lateinit var buttonFloorDown: ImageButton
+    private lateinit var rooms: List<Room>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,6 +63,13 @@ class BuildingMapFragment: Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        val building = Storage.findBuilding(buildingId!!)
+        rooms = FilterData.getFilteredFloors(building!!, floorList[currentFloorIndex])
+        mapView.clearAllPins()
+        setMarkers(rooms)
+    }
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View? {
@@ -84,7 +92,7 @@ class BuildingMapFragment: Fragment() {
 
         setPDF(mapView, floorList[currentFloorIndex].mapFileName)
         val building = Storage.findBuilding(buildingId!!)
-        val rooms = FilterData.getFilteredFloors(building!!, floorList[currentFloorIndex])
+        rooms = FilterData.getFilteredFloors(building!!, floorList[currentFloorIndex])
         Log.d(TAG, rooms.toString())
         setMarkers(rooms)
         val gestureDetector = GestureDetector(activity, object : GestureDetector.SimpleOnGestureListener() {
