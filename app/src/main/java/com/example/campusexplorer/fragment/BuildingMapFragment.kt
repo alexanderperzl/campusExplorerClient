@@ -9,6 +9,7 @@ import android.view.*
 import android.widget.ImageButton
 import android.widget.TextView
 import com.davemorrissey.labs.subscaleview.ImageSource
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 
 import com.example.campusexplorer.R
 import com.example.campusexplorer.activities.RoomDetailActivity
@@ -97,6 +98,7 @@ class BuildingMapFragment: Fragment() {
         val building = Storage.findBuilding(buildingId!!)
         rooms = FilterData.getFilteredFloors(building!!, floorList[currentFloorIndex])
         Log.d(TAG, rooms.toString())
+
         setMarkers(rooms)
         val gestureDetector = GestureDetector(activity, object : GestureDetector.SimpleOnGestureListener() {
             override fun onSingleTapConfirmed(e: MotionEvent): Boolean {

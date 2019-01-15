@@ -53,6 +53,10 @@ class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = 
 
     }
 
+    override fun onReady() {
+        setScaleAndCenter(0.3f, center)
+    }
+
     private fun createScaledPointsFromPinList(): List<Triple<PointF, Map<String, String>, PinColor.Color>> {
         return sPinList.map {sPin -> Triple(
             PointF(
