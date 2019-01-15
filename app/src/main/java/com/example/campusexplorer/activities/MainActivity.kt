@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -21,9 +22,11 @@ import com.example.campusexplorer.model.Floor
 import com.example.campusexplorer.model.Room
 import com.example.campusexplorer.service.ImportService
 import com.example.campusexplorer.storage.Storage
+import com.example.campusexplorer.util.BitmapUtil
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -135,8 +138,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,
 
     private class LocalBroadcastReceiver : BroadcastReceiver() {
 
+        private lateinit var resources: Resources
+
         override fun onReceive(context: Context, intent: Intent) {
             // get all buildings of which we have buildingId in our BuildingIDConverter
+            resources = context.resources
             val buildings = Storage.getAllBuildings()
                 ?.filter { buildingId -> BuildingIDConverter.getKeys().contains(buildingId.key) }
 
@@ -149,7 +155,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,
             val lat = building.value.first.lat
             val lng = building.value.first.lng
             val name = building.value.first.name
-            val marker = mMap.addMarker(MarkerOptions().position(LatLng(lat, lng)).title(name))
+            val marker = mMap.addMarker(
+                MarkerOptions()
+                    .position(LatLng(lat, lng))
+                    .title(name)
+                    .icon(BitmapDescriptorFactory.fromBitmap(BitmapUtil.createCrispBitmap(R.drawable.pin_64, resources)))
+            )
             marker.tag = building.value.first._id
         }
     }

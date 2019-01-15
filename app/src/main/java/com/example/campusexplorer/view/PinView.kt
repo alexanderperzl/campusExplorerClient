@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.example.campusexplorer.R
+import com.example.campusexplorer.util.BitmapUtil
 import java.util.logging.Logger
 
 class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = null) : SubsamplingScaleImageView(context, attr) {
@@ -14,19 +15,11 @@ class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = 
     private val paint = Paint()
     private val vPin = PointF()
     private var sPinList: MutableList<Pair<PointF, Map<String, String>>> = ArrayList()
-    private var pin: Bitmap
+    private var pin = BitmapUtil.createCrispBitmap(R.drawable.pin_64, resources)
     private var originalHeight: Int = 0
     private var originalWidth: Int = 0
 
-    init {
-        val density = resources.displayMetrics.densityDpi.toFloat()
-        val bitmap = BitmapFactory.decodeResource(this.resources, R.drawable.pin_campus_explorer_32)
-        val w = density / 360f * bitmap.width
-        val h = density / 360f * bitmap.height
-        log.info("width: $w, height: $h")
-        log.info("bitmapWidth: ${bitmap.width}, bitmapHeight: ${bitmap.height}")
-        pin = Bitmap.createScaledBitmap(bitmap, w.toInt(), h.toInt(), true)
-    }
+    init {}
 
     fun addPin(sPin: PointF, data: Map<String, String>) {
         sPinList.add(Pair(sPin, data))
