@@ -1,5 +1,7 @@
 package com.example.campusexplorer.adapter
 
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +10,7 @@ import android.widget.Switch
 import com.example.campusexplorer.R
 import com.example.campusexplorer.filter.FilterData
 import com.example.campusexplorer.filter.FilterObject
+import com.example.campusexplorer.util.PinColor
 
 class FilterAdapter(private val myDataset: List<FilterObject>) :
     RecyclerView.Adapter<FilterAdapter.MyViewHolder>() {
@@ -39,10 +42,22 @@ class FilterAdapter(private val myDataset: List<FilterObject>) :
         // - replace the contents of the view with that element
         holder.switch.text = myDataset[position].name
         holder.switch.isChecked= myDataset[position].active
+        System.out.println(myDataset[position].name)
+        val color = PinColor.eventTypeToUiColor(myDataset[position].name)
+        if (color != null) {
+            setColorOfHolder(holder, color)
+        }
+        holder.switch.setOnCheckedChangeListener {switch, isChecked ->
+            FilterData.setValue(isChecked,switch.text.toString())
+            val color = PinColor.eventTypeToUiColor(myDataset[position].name)
+            if (color != null) {
+                if (!isChecked) setColorOfHolder(holder, Color.WHITE) else setColorOfHolder(holder, color)
+            }
+        }
+    }
 
-        holder.switch.setOnCheckedChangeListener {switch, isChecked -> FilterData.setValue(isChecked,switch.text.toString()) }
-
-
+    fun setColorOfHolder(holder: MyViewHolder, color: Int) {
+        holder.switch.thumbDrawable.setColorFilter(color, PorterDuff.Mode.MULTIPLY)
     }
 
     // Return the size of your dataset (invoked by the layout manager)

@@ -18,6 +18,7 @@ import com.example.campusexplorer.model.Floor
 import com.example.campusexplorer.model.Lecture
 import com.example.campusexplorer.model.Room
 import com.example.campusexplorer.storage.Storage
+import com.example.campusexplorer.util.PinColor
 import com.example.campusexplorer.view.PinView
 import de.number42.subsampling_pdf_decoder.PDFDecoder
 import de.number42.subsampling_pdf_decoder.PDFRegionDecoder
@@ -141,20 +142,9 @@ class BuildingMapFragment: Fragment() {
         }
     }
 
-    private fun roomEventToColor(room: Room, lectures: List<Lecture>): PinView.PinColor {
+    private fun roomEventToColor(room: Room, lectures: List<Lecture>): PinColor.Color {
         val roomTriple = FilterData.getRoomTriple(room, lectures)
-        return eventTypeToColor(roomTriple.third.type)
-    }
-
-    private fun eventTypeToColor(type: String): PinView.PinColor {
-        log.info("type: $type")
-        return if (type == "Vorlesung") {
-            PinView.PinColor.Green
-        } else if (type == "Übung") {
-            PinView.PinColor.Orange
-        } else {
-            PinView.PinColor.Blue
-        }
+        return PinColor.eventTypeToColor(roomTriple.third.type)
     }
 
     private fun setPDF(mapView: PinView, floorPlan: String) {

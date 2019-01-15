@@ -3,4 +3,7 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574b</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="eventVorlesung">#008577</color>
+    <color name="eventUebung">#D65B00</color>
+    <color name="eventSeminar">#0E3b8E</color>
 </resources>

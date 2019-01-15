@@ -7,18 +7,15 @@ import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.example.campusexplorer.R
 import com.example.campusexplorer.util.BitmapUtil
+import com.example.campusexplorer.util.PinColor
 import java.util.logging.Logger
 
 class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = null) : SubsamplingScaleImageView(context, attr) {
 
-    enum class PinColor {
-        Green, Orange, Blue
-    }
-
     private val log = Logger.getLogger(PinView::class.java.name)
     private val paint = Paint()
     private val vPin = PointF()
-    private var sPinList: MutableList<Triple<PointF, Map<String, String>, PinColor>> = ArrayList()
+    private var sPinList: MutableList<Triple<PointF, Map<String, String>, PinColor.Color>> = ArrayList()
     private var pinGreen = BitmapUtil.createCrispBitmap(R.drawable.pin_64, resources)
     private var pinOrange = BitmapUtil.createCrispBitmap(R.drawable.pin_64_orange, resources)
     private var pinBlue = BitmapUtil.createCrispBitmap(R.drawable.pin_64_blue, resources)
@@ -27,7 +24,7 @@ class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = 
 
     init {}
 
-    fun addPin(sPin: PointF, data: Map<String, String>, color: PinColor) {
+    fun addPin(sPin: PointF, data: Map<String, String>, color: PinColor.Color) {
         sPinList.add(Triple(sPin, data, color))
         invalidate()
     }
@@ -56,7 +53,7 @@ class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = 
 
     }
 
-    private fun createScaledPointsFromPinList(): List<Triple<PointF, Map<String, String>, PinColor>> {
+    private fun createScaledPointsFromPinList(): List<Triple<PointF, Map<String, String>, PinColor.Color>> {
         return sPinList.map {sPin -> Triple(
             PointF(
                 markerXToCanvasX(sPin.first.x),
@@ -67,10 +64,10 @@ class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = 
         )}
     }
 
-    private fun pinForColor(color: PinColor): Bitmap {
-        return if (color == PinColor.Orange) {
+    private fun pinForColor(color: PinColor.Color): Bitmap {
+        return if (color == PinColor.Color.Orange) {
             pinOrange
-        } else if (color == PinColor.Green) {
+        } else if (color == PinColor.Color.Green) {
             pinGreen
         } else {
             pinBlue
