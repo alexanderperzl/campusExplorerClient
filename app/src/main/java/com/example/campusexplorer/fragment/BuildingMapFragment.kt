@@ -15,6 +15,7 @@ import com.example.campusexplorer.activities.RoomDetailActivity
 import com.example.campusexplorer.extensions.toFile
 import com.example.campusexplorer.filter.FilterData
 import com.example.campusexplorer.model.Floor
+import com.example.campusexplorer.model.Lecture
 import com.example.campusexplorer.model.Room
 import com.example.campusexplorer.storage.Storage
 import com.example.campusexplorer.view.PinView
@@ -130,11 +131,29 @@ class BuildingMapFragment: Fragment() {
     }
 
     private fun setMarkers(rooms: List<Room>) {
+        val lectures = FilterData.getFilteredDataForFloor(Storage.findBuilding(buildingId!!)!!, floorList[currentFloorIndex])
         rooms.forEach {
             mapView.addPin(
                 PointF(it.mapX.toFloat() - 90f , it.mapY.toFloat() + 15f),
-                mutableMapOf(Pair("roomId", it._id))
+                mutableMapOf(Pair("roomId", it._id)),
+                roomEventToColor(it, lectures)
             )
+        }
+    }
+
+    private fun roomEventToColor(room: Room, lectures: List<Lecture>): PinView.PinColor {
+        val roomTriple = FilterData.getRoomTriple(room, lectures)
+        return eventTypeToColor(roomTriple.third.type)
+    }
+
+    private fun eventTypeToColor(type: String): PinView.PinColor {
+        log.info("type: $type")
+        return if (type == "Vorlesung") {
+            PinView.PinColor.Green
+        } else if (type == "Übung") {
+            PinView.PinColor.Orange
+        } else {
+            PinView.PinColor.Blue
         }
     }
 
