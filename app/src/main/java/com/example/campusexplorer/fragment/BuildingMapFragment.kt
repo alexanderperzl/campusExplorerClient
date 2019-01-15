@@ -91,6 +91,7 @@ class BuildingMapFragment: Fragment() {
         updateFloor()
 
         mapView.setMinimumTileDpi(120)
+        mapView.maxScale = 12.0f
 
         setPDF(mapView, floorList[currentFloorIndex].mapFileName)
         val building = Storage.findBuilding(buildingId!!)
@@ -151,8 +152,8 @@ class BuildingMapFragment: Fragment() {
         val assetStream = activity!!.assets.open("maps/$floorPlan")
         val mapFile = File(activity!!.filesDir, "temp_building.pdf")
         assetStream.toFile(mapFile)
-        mapView.setBitmapDecoderFactory { PDFDecoder(0, mapFile, 1f) }
-        mapView.setRegionDecoderFactory { PDFRegionDecoder(0, mapFile, 1f) }
+        mapView.setBitmapDecoderFactory { PDFDecoder(0, mapFile, 8f) }
+        mapView.setRegionDecoderFactory { PDFRegionDecoder(0, mapFile, 8f) }
         val source = ImageSource.uri(mapFile.absolutePath)
         mapView.setImage(source)
     }
