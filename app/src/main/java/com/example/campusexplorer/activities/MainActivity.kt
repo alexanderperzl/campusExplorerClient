@@ -23,6 +23,7 @@ import com.example.campusexplorer.model.Room
 import com.example.campusexplorer.service.ImportService
 import com.example.campusexplorer.storage.Storage
 import com.example.campusexplorer.util.BitmapUtil
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
@@ -74,9 +75,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,
         ) {
             return
         }
+        animateToLmuCampus()
         mMap.isMyLocationEnabled = true
         mMap.uiSettings.isMyLocationButtonEnabled = true
 
+    }
+
+    private fun animateToLmuCampus() {
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(48.150740, 11.581363), 14.0f), 3000, null)
     }
 
 
