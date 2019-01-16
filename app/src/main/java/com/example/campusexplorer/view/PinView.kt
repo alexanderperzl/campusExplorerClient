@@ -3,16 +3,39 @@ package com.example.campusexplorer.view
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
-import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.example.campusexplorer.R
 import com.example.campusexplorer.util.BitmapUtil
 import com.example.campusexplorer.util.PinColor
 import java.util.logging.Logger
 
+interface MapLoadedObserver {
+
+    fun onMapLoaded()
+
+}
+
 class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = null) : SubsamplingScaleImageView(context, attr) {
 
-    private val log = Logger.getLogger(PinView::class.java.name)
+
+    companion object {
+
+        var observer: MutableList<MapLoadedObserver> = ArrayList()
+
+        fun addObserver(mapLoadedObserver: MapLoadedObserver) {
+            if (!observer.contains(mapLoadedObserver)) {
+                observer.add(mapLoadedObserver)
+            }
+        }
+
+        fun notifyObservers() {
+            observer.forEach {
+                it.onMapLoaded()
+            }
+        }
+
+    }
+
     private val paint = Paint()
     private val vPin = PointF()
     private var sPinList: MutableList<Triple<PointF, Map<String, String>, PinColor.Color>> = ArrayList()
@@ -55,6 +78,7 @@ class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = 
 
     override fun onReady() {
         setScaleAndCenter(0.3f, center)
+        notifyObservers()
     }
 
     private fun createScaledPointsFromPinList(): List<Triple<PointF, Map<String, String>, PinColor.Color>> {

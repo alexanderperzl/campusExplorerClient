@@ -12,9 +12,12 @@ import android.view.View
 import com.example.campusexplorer.BuildingIDConverter
 import com.example.campusexplorer.R
 import com.example.campusexplorer.fragment.BuildingMapFragment
+import com.example.campusexplorer.fragment.FloorChangeObserver
 import com.example.campusexplorer.model.Lecture
 import com.example.campusexplorer.server.IpAddress
 import com.example.campusexplorer.storage.Storage
+import com.example.campusexplorer.view.MapLoadedObserver
+import com.example.campusexplorer.view.PinView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.Observable
@@ -27,14 +30,14 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.logging.Logger
 
-class BuildingActivity : AppCompatActivity() {
+class BuildingActivity : AppCompatActivity(), MapLoadedObserver, FloorChangeObserver {
     val TAG = "BuildingActivity"
     val gson = Gson()
 
     private val log = Logger.getLogger(BuildingActivity::class.java.name)
     private lateinit var spinnerWrapper: ConstraintLayout
     private lateinit var bottomNavigation: BottomNavigationView
-    private lateinit var buildingId: String
+    private lateinit var fragObj: BuildingMapFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,8 +56,8 @@ class BuildingActivity : AppCompatActivity() {
 
         val buildingIdServer = BuildingIDConverter.fromClientToServer(buildingId)
 
-        val fragobj = BuildingMapFragment.newInstance(buildingId)
-
+        fragObj = BuildingMapFragment.newInstance(buildingId)
+        fragObj.addFloorChangeObserver(this)
 
         spinnerWrapper.visibility = View.VISIBLE
 
@@ -63,7 +66,7 @@ class BuildingActivity : AppCompatActivity() {
             log.info("lectures already loaded")
 //            FilterData.getFilteredDataForFloor(building)
 //            FilterData.getRoomTriple(Room("", "B 001", "", 0, 0), FilterData.getFilteredDataForFloor(building))
-            startFragment(fragobj)
+            startFragment(fragObj)
             spinnerWrapper.visibility = View.GONE
         } else {
             loadLectures(buildingIdServer ?: "")
@@ -72,20 +75,21 @@ class BuildingActivity : AppCompatActivity() {
                 .subscribeBy(onNext = {
                     log.info("lectures loaded")
                     Storage.setBuildingLectures(building, it)
-//                    Storage.setLectures(it)
-//                    FilterData.getFilteredDataForFloor(building)
-//                    FilterData.getRoomTriple(Room("", "B 001", "", 0, 0), FilterData.getFilteredDataForFloor(building))
-                    startFragment(fragobj)
+                    PinView.addObserver(this)
+                    startFragment(fragObj)
                 }, onError = {
                     log.info("got error ${it.message}")
                 }, onComplete = {
-                    spinnerWrapper.visibility = View.GONE
                 })
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onMapLoaded() {
+        spinnerWrapper.visibility = View.GONE
+    }
+
+    override fun onFloorChange() {
+        spinnerWrapper.visibility = View.VISIBLE
     }
 
     private fun startFragment(fragment: BuildingMapFragment){

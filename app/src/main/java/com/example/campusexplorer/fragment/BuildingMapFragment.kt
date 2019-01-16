@@ -36,6 +36,13 @@ import java.util.logging.Logger
  * create an instance of this fragment.
  *
  */
+interface FloorChangeObserver {
+
+    fun onFloorChange()
+
+}
+
+
 class BuildingMapFragment: Fragment() {
     private val TAG = "BuildingMapFragment"
     private lateinit var mapView: PinView
@@ -47,6 +54,7 @@ class BuildingMapFragment: Fragment() {
     private lateinit var buttonFloorUp: ImageButton
     private lateinit var buttonFloorDown: ImageButton
     private lateinit var rooms: List<Room>
+    private var floorChangeObserver: MutableList<FloorChangeObserver> = ArrayList()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -195,6 +203,7 @@ class BuildingMapFragment: Fragment() {
     }
 
     private fun updateFloor() {
+        notifyFloorChangeObserver()
         textFloor.text = floorList[currentFloorIndex].level
         mapView.clearAllPins()
         setPDF(mapView, floorList[currentFloorIndex].mapFileName)
@@ -213,6 +222,18 @@ class BuildingMapFragment: Fragment() {
         }
 
         return ArrayList(floorList.sortedWith(compareBy { it.levelDouble }))
+    }
+
+    fun addFloorChangeObserver(observer: FloorChangeObserver) {
+        if (!floorChangeObserver.contains(observer)) {
+            floorChangeObserver.add(observer)
+        }
+    }
+
+    private fun notifyFloorChangeObserver() {
+        floorChangeObserver.forEach {
+            it.onFloorChange()
+        }
     }
 
 }
