@@ -89,6 +89,7 @@ class BuildingMapFragment: Fragment() {
 
         floorList = getOrderedFloors(buildingId!!)
         currentFloorIndex = floorList.indexOf(floorList.first { it -> it.levelDouble == 0.0 })
+        updateLevelArrows()
         updateFloor()
 
         mapView.setMinimumTileDpi(120)
@@ -132,6 +133,7 @@ class BuildingMapFragment: Fragment() {
 
         buttonFloorUp.setOnClickListener { onFloorUp() }
         buttonFloorDown.setOnClickListener { onFloorDown() }
+
     }
 
     private fun setMarkers(rooms: List<Room>) {
@@ -166,6 +168,7 @@ class BuildingMapFragment: Fragment() {
     private fun onFloorDown() {
         if (currentFloorIndex - 1 >= 0) {
             currentFloorIndex--
+            updateLevelArrows()
             updateFloor()
         }
     }
@@ -173,7 +176,21 @@ class BuildingMapFragment: Fragment() {
     private fun onFloorUp() {
         if (currentFloorIndex + 1 < floorList.size) {
             currentFloorIndex++
+            updateLevelArrows()
             updateFloor()
+        }
+    }
+
+    private fun updateLevelArrows() {
+        if (currentFloorIndex <= 0) {
+            buttonFloorDown.visibility = View.INVISIBLE
+        } else {
+            buttonFloorDown.visibility = View.VISIBLE
+        }
+        if (currentFloorIndex >= floorList.size - 1) {
+            buttonFloorUp.visibility = View.INVISIBLE
+        } else {
+            buttonFloorUp.visibility = View.VISIBLE
         }
     }
 
