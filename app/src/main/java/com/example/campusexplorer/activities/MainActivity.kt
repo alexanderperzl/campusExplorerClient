@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -23,6 +24,8 @@ import com.example.campusexplorer.model.Room
 import com.example.campusexplorer.service.ImportService
 import com.example.campusexplorer.storage.Storage
 import com.example.campusexplorer.util.BitmapUtil
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -39,6 +42,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,
     GoogleMap.OnInfoWindowClickListener {
 
     private var PERMISSIONS_REQUEST_LOCATION = 1
+    private val campusCenter = LatLng(48.150740, 11.581363)
+    private val campusRadiusInMeters = 2000.0f
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private val TAG = "MainActivity"
 
@@ -51,6 +57,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
     }
 
 
@@ -75,16 +83,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,
         ) {
             return
         }
-        animateToLmuCampus()
+
+        animateToCenter(campusCenter)
         mMap.isMyLocationEnabled = true
         mMap.uiSettings.isMyLocationButtonEnabled = true
 
     }
 
-    private fun animateToLmuCampus() {
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(48.150740, 11.581363), 14.0f), 3000, null)
+    private fun animateToCenter(latLng: LatLng) {
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14.0f), 3000, null)
     }
-
 
     private fun updateLocationUI() {
         try {
@@ -111,6 +119,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,
                 android.Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location : Location? ->
+                    if (location != null) {
+                        animateToCurrentPositionWhenInCampus(location)
+                    }
+
+                }
             mLocationPermissionGranted = true
         } else {
             ActivityCompat.requestPermissions(
@@ -121,6 +136,15 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,
                 ),
                 PERMISSIONS_REQUEST_LOCATION
             )
+        }
+    }
+
+    private fun animateToCurrentPositionWhenInCampus(location: Location) {
+        val distance = FloatArray(2)
+        Location.distanceBetween( location.getLatitude(), location.getLongitude(),
+            campusCenter.latitude, campusCenter.longitude, distance)
+        if (distance[0] < campusRadiusInMeters) {
+            animateToCenter(LatLng(location.latitude, location.longitude))
         }
     }
 
