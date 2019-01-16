@@ -136,9 +136,12 @@ class BuildingMapFragment: Fragment() {
 
     private fun setMarkers(rooms: List<Room>) {
         val lectures = FilterData.getFilteredDataForFloor(Storage.findBuilding(buildingId!!)!!, floorList[currentFloorIndex])
+        val floor = floorList[currentFloorIndex]
+        val markerOffsetX = floor.markerOffsetX ?: 0
+        val markerOffsetY = floor.markerOffsetY ?: 0
         rooms.forEach {
             mapView.addPin(
-                PointF(it.mapX.toFloat() - 90f , it.mapY.toFloat() + 15f),
+                PointF((it.mapX - markerOffsetX).toFloat(), (it.mapY - markerOffsetY).toFloat()),
                 mutableMapOf(Pair("roomId", it._id)),
                 roomEventToColor(it, lectures)
             )

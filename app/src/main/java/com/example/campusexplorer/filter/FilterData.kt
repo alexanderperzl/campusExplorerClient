@@ -57,7 +57,7 @@ object FilterData {
 
     fun getFilteredDataForFloor(
         building: Building,
-        floor: Floor = Floor("g707000", "", "", "", 0.0, 0, 0, "")
+        floor: Floor = Floor("g707000", "", "", "", 0.0, 0, 0, 0, 0 ,"")
     ): List<Lecture> {
         var filteredLectures = getFilteredDataForBuilding(building)
         val rooms = Storage.findAllRooms(floor._id)

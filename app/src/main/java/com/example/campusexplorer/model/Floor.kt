@@ -8,13 +8,14 @@ data class Floor(
     var levelDouble: Double,
     val mapWidth: Int,
     val mapHeight: Int,
+    val markerOffsetX: Int?,
+    val markerOffsetY: Int?,
     val address: String
 ) : Comparable<Floor> {
 
     override fun compareTo(other: Floor): Int {
         if (this.levelDouble > other.levelDouble) return 1
-        if (this.levelDouble < other.levelDouble) return -1
-        else return 0
+        return if (this.levelDouble < other.levelDouble) -1 else 0
     }
 
 
