@@ -20,14 +20,11 @@ object PinColor {
     }
 
     fun eventTypeToUiColor(type: String): Int? {
-        return if (type == "Vorlesung") {
-            android.graphics.Color.argb(0xFF, 0x00, 0x85, 0x77)
-        } else if (type == "Übung") {
-            android.graphics.Color.argb(0xFF, 0xD6, 0x5B, 0x00)
-        } else if (type == "Seminar") {
-            android.graphics.Color.argb(0xFF, 0x0E, 0x3B, 0x8E)
-        } else {
-            null
+        return when (type) {
+            "Vorlesung" -> android.graphics.Color.argb(0xFF, 0x00, 0x85, 0x77)
+            "Übung" -> android.graphics.Color.argb(0xFF, 0xD6, 0x5B, 0x00)
+            "Seminar" -> android.graphics.Color.argb(0xFF, 0x0E, 0x3B, 0x8E)
+            else -> android.graphics.Color.argb(0xFF, 0x00, 0x00, 0x8E)
         }
     }
 

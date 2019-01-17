@@ -41,7 +41,7 @@ class RoomDetailActivity : AppCompatActivity() {
         Log.d(TAG, "buildingID $buildingID")
         val building = Storage.findBuilding(buildingID)
         val room = Storage.findRoom(roomID)
-        val roomTriple = FilterData.getRoomTriple(room!!, FilterData.getFilteredDataForBuilding(building!!))
+        val roomTriple = FilterData.getRoomTriple(room!!, FilterData.getFilteredDataForBuilding(building!!, true))
         val floor = Storage.findFloor(room.floor)
 
         buildingName.text = "Adresse: ${building!!.name}"
