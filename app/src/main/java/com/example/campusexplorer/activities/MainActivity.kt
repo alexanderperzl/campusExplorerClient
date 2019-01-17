@@ -14,28 +14,33 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import com.example.campusexplorer.BuildingIDConverter
+import com.example.campusexplorer.BuildingMarkerItem
 import com.example.campusexplorer.R
 import com.example.campusexplorer.model.Building
 import com.example.campusexplorer.model.Floor
 import com.example.campusexplorer.model.Room
 import com.example.campusexplorer.service.ImportService
 import com.example.campusexplorer.storage.Storage
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.maps.android.clustering.Cluster
+import com.google.maps.android.clustering.ClusterManager
+
 
 lateinit var mMap: GoogleMap
 var mLocationPermissionGranted: Boolean = false
+var mClusterManager: ClusterManager<BuildingMarkerItem>? = null
 
-class MainActivity : AppCompatActivity(), OnMapReadyCallback,
-    GoogleMap.OnInfoWindowClickListener {
+class MainActivity : AppCompatActivity(), OnMapReadyCallback, ClusterManager.OnClusterClickListener<BuildingMarkerItem>,
+    ClusterManager.OnClusterItemClickListener<BuildingMarkerItem>,
+    ClusterManager.OnClusterItemInfoWindowClickListener<BuildingMarkerItem> {
 
     private var PERMISSIONS_REQUEST_LOCATION = 1
-
     private val TAG = "MainActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,7 +63,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        mMap.setOnInfoWindowClickListener(this)
+        setUpClusterer()
         getLocationPermission()
 
         if (ActivityCompat.checkSelfPermission(
@@ -149,17 +154,63 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,
             val lat = building.value.first.lat
             val lng = building.value.first.lng
             val name = building.value.first.name
-            val marker = mMap.addMarker(MarkerOptions().position(LatLng(lat, lng)).title(name))
-            marker.tag = building.value.first._id
+            val buildingId = building.value.first._id
+            //val marker = mMap.addMarker(MarkerOptions().position(LatLng(lat, lng)).title(name))
+            //marker.tag = buildingId
+            val marker = BuildingMarkerItem(lat, lng, name, buildingId)
+            mClusterManager!!.addItem(marker)
         }
     }
 
-    override fun onInfoWindowClick(marker: Marker) {
-        val buildingId = marker.tag
-        val intent = Intent(this, BuildingActivity::class.java)
-        intent.putExtra("id", buildingId.toString())
-        startActivity(intent)
+
+    private fun setUpClusterer() {
+        // Point the map's listeners at the listeners implemented by the cluster manager
+        mClusterManager = ClusterManager(this, mMap)
+        mMap.setOnCameraIdleListener(mClusterManager)
+        mMap.setInfoWindowAdapter(mClusterManager!!.markerManager)
+        mMap.setOnMarkerClickListener(mClusterManager)
+        mMap.setOnInfoWindowClickListener(mClusterManager)
+        mClusterManager!!.setOnClusterClickListener(this)
+        mClusterManager!!.setOnClusterItemClickListener(this)
+        mClusterManager!!.setOnClusterItemInfoWindowClickListener(this)
     }
+
+    override fun onClusterClick(cluster: Cluster<BuildingMarkerItem>?): Boolean {
+        Log.d(TAG, "Cluster clicked")
+        val builder = LatLngBounds.builder()
+        val markers = cluster?.items
+
+        for (marker in markers!!) {
+            builder.include(marker.position)
+        }
+
+        val bounds = builder.build()
+
+        try {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
+        } catch (e: Exception) {
+            Log.e(TAG, e.message)
+        }
+        return true
+    }
+
+    override fun onClusterItemClick(marker: BuildingMarkerItem?): Boolean {
+        Log.d(TAG, "Item clicked")
+        return false
+    }
+
+    override fun onClusterItemInfoWindowClick(marker: BuildingMarkerItem?) {
+        Log.d(TAG, "Infowindow clicked")
+        val buildingId = marker?.getBuildingId()
+        if (BuildingIDConverter.getKeys().contains(buildingId)) {
+            val intent = Intent(this, BuildingActivity::class.java)
+            intent.putExtra("id", buildingId.toString())
+            startActivity(intent)
+        } else {
+            Toast.makeText(this, "Missing mapping of building id", Toast.LENGTH_SHORT).show()
+        }
+    }
+
 
     /* Tool Bar */
 
