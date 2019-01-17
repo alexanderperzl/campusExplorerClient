@@ -141,7 +141,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ClusterManager.OnC
     private class LocalBroadcastReceiver : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
-            // get all buildings of which we have buildingId in our BuildingIDConverter
+            // get all buildings of which we have buildingId in our BuildingIDConverter; to try out clustering comment out the filtering
             val buildings = Storage.getAllBuildings()
                 ?.filter { buildingId -> BuildingIDConverter.getKeys().contains(buildingId.key) }
 
@@ -155,8 +155,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ClusterManager.OnC
             val lng = building.value.first.lng
             val name = building.value.first.name
             val buildingId = building.value.first._id
-            //val marker = mMap.addMarker(MarkerOptions().position(LatLng(lat, lng)).title(name))
-            //marker.tag = buildingId
             val marker = BuildingMarkerItem(lat, lng, name, buildingId)
             mClusterManager!!.addItem(marker)
         }
