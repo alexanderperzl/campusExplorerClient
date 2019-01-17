@@ -10,6 +10,7 @@ import android.widget.TextView
 import com.example.campusexplorer.R
 import com.example.campusexplorer.model.Event
 import com.example.campusexplorer.model.Lecture
+import com.example.campusexplorer.util.PinColor.eventTypeToUiColor
 
 class RoomDetailAdapter(private val myDataset: List<Lecture>) :
     RecyclerView.Adapter<RoomDetailAdapter.MyViewHolder>() {
@@ -44,6 +45,12 @@ class RoomDetailAdapter(private val myDataset: List<Lecture>) :
         holder.event_link.text = linkText
         holder.event_link.movementMethod = LinkMovementMethod.getInstance()
 
+        val color = eventTypeToUiColor(myDataset[position].type)!!
+        //val colorBackground = Color.argb(128, Color.red(color), Color.green(color), Color.blue(color))
+        holder.event_name.setTextColor(color)
+        holder.event_faculty.setTextColor(color)
+        holder.event_link.setTextColor(color)
+        holder.event_times.setTextColor(color)
 
         var events : List<Event> = myDataset[position].events.distinctBy {it.dayOfWeek to it.time}
         val eventTimes = events.fold("") { accumulator, item -> accumulator + "${item.cycle}, ${item.dayOfWeek}, ${item.time} \n"}.replaceAfterLast("t.", "")
