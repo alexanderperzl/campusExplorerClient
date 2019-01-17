@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.content.res.Resources
 import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
@@ -19,27 +18,23 @@ import android.view.MenuItem
 import android.widget.Toast
 import com.example.campusexplorer.BuildingIDConverter
 import com.example.campusexplorer.BuildingMarkerItem
+import com.example.campusexplorer.CustomClusterRenderer
 import com.example.campusexplorer.R
 import com.example.campusexplorer.model.Building
 import com.example.campusexplorer.model.Floor
 import com.example.campusexplorer.model.Room
 import com.example.campusexplorer.service.ImportService
 import com.example.campusexplorer.storage.Storage
-import com.example.campusexplorer.util.BitmapUtil
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.maps.android.clustering.Cluster
 import com.google.maps.android.clustering.ClusterManager
-
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
 
 lateinit var mMap: GoogleMap
 var mLocationPermissionGranted: Boolean = false
@@ -176,13 +171,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ClusterManager.OnC
 
     private class LocalBroadcastReceiver : BroadcastReceiver() {
 
-        private lateinit var resources: Resources
 
         override fun onReceive(context: Context, intent: Intent) {
             // get all buildings of which we have buildingId in our BuildingIDConverter; to try out clustering comment out the filtering
-            resources = context.resources
             val buildings = Storage.getAllBuildings()
-                ?.filter { buildingId -> BuildingIDConverter.getKeys().contains(buildingId.key) }
+                //?.filter { buildingId -> BuildingIDConverter.getKeys().contains(buildingId.key) }
 
             buildings?.forEach { building ->
                 setMarker(building)
@@ -193,13 +186,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ClusterManager.OnC
             val lat = building.value.first.lat
             val lng = building.value.first.lng
             val name = building.value.first.name
-            val marker = mMap.addMarker(
-                MarkerOptions()
-                    .position(LatLng(lat, lng))
-                    .title(name)
-                    .icon(BitmapDescriptorFactory.fromBitmap(BitmapUtil.createCrispBitmap(R.drawable.pin_64, resources)))
-            )
-            marker.tag = building.value.first._id
             val buildingId = building.value.first._id
             val marker = BuildingMarkerItem(lat, lng, name, buildingId)
             mClusterManager!!.addItem(marker)
@@ -210,6 +196,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ClusterManager.OnC
     private fun setUpClusterer() {
         // Point the map's listeners at the listeners implemented by the cluster manager
         mClusterManager = ClusterManager(this, mMap)
+        val renderer = CustomClusterRenderer(this, mMap, mClusterManager!!)
+        mClusterManager!!.renderer = renderer
         mMap.setOnCameraIdleListener(mClusterManager)
         mMap.setInfoWindowAdapter(mClusterManager!!.markerManager)
         mMap.setOnMarkerClickListener(mClusterManager)
