@@ -34,12 +34,12 @@ object FilterData {
 //
 //    }
 
-    fun getWeekDay():String{
+    private fun getWeekDay():String{
         val date = LocalDate.now()
         val dow = date.dayOfWeek
         val dayName = dow.getDisplayName(TextStyle.SHORT, Locale.GERMAN);
         Log.d(TAG, "day: $dayName")
-        return dayName
+        return if (dayName == "So." || dayName == "Sa.") "Mo." else dayName
     }
 
     fun getFilteredFloors(building: Building, floor: Floor) : List<Room>{
@@ -49,7 +49,7 @@ object FilterData {
         return rooms.filter{room ->
             filteredLectures.any { lecture ->
                 lecture.events.any { event ->
-                    event.room == room.name && event.dayOfWeek == "Mo."
+                    event.room == room.name && event.dayOfWeek.contains(getWeekDay())
                 }
             }
         }
@@ -86,13 +86,13 @@ object FilterData {
             // remove all events which are not in this room
             .map { lecture ->
                 Lecture(lecture.id, lecture.name, lecture.events.filter { event ->
-                    room.name == event.room && event.dayOfWeek == "Mo."
+                    room.name == event.room && event.dayOfWeek.contains(getWeekDay())
                 }, lecture.department, lecture.type, lecture.faculty, lecture.link)
             }
             // filter out all lectures which don't have lectures in this room
             .filter { lecture ->
                 // check if this lecture has events in the given room
-                lecture.events.any { event -> room.name == event.room && event.dayOfWeek == "Mo."}
+                lecture.events.any { event -> room.name == event.room && event.dayOfWeek.contains(getWeekDay())}
             }
             .toList()
         val gson = Gson()
