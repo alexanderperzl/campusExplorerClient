@@ -29,8 +29,7 @@
         </activity>
         <activity android:name=".activities.BuildingActivity">
         </activity>
-        <activity
-                android:name=".activities.SettingsActivity">
+        <activity android:name=".activities.SettingsActivity">
         </activity>
 
         <service android:name=".service.ImportService"/>
@@ -51,6 +50,11 @@
                 android:required="false"/>
 
         <activity android:name=".activities.RoomDetailActivity">
+        </activity>
+        <activity
+                android:name=".activities.PagerActivity"
+                android:label="@string/title_activity_pager"
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
     </application>
 
