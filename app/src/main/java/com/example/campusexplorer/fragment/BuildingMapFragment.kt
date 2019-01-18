@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.*
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import com.davemorrissey.labs.subscaleview.ImageSource
@@ -51,7 +52,7 @@ class BuildingMapFragment: Fragment() {
     private var currentFloorIndex: Int = 0
     private var floorList = ArrayList<Floor>()
     private var buildingId: String? = ""
-    private lateinit var textFloor: TextView
+    private lateinit var textFloor: Button
     private lateinit var buttonFloorUp: ImageButton
     private lateinit var buttonFloorDown: ImageButton
     private lateinit var rooms: List<Room>
