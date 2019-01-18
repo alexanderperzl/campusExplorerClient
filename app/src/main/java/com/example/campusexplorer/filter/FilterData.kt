@@ -30,10 +30,6 @@ object FilterData {
         }
     }
 
-//    fun getRoomTriples(building: Building, floor: Floor) : List<Triple<Room, List<Lecture>, Lecture>>{
-//
-//    }
-
     private fun getWeekDay(): String {
         val date = LocalDate.now()
         val dow = date.dayOfWeek
@@ -42,8 +38,8 @@ object FilterData {
         return if (dayName == "So." || dayName == "Sa.") "Mo." else dayName
     }
 
-    private fun checkWeekDay(date: String, cycle: String, dayOfWeek: String):Boolean{
-        if (cycle == "Einzel"){
+    private fun checkWeekDay(date: String, cycle: String, dayOfWeek: String): Boolean {
+        if (cycle == "Einzel") {
             val simpleDateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.GERMANY)
             val today = simpleDateFormat.format(Date())
             return date.contains(today)
@@ -52,13 +48,26 @@ object FilterData {
         }
     }
 
-    fun getFilteredFloors(building: Building, floor: Floor, time: String = "14:00"): List<Room> {
-        val filteredLectures = getFilteredDataForFloor(building, floor, time)
+    fun getFilteredFloors(
+        building: Building,
+        floor: Floor,
+        beginTime: String = "14:00",
+        endTime: String = beginTime
+    ): List<Room> {
+        val filteredLectures = getFilteredDataForFloor(building, floor, beginTime, endTime)
         val rooms = Storage.findAllRooms(floor._id)
         return rooms.filter { room ->
             filteredLectures.any { lecture ->
                 lecture.events.any { event ->
-                    event.room == room.name && checkWeekDay(event.date, event.cycle, event.dayOfWeek)
+                    event.room == room.name && checkWeekDay(
+                        event.date,
+                        event.cycle,
+                        event.dayOfWeek
+                    ) && checkTimeInBetween(
+                        event.time,
+                        beginTime,
+                        endTime
+                    )
                 }
             }
         }
@@ -78,7 +87,7 @@ object FilterData {
         beginTime: String = "14:00",
         endTime: String = beginTime
     ): List<Lecture> {
-        var filteredLectures = getFilteredDataForBuilding(building)
+        var filteredLectures = getFilteredDataForBuilding(building, beginTime = beginTime, endTime = endTime)
         val rooms = Storage.findAllRooms(floor._id)
         val gson = Gson()
         Log.d(TAG, "rooms" + gson.toJson(rooms.map { room -> room.name }))
@@ -87,14 +96,22 @@ object FilterData {
             // remove all events which are not on this floor
             .map { lecture ->
                 Lecture(lecture.id, lecture.name, lecture.events.filter { event ->
-                    rooms.asSequence().map { room -> room.name }.contains(event.room)
+                    rooms.asSequence().map { room -> room.name }.contains(event.room) && checkWeekDay(
+                        event.date,
+                        event.cycle,
+                        event.dayOfWeek
+                    ) && checkTimeInBetween(event.time, beginTime, endTime)
                 }, lecture.department, lecture.type, lecture.faculty, lecture.link)
             }
             // filter out all lectures which don't have lectures on this floor
             .filter { lecture ->
                 // check if this lecture has events in the given floor
                 lecture.events.any { event ->
-                    rooms.asSequence().map { room -> room.name }.contains(event.room) && checkTimeInBetween(
+                    rooms.asSequence().map { room -> room.name }.contains(event.room) && checkWeekDay(
+                        event.date,
+                        event.cycle,
+                        event.dayOfWeek
+                    ) && checkTimeInBetween(
                         event.time,
                         beginTime,
                         endTime
@@ -109,19 +126,29 @@ object FilterData {
     fun getRoomTriple(
         room: Room,
         filteredLectures: List<Lecture>,
-        time: String = "14:00"
+        beginTime: String = "14:00", endTime: String = beginTime
     ): Triple<Room, List<Lecture>, Lecture?> {
         val roomLectures = filteredLectures.asSequence()
             // remove all events which are not in this room
             .map { lecture ->
                 Lecture(lecture.id, lecture.name, lecture.events.filter { event ->
-                    room.name == event.room && event.dayOfWeek.contains(getWeekDay())
+                    room.name == event.room && checkWeekDay(
+                        event.date,
+                        event.cycle,
+                        event.dayOfWeek
+                    ) && checkTimeInBetween(event.time, beginTime, endTime)
                 }, lecture.department, lecture.type, lecture.faculty, lecture.link)
             }
             // filter out all lectures which don't have lectures in this room
             .filter { lecture ->
                 // check if this lecture has events in the given room
-                lecture.events.any { event -> room.name == event.room && checkWeekDay(event.date, event.cycle, event.dayOfWeek) }
+                lecture.events.any { event ->
+                    room.name == event.room && checkWeekDay(
+                        event.date,
+                        event.cycle,
+                        event.dayOfWeek
+                    ) && checkTimeInBetween(event.time, beginTime, endTime)
+                }
             }
             // now split up the events of all lectures into individual lectures
             .fold(emptyList()) { acc: List<Lecture>, lecture: Lecture ->
@@ -137,7 +164,7 @@ object FilterData {
                     )
                 }).toList()
             }.asSequence()
-            // finally, sort them by their starting time
+            // finally, sort them by their starting beginTime
             .sortedWith(compareBy { lecture ->
                 timeRegex.findAll(lecture.events[0].time).toList().map { it -> it.value }.getOrElse(0) { "" }
             })
@@ -145,28 +172,45 @@ object FilterData {
         val gson = Gson()
 
         Log.d(TAG, "room triple:")
-        Log.d(TAG, gson.toJson(Triple(room, roomLectures, getCurrentLecture(roomLectures, time))))
+        Log.d(TAG, gson.toJson(Triple(room, roomLectures, getCurrentLecture(roomLectures, beginTime, endTime))))
 
-        return Triple(room, roomLectures, getCurrentLecture(roomLectures, time))
+        return Triple(room, roomLectures, getCurrentLecture(roomLectures, beginTime))
     }
 
-    private fun getCurrentLecture(roomLectures: List<Lecture>, time: String): Lecture? {
+    private fun getCurrentLecture(
+        roomLectures: List<Lecture>,
+        beginTime: String,
+        endTime: String = beginTime
+    ): Lecture? {
         return roomLectures.firstOrNull { lecture ->
-            lecture.events.any { event -> checkTimeInBetween(event.time, time) }
+            lecture.events.any { event -> checkTimeInBetween(event.time, beginTime, endTime) }
         }
     }
 
-    fun getFilteredDataForBuilding(building: Building, ignoreTypeAndFaculty: Boolean = false): List<Lecture> {
+    fun getFilteredDataForBuilding(
+        building: Building,
+        ignoreTypeAndFaculty: Boolean = false,
+        beginTime: String = "14:00",
+        endTime: String = beginTime
+    ): List<Lecture> {
         Log.d(TAG, "filtering data")
         val allLectures = Storage.getBuildingLectures(building)
         var filteredLectures = allLectures!!.filter { lecture ->
-            ignoreTypeAndFaculty || (eventTypes.any { eventType ->
-                eventType.active && checkEventType(
-                    lecture.type,
-                    eventType.name
-                )
+            lecture.events.any { event ->
+                checkWeekDay(event.date, event.cycle, event.dayOfWeek) &&
+                        checkTimeInBetween(
+                            event.time,
+                            beginTime,
+                            endTime
+                        )
             } &&
-                    faculties.any { faculty -> faculty.active && lecture.faculty == faculty.name })
+                    (ignoreTypeAndFaculty || (eventTypes.any { eventType ->
+                        eventType.active && checkEventType(
+                            lecture.type,
+                            eventType.name
+                        )
+                    } &&
+                            faculties.any { faculty -> faculty.active && lecture.faculty == faculty.name }))
         }
         filteredLectures = filteredLectures.map { lecture ->
             // build a new Lecture object where the Event.room property is only the room, instead of "building - room"

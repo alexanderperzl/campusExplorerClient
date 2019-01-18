@@ -21,6 +21,7 @@ import com.example.campusexplorer.model.Room
 import com.example.campusexplorer.storage.Storage
 import com.example.campusexplorer.util.PinColor
 import com.example.campusexplorer.view.PinView
+import com.google.gson.Gson
 import de.number42.subsampling_pdf_decoder.PDFDecoder
 import de.number42.subsampling_pdf_decoder.PDFRegionDecoder
 import java.io.File
@@ -161,6 +162,9 @@ class BuildingMapFragment: Fragment() {
     }
 
     private fun roomEventToColor(room: Room, lectures: List<Lecture>): PinColor.Color {
+        val gson = Gson()
+        Log.d(TAG, "lectures" + gson.toJson(lectures))
+        Log.d(TAG, "room" + room.name)
         // TODO Hier sollte der Wert des Zeitsliders übergeben werden
         val roomTriple = FilterData.getRoomTriple(room, lectures)
         return PinColor.eventTypeToColor(roomTriple.third!!.type)
