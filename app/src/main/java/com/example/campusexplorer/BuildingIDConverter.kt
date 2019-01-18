@@ -1,6 +1,7 @@
 package com.example.campusexplorer
 
 object BuildingIDConverter {
+    // TODO expand this to use more buildings
     private var mapping: HashMap<String, String> = hashMapOf(
         "bw0000" to "Geschw",
         "bw7070" to "Oetting"

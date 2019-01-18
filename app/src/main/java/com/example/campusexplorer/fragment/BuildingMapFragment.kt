@@ -145,6 +145,7 @@ class BuildingMapFragment: Fragment() {
     }
 
     private fun setMarkers(rooms: List<Room>) {
+        // TODO Hier sollte der Wert des Zeitsliders übergeben werden
         val lectures = FilterData.getFilteredDataForFloor(Storage.findBuilding(buildingId!!)!!, floorList[currentFloorIndex])
         val floor = floorList[currentFloorIndex]
         val markerOffsetX = floor.markerOffsetX ?: 0
@@ -153,14 +154,16 @@ class BuildingMapFragment: Fragment() {
             mapView.addPin(
                 PointF((it.mapX - markerOffsetX).toFloat(), (it.mapY - markerOffsetY).toFloat()),
                 mutableMapOf(Pair("roomId", it._id)),
+                // TODO Hier sollte der Wert des Zeitsliders übergeben werden
                 roomEventToColor(it, lectures)
             )
         }
     }
 
     private fun roomEventToColor(room: Room, lectures: List<Lecture>): PinColor.Color {
+        // TODO Hier sollte der Wert des Zeitsliders übergeben werden
         val roomTriple = FilterData.getRoomTriple(room, lectures)
-        return PinColor.eventTypeToColor(roomTriple.third.type)
+        return PinColor.eventTypeToColor(roomTriple.third!!.type)
     }
 
     private fun setPDF(mapView: PinView, floorPlan: String) {

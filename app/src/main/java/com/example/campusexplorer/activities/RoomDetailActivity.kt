@@ -14,6 +14,8 @@ import com.example.campusexplorer.R
 import com.example.campusexplorer.adapter.RoomDetailAdapter
 import com.example.campusexplorer.filter.FilterData
 import com.example.campusexplorer.storage.Storage
+import java.text.SimpleDateFormat
+import java.util.*
 
 class RoomDetailActivity : AppCompatActivity() {
 
@@ -41,7 +43,10 @@ class RoomDetailActivity : AppCompatActivity() {
         Log.d(TAG, "buildingID $buildingID")
         val building = Storage.findBuilding(buildingID)
         val room = Storage.findRoom(roomID)
-        val roomTriple = FilterData.getRoomTriple(room!!, FilterData.getFilteredDataForBuilding(building!!, true))
+
+        val simpleDateFormat = SimpleDateFormat("HH:mm")
+        val currentDate = simpleDateFormat.format(Date())
+        val roomTriple = FilterData.getRoomTriple(room!!, FilterData.getFilteredDataForBuilding(building!!, true),currentDate)
         val floor = Storage.findFloor(room.floor)
 
         buildingName.text = "Adresse: ${building!!.name}"

@@ -13,8 +13,6 @@ object Storage {
         HashMap()
     private var floorById: MutableMap<String, Floor> = HashMap()
     private var roomById: MutableMap<String, Room> = HashMap()
-    // TODO remove this after buildingLectures works
-    private var lectures: List<Lecture> = emptyList()
     private var buildingLectures: MutableList<Pair<Building, List<Lecture>>> = mutableListOf()
 
 
@@ -50,6 +48,7 @@ object Storage {
 
     /**
      * Returns the List of Lectures for a particular Building
+     * TODO This doesn't check yet if the lecture is in this building or not
      */
     fun getBuildingLectures(building: Building): List<Lecture>? {
         return buildingLectures.first { pair -> pair.first._id == building._id }.second
@@ -72,6 +71,9 @@ object Storage {
         }
     }
 
+    /**
+     * TODO This doesn't check yet if the lecture is in this building or not
+     */
     fun hasLecturesForBuilding(building : Building) : Boolean{
         return buildingLectures.any { pair -> pair.first._id == building._id }
     }
