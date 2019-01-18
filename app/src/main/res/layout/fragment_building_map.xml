@@ -22,8 +22,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/button_floor_up"
                 android:src="@drawable/ic_arrow_drop_up_black_24dp"
-                android:alpha="0.6"
-        />
+                android:alpha="0.6"/>
         <Button
                 android:layout_width="48dp"
                 android:layout_height="48dp"
