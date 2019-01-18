@@ -87,7 +87,7 @@ object FilterData {
         beginTime: String = "14:00",
         endTime: String = beginTime
     ): List<Lecture> {
-        var filteredLectures = getFilteredDataForBuilding(building, beginTime = beginTime, endTime = endTime)
+        var filteredLectures = getFilteredDataForBuilding(building)
         val rooms = Storage.findAllRooms(floor._id)
         val gson = Gson()
         Log.d(TAG, "rooms" + gson.toJson(rooms.map { room -> room.name }))
@@ -100,7 +100,7 @@ object FilterData {
                         event.date,
                         event.cycle,
                         event.dayOfWeek
-                    ) && checkTimeInBetween(event.time, beginTime, endTime)
+                    )
                 }, lecture.department, lecture.type, lecture.faculty, lecture.link)
             }
             // filter out all lectures which don't have lectures on this floor
@@ -136,7 +136,7 @@ object FilterData {
                         event.date,
                         event.cycle,
                         event.dayOfWeek
-                    ) && checkTimeInBetween(event.time, beginTime, endTime)
+                    )
                 }, lecture.department, lecture.type, lecture.faculty, lecture.link)
             }
             // filter out all lectures which don't have lectures in this room
@@ -189,20 +189,13 @@ object FilterData {
 
     fun getFilteredDataForBuilding(
         building: Building,
-        ignoreTypeAndFaculty: Boolean = false,
-        beginTime: String = "14:00",
-        endTime: String = beginTime
+        ignoreTypeAndFaculty: Boolean = false
     ): List<Lecture> {
         Log.d(TAG, "filtering data")
         val allLectures = Storage.getBuildingLectures(building)
         var filteredLectures = allLectures!!.filter { lecture ->
             lecture.events.any { event ->
-                checkWeekDay(event.date, event.cycle, event.dayOfWeek) &&
-                        checkTimeInBetween(
-                            event.time,
-                            beginTime,
-                            endTime
-                        )
+                checkWeekDay(event.date, event.cycle, event.dayOfWeek)
             } &&
                     (ignoreTypeAndFaculty || (eventTypes.any { eventType ->
                         eventType.active && checkEventType(
