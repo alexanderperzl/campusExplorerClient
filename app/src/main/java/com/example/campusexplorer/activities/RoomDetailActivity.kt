@@ -14,6 +14,7 @@ import com.example.campusexplorer.R
 import com.example.campusexplorer.adapter.RoomDetailAdapter
 import com.example.campusexplorer.filter.FilterData
 import com.example.campusexplorer.storage.Storage
+import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -34,19 +35,23 @@ class RoomDetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_room_detail)
 
         roomName = findViewById(R.id.room_name)
-        floorName= findViewById(R.id.floor)
-        buildingName= findViewById(R.id.building_name)
+        floorName = findViewById(R.id.floor)
+        buildingName = findViewById(R.id.building_name)
 
 
-        val roomID:String = intent.getStringExtra("room")
-        val buildingID:String = intent.getStringExtra("building")
+        val roomID: String = intent.getStringExtra("room")
+        val buildingID: String = intent.getStringExtra("building")
         Log.d(TAG, "buildingID $buildingID")
         val building = Storage.findBuilding(buildingID)
         val room = Storage.findRoom(roomID)
 
-        val simpleDateFormat = SimpleDateFormat("HH:mm")
+        val simpleDateFormat = SimpleDateFormat("HH:mm", Locale.GERMANY)
         val currentDate = simpleDateFormat.format(Date())
-        val roomTriple = FilterData.getRoomTriple(room!!, FilterData.getFilteredDataForBuilding(building!!, true),currentDate)
+        val roomTriple =
+            FilterData.getRoomTriple(room!!, FilterData.getFilteredDataForBuilding(building!!, true), currentDate)
+        Log.d(TAG, "roomtriple")
+        val gson = Gson()
+        Log.d(TAG, gson.toJson(roomTriple))
         val floor = Storage.findFloor(room.floor)
 
         buildingName.text = "Adresse: ${building!!.name}"

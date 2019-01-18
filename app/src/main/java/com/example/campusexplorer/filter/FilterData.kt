@@ -12,7 +12,8 @@ import java.util.*
 object FilterData {
 
     private const val TAG = "FilterData"
-    private val timeRegex = Regex("\\d{2}:\\d{2}")
+    private val timeRegex: Regex
+        get() = Regex("\\d{2}:\\d{2}")
 
     var faculties: List<FilterObject> = emptyList()
     var eventTypes: List<FilterObject> = emptyList()
@@ -39,12 +40,12 @@ object FilterData {
     }
 
     private fun checkWeekDay(date: String, cycle: String, dayOfWeek: String): Boolean {
-        if (cycle == "Einzel") {
+        return if (cycle == "Einzel") {
             val simpleDateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.GERMANY)
             val today = simpleDateFormat.format(Date())
-            return date.contains(today)
+             date.contains(today)
         } else {
-            return dayOfWeek == getWeekDay()
+             dayOfWeek == getWeekDay()
         }
     }
 
@@ -147,7 +148,7 @@ object FilterData {
                         event.date,
                         event.cycle,
                         event.dayOfWeek
-                    ) && checkTimeInBetween(event.time, beginTime, endTime)
+                    )
                 }
             }
             // now split up the events of all lectures into individual lectures
