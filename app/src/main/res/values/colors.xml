@@ -2,8 +2,9 @@
 <resources>
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574b</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccent">#d81b60</color>
     <color name="eventVorlesung">#008577</color>
     <color name="eventUebung">#D65B00</color>
     <color name="eventSeminar">#0e3b8e</color>
+    <color name="backgroundLightGrey">#ececec</color>
 </resources>

@@ -70,9 +70,13 @@ class PagerActivity : AppCompatActivity() {
         // Set up the ViewPager with the sections adapter.
         container.adapter = mSectionsPagerAdapter
 
-        val color1 = Color.CYAN
-        val color2 = Color.RED
-        val color3 = Color.GREEN
+        //val color1 = Color.CYAN
+        //val color2 = Color.RED
+        //val color3 = Color.GREEN
+
+        val color1 = getColor(R.color.eventVorlesung)
+        val color2 = getColor(R.color.eventSeminar)
+        val color3 = getColor(R.color.eventUebung)
 
         val colorList = intArrayOf(color1, color2, color3)
 
