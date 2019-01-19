@@ -9,12 +9,8 @@ import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.ImageButton
-import android.widget.TextView
 import com.davemorrissey.labs.subscaleview.ImageSource
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-
 import com.example.campusexplorer.R
-import com.example.campusexplorer.activities.BuildingActivity
 import com.example.campusexplorer.activities.RoomDetailActivity
 import com.example.campusexplorer.extensions.toFile
 import com.example.campusexplorer.filter.FilterData
@@ -48,9 +44,7 @@ interface FloorChangeObserver {
 }
 
 
-
-
-class BuildingMapFragment : Fragment(){
+class BuildingMapFragment : Fragment() {
 
     private val TAG = "BuildingMapFragment"
     private lateinit var mapView: PinView
@@ -76,7 +70,7 @@ class BuildingMapFragment : Fragment(){
     }
 
     fun updateSeekBar(menuItem: MenuItem) {
-        when(menuItem.itemId){
+        when (menuItem.itemId) {
             R.id.action_free_rooms -> seekBar.removeThumb(1)
             R.id.action_events -> seekBar.addThumb()
         }
@@ -185,7 +179,8 @@ class BuildingMapFragment : Fragment(){
 
     private fun setMarkers(rooms: List<Room>) {
         // TODO Hier sollte der Wert des Zeitsliders übergeben werden
-        val lectures = FilterData.getFilteredDataForFloor(Storage.findBuilding(buildingId!!)!!, floorList[currentFloorIndex])
+        val lectures =
+            FilterData.getFilteredDataForFloor(Storage.findBuilding(buildingId!!)!!, floorList[currentFloorIndex])
         val floor = floorList[currentFloorIndex]
         val markerOffsetX = floor.markerOffsetX ?: 0
         val markerOffsetY = floor.markerOffsetY ?: 0
