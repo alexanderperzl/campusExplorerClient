@@ -16,10 +16,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import com.example.campusexplorer.BuildingIDConverter
-import com.example.campusexplorer.BuildingMarkerItem
-import com.example.campusexplorer.CustomClusterRenderer
-import com.example.campusexplorer.R
+import com.example.campusexplorer.*
 import com.example.campusexplorer.model.Building
 import com.example.campusexplorer.model.Floor
 import com.example.campusexplorer.model.Room
@@ -53,6 +50,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ClusterManager.OnC
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        SharedPrefmanager.init(this)
+        if (SharedPrefmanager.getIntroBool() == false){
+            val intent = Intent(this, PagerActivity::class.java)
+            startActivity(intent)
+        }
+
         setContentView(R.layout.activity_main)
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(LocalBroadcastReceiver(), IntentFilter("STORAGE_INITIALIZED"))

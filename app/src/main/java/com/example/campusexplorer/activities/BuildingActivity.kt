@@ -30,6 +30,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.logging.Logger
 
+
 class BuildingActivity : AppCompatActivity(), MapLoadedObserver, FloorChangeObserver {
     val TAG = "BuildingActivity"
     val gson = Gson()
@@ -58,6 +59,26 @@ class BuildingActivity : AppCompatActivity(), MapLoadedObserver, FloorChangeObse
 
         fragObj = BuildingMapFragment.newInstance(buildingId)
         fragObj.addFloorChangeObserver(this)
+
+
+        bottomNavigation.setOnNavigationItemSelectedListener {
+            when(it.itemId){
+                R.id.action_free_rooms -> {
+                    fragObj.updateSeekBar(it)
+                    true
+                }
+                R.id.action_events -> {
+                    fragObj.updateSeekBar(it)
+                    true
+                }
+                else -> {
+                    false
+                }
+            }
+        }
+
+
+
 
         spinnerWrapper.visibility = View.VISIBLE
 

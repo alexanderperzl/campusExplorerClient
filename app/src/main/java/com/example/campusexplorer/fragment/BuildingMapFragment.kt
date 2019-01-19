@@ -11,7 +11,10 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import com.davemorrissey.labs.subscaleview.ImageSource
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+
 import com.example.campusexplorer.R
+import com.example.campusexplorer.activities.BuildingActivity
 import com.example.campusexplorer.activities.RoomDetailActivity
 import com.example.campusexplorer.extensions.toFile
 import com.example.campusexplorer.filter.FilterData
@@ -24,6 +27,7 @@ import com.example.campusexplorer.view.PinView
 import com.google.gson.Gson
 import de.number42.subsampling_pdf_decoder.PDFDecoder
 import de.number42.subsampling_pdf_decoder.PDFRegionDecoder
+import io.apptik.widget.MultiSlider
 import java.io.File
 import java.util.logging.Logger
 
@@ -44,18 +48,23 @@ interface FloorChangeObserver {
 }
 
 
-class BuildingMapFragment : Fragment() {
+
+
+class BuildingMapFragment : Fragment(){
+
     private val TAG = "BuildingMapFragment"
     private lateinit var mapView: PinView
     private val log = Logger.getLogger(BuildingMapFragment::class.java.name)
     private var currentFloorIndex: Int = 0
     private var floorList = ArrayList<Floor>()
     private var buildingId: String? = ""
-    private lateinit var textFloor: TextView
+    private lateinit var textFloor: Button
     private lateinit var buttonFloorUp: ImageButton
     private lateinit var buttonFloorDown: ImageButton
     private lateinit var rooms: List<Room>
     private var floorChangeObserver: MutableList<FloorChangeObserver> = ArrayList()
+    private lateinit var seekBar: MultiSlider
+
     private lateinit var dialog: Dialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +73,13 @@ class BuildingMapFragment : Fragment() {
         buildingId = arguments?.getString("buildingId")
         Log.d(TAG, buildingId)
         dialog = Dialog(activity)
+    }
+
+    fun updateSeekBar(menuItem: MenuItem) {
+        when(menuItem.itemId){
+            R.id.action_free_rooms -> seekBar.removeThumb(1)
+            R.id.action_events -> seekBar.addThumb()
+        }
     }
 
     companion object {
@@ -163,12 +179,13 @@ class BuildingMapFragment : Fragment() {
         buttonFloorUp.setOnClickListener { onFloorUp() }
         buttonFloorDown.setOnClickListener { onFloorDown() }
 
+        seekBar = view.findViewById(R.id.seekbar)
+
     }
 
     private fun setMarkers(rooms: List<Room>) {
         // TODO Hier sollte der Wert des Zeitsliders übergeben werden
-        val lectures =
-            FilterData.getFilteredDataForFloor(Storage.findBuilding(buildingId!!)!!, floorList[currentFloorIndex])
+        val lectures = FilterData.getFilteredDataForFloor(Storage.findBuilding(buildingId!!)!!, floorList[currentFloorIndex])
         val floor = floorList[currentFloorIndex]
         val markerOffsetX = floor.markerOffsetX ?: 0
         val markerOffsetY = floor.markerOffsetY ?: 0
