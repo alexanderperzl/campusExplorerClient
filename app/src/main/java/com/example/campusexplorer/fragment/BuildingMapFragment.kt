@@ -1,6 +1,6 @@
 package com.example.campusexplorer.fragment
 
-import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Intent
 import android.graphics.PointF
 import android.os.Bundle
@@ -9,10 +9,7 @@ import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.ImageButton
-import android.widget.TextView
 import com.davemorrissey.labs.subscaleview.ImageSource
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-
 import com.example.campusexplorer.R
 import com.example.campusexplorer.SliderRangeTimeConverter
 import com.example.campusexplorer.activities.BuildingActivity
@@ -66,12 +63,14 @@ class BuildingMapFragment: Fragment(){
     private lateinit var time:TextView
     private var seekbarState:Int = R.id.action_events
 
+    private lateinit var dialog: Dialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         buildingId = arguments?.getString("buildingId")
-        Log.d(TAG,buildingId)
+        Log.d(TAG, buildingId)
+        dialog = Dialog(activity)
     }
 
     fun updateSeekBar(menuItem: MenuItem) {
@@ -91,7 +90,7 @@ class BuildingMapFragment: Fragment(){
 
     companion object {
         fun newInstance(id: String): BuildingMapFragment {
-            val fragment = BuildingMapFragment ()
+            val fragment = BuildingMapFragment()
             val args = Bundle()
             args.putString("buildingId", id)
             fragment.arguments = args
@@ -105,10 +104,11 @@ class BuildingMapFragment: Fragment(){
         rooms = FilterData.getFilteredFloors(building!!, floorList[currentFloorIndex])
         mapView.clearAllPins()
         setMarkers(rooms)
+        dialog.dismiss()
     }
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_building_map, container, false)
 
@@ -152,13 +152,7 @@ class BuildingMapFragment: Fragment(){
                 mapView.viewToSourceCoord(e.x, e.y)?.let {
                     val roomData = mapView.dataForClick(e.x, e.y)
                     if (roomData != null && roomData.containsKey("roomId")) {
-                        // open room activity
-                        val roomId = roomData["roomId"]!!
-                        log.info("Clicked room $roomId")
-                        val intent = Intent(context, RoomDetailActivity::class.java)
-                        intent.putExtra("room", roomId)
-                        intent.putExtra("building", buildingId)
-                        startActivity(intent)
+                        showDialogWindow(e, roomData)
                     }
                 } ?: run {
                     log.info("Not ready for clicking")
@@ -168,6 +162,30 @@ class BuildingMapFragment: Fragment(){
 
         })
         mapView.setOnTouchListener { _, motionEvent -> gestureDetector.onTouchEvent(motionEvent) }
+    }
+
+    private fun showDialogWindow(e: MotionEvent, roomData: Map<String, String>) {
+        dialog.setContentView(R.layout.info_window)
+        val dialogWindow = dialog.window
+        dialogWindow.setGravity(Gravity.START or Gravity.TOP)
+        val layoutParams = dialogWindow.attributes
+        layoutParams.x = e.x.toInt() - 100
+        layoutParams.y = e.y.toInt() - 30
+        dialogWindow.attributes = layoutParams
+        dialog.show()
+        val infoWindowButton = dialog.findViewById<Button>(R.id.infoWindowButton)
+        // TODO Hier sollte eig der name der aktuellen Veranstaltung gesetzt werden. Muesste aber noch korrekt geholt werden
+        infoWindowButton.text = roomData["roomId"]
+        infoWindowButton.setOnClickListener { openRoomDetailActivity(roomData) }
+    }
+
+    private fun openRoomDetailActivity(roomData: Map<String, String>) {
+        val roomId = roomData["roomId"]!!
+        log.info("Clicked room $roomId")
+        val intent = Intent(context, RoomDetailActivity::class.java)
+        intent.putExtra("room", roomId)
+        intent.putExtra("building", buildingId)
+        startActivity(intent)
     }
 
     private fun initUIElements(view: View) {
@@ -207,7 +225,8 @@ class BuildingMapFragment: Fragment(){
 
     private fun setMarkers(rooms: List<Room>) {
         // TODO Hier sollte der Wert des Zeitsliders übergeben werden
-        val lectures = FilterData.getFilteredDataForFloor(Storage.findBuilding(buildingId!!)!!, floorList[currentFloorIndex])
+        val lectures =
+            FilterData.getFilteredDataForFloor(Storage.findBuilding(buildingId!!)!!, floorList[currentFloorIndex])
         val floor = floorList[currentFloorIndex]
         val markerOffsetX = floor.markerOffsetX ?: 0
         val markerOffsetY = floor.markerOffsetY ?: 0
