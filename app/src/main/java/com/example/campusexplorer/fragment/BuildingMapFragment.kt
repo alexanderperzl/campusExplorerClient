@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.TextView
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.example.campusexplorer.R
 import com.example.campusexplorer.SliderRangeTimeConverter
@@ -60,7 +61,7 @@ class BuildingMapFragment: Fragment(){
     private lateinit var rooms: List<Room>
     private var floorChangeObserver: MutableList<FloorChangeObserver> = ArrayList()
     private lateinit var seekBar: MultiSlider
-    private lateinit var time:TextView
+    private lateinit var time: TextView
     private var seekbarState:Int = R.id.action_events
 
     private lateinit var dialog: Dialog
