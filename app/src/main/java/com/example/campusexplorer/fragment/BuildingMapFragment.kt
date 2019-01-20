@@ -1,5 +1,6 @@
 package com.example.campusexplorer.fragment
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.PointF
 import android.os.Bundle
@@ -13,6 +14,7 @@ import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 
 import com.example.campusexplorer.R
+import com.example.campusexplorer.SliderRangeTimeConverter
 import com.example.campusexplorer.activities.BuildingActivity
 import com.example.campusexplorer.activities.RoomDetailActivity
 import com.example.campusexplorer.extensions.toFile
@@ -46,9 +48,6 @@ interface FloorChangeObserver {
 
 }
 
-
-
-
 class BuildingMapFragment: Fragment(){
 
 
@@ -64,6 +63,8 @@ class BuildingMapFragment: Fragment(){
     private lateinit var rooms: List<Room>
     private var floorChangeObserver: MutableList<FloorChangeObserver> = ArrayList()
     private lateinit var seekBar: MultiSlider
+    private lateinit var time:TextView
+    private var seekbarState:Int = R.id.action_events
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,8 +76,16 @@ class BuildingMapFragment: Fragment(){
 
     fun updateSeekBar(menuItem: MenuItem) {
         when(menuItem.itemId){
-            R.id.action_free_rooms -> seekBar.removeThumb(1)
-            R.id.action_events -> seekBar.addThumb()
+            R.id.action_free_rooms -> {
+                seekBar.addThumb()
+                seekbarState = menuItem.itemId
+                seekBarToTime(seekBar)
+            }
+            R.id.action_events -> {
+                seekBar.removeThumb(1)
+                seekbarState = menuItem.itemId
+                seekBarToTime(seekBar)
+            }
         }
     }
 
@@ -106,10 +115,23 @@ class BuildingMapFragment: Fragment(){
         return view
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initUIElements(view)
+
+        seekBarToTime(seekBar)
+
+        seekBar.setOnThumbValueChangeListener { multiSlider, thumb, thumbIndex, value ->
+//            if (thumbIndex == 0)time.text = value.toString()
+            val timesStartEnd = seekBarToTime(multiSlider)
+
+
+        }
+
+
+
 
         floorList = getOrderedFloors(buildingId!!)
         currentFloorIndex = floorList.indexOf(floorList.first { it -> it.levelDouble == 0.0 })
@@ -151,6 +173,8 @@ class BuildingMapFragment: Fragment(){
     private fun initUIElements(view: View) {
         mapView = view.findViewById(R.id.mapView) as PinView
 
+        time = view.findViewById(R.id.time)
+
         buttonFloorUp = view.findViewById(R.id.button_floor_up)
         buttonFloorDown = view.findViewById(R.id.button_floor_down)
         textFloor = view.findViewById(R.id.text_floor)
@@ -160,6 +184,25 @@ class BuildingMapFragment: Fragment(){
 
         seekBar = view.findViewById(R.id.seekbar)
 
+    }
+
+    private fun seekBarToTime(multiSlider: MultiSlider):MutableList<String>{
+        var times:MutableList<String> = ArrayList()
+
+        when(seekbarState){
+            R.id.action_events -> {
+                times.add(SliderRangeTimeConverter.valueToTime(multiSlider.getThumb(0).value)!!)
+                times.add(SliderRangeTimeConverter.valueToTime(multiSlider.getThumb(0).value)!!)
+                time.text = "${times[0]}"
+            }
+            R.id.action_free_rooms -> {
+                times.add(SliderRangeTimeConverter.valueToTime(multiSlider.getThumb(0).value)!!)
+                times.add(SliderRangeTimeConverter.valueToTime(multiSlider.getThumb(1).value)!!)
+                time.text = "${times[0]} : ${times[1]}"
+            }
+        }
+
+        return times
     }
 
     private fun setMarkers(rooms: List<Room>) {

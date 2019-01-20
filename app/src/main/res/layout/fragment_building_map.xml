@@ -43,8 +43,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
-            android:id="@+id/textView3"
-            android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/seekbar"/>
+            android:id="@+id/time"
+            android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/seekbar"
+            android:textSize="18sp" android:textStyle="bold"/>
     <io.apptik.widget.MultiSlider
             android:id="@+id/seekbar"
             android:layout_width="match_parent"
@@ -54,6 +55,8 @@
             app:stepsThumbsApart="1"
             app:drawThumbsApart="true"
             app:scaleStep="10"
+            app:scaleMax="120"
+
 
             app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" android:layout_marginBottom="8dp"

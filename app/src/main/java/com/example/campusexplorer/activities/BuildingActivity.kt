@@ -77,6 +77,8 @@ class BuildingActivity : AppCompatActivity(), MapLoadedObserver, FloorChangeObse
             }
         }
 
+        bottomNavigation.setOnNavigationItemReselectedListener {} //This is important so the seekbar only gets updated on initial menut item selection
+
 
 
 
