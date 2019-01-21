@@ -46,9 +46,9 @@ class RoomDetailActivity : AppCompatActivity() {
         val room = Storage.findRoom(roomID)
 
         val simpleDateFormat = SimpleDateFormat("HH:mm", Locale.GERMANY)
-        val currentDate = simpleDateFormat.format(Date())
+        val currentTime = simpleDateFormat.format(Date())
         val roomTriple =
-            FilterData.getRoomTriple(room!!, FilterData.getFilteredDataForBuilding(building!!, true), currentDate)
+            FilterData.getRoomTriple(room!!, FilterData.getFilteredDataForBuilding(building!!, true), currentTime)
         Log.d(TAG, "roomtriple")
         val gson = Gson()
         Log.d(TAG, gson.toJson(roomTriple))

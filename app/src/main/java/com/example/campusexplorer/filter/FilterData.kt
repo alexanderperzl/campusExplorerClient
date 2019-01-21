@@ -184,7 +184,7 @@ object FilterData {
         endTime: String = beginTime
     ): Lecture? {
         return roomLectures.firstOrNull { lecture ->
-            lecture.events.any { event -> checkTimeInBetween(event.time, beginTime, endTime) }
+            lecture.events.any { event -> Log.d(TAG, "is ${event.time} between $beginTime and $endTime? : ${checkTimeInBetween(event.time, beginTime, endTime)}"); checkTimeInBetween(event.time, beginTime, endTime) }
         }
     }
 
@@ -227,6 +227,7 @@ object FilterData {
         val times = timeRegex.findAll(timeString).toList().map { it -> it.value }
         if (times.size < 2) return false
         val dateFormat = SimpleDateFormat("HH:mm", Locale.GERMANY)
+
         return dateFormat.parse(times[0]) <= dateFormat.parse(beginTime) && dateFormat.parse(endTime) <= dateFormat.parse(
             times[1]
         )
