@@ -35,7 +35,7 @@ object FilterData {
         val date = LocalDate.now()
         val dow = date.dayOfWeek
         val dayName = dow.getDisplayName(TextStyle.SHORT, Locale.GERMAN)
-        Log.d(TAG, "day: $dayName")
+//        Log.d(TAG, "day: $dayName")
         return if (dayName == "So." || dayName == "Sa.") "Mo." else dayName
     }
 
@@ -43,9 +43,9 @@ object FilterData {
         return if (cycle == "Einzel") {
             val simpleDateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.GERMANY)
             val today = simpleDateFormat.format(Date())
-             date.contains(today)
+            date.contains(today)
         } else {
-             dayOfWeek == getWeekDay()
+            dayOfWeek == getWeekDay()
         }
     }
 
@@ -75,10 +75,17 @@ object FilterData {
     }
 
     fun getFreeRoomsForFloor(building: Building, floor: Floor, beginTime: String, endTime: String): List<Room> {
-        val filteredDataForFloor = getFilteredDataForFloor(building, floor, beginTime, endTime)
+        val filteredDataForFloor = getFilteredDataForFloor(building, floor, beginTime, endTime, true)
+        val filteredLecturesForBuilding = getFilteredDataForBuilding(building, true)
+        val gson = Gson()
+        Log.d(TAG, "begin: $beginTime, end: $endTime")
+        Log.d(TAG, "filtered for floor: ${gson.toJson(filteredDataForFloor.map { lecture -> lecture.events.map { event -> Pair(event.time, event.room) } })}")
+        Log.d(TAG, "total - time is: ${filteredLecturesForBuilding.map { lecture -> lecture.events.map { event -> Pair(event.time, event.room) } }.size - filteredDataForFloor.map { lecture -> lecture.events.map { event -> Pair(event.time, event.room) } }.size}")
+
         val rooms = Storage.findAllRooms(floor._id)
         return rooms.filter { room ->
-            !filteredDataForFloor.any { lecture -> lecture.events.any { event -> event.room == room.name } }
+            !filteredDataForFloor.any { lecture -> lecture.events.any { event -> event.room == room.name } } &&
+                    filteredLecturesForBuilding.any { lecture -> lecture.events.any { event -> event.room == room.name } }
         }
     }
 
@@ -86,12 +93,12 @@ object FilterData {
         building: Building,
         floor: Floor = Floor("g707000", "", "", "", 0.0, 0, 0, 0, 0, ""),
         beginTime: String = "14:00",
-        endTime: String = beginTime
+        endTime: String = beginTime, swapTimeArguments: Boolean = false
     ): List<Lecture> {
         var filteredLectures = getFilteredDataForBuilding(building)
         val rooms = Storage.findAllRooms(floor._id)
         val gson = Gson()
-        Log.d(TAG, "rooms" + gson.toJson(rooms.map { room -> room.name }))
+//        Log.d(TAG, "rooms" + gson.toJson(rooms.map { room -> room.name }))
 
         filteredLectures = filteredLectures.asSequence()
             // remove all events which are not on this floor
@@ -115,12 +122,12 @@ object FilterData {
                     ) && checkTimeInBetween(
                         event.time,
                         beginTime,
-                        endTime
+                        endTime, swapTimeArguments
                     )
                 }
             }
             .toList()
-        Log.d(TAG, gson.toJson(filteredLectures))
+//        Log.d(TAG, gson.toJson(filteredLectures))
         return filteredLectures
     }
 
@@ -172,8 +179,8 @@ object FilterData {
             .toList()
         val gson = Gson()
 
-        Log.d(TAG, "room triple:")
-        Log.d(TAG, gson.toJson(Triple(room, roomLectures, getCurrentLecture(roomLectures, beginTime, endTime))))
+//        Log.d(TAG, "room triple:")
+//        Log.d(TAG, gson.toJson(Triple(room, roomLectures, getCurrentLecture(roomLectures, beginTime, endTime))))
 
         return Triple(room, roomLectures, getCurrentLecture(roomLectures, beginTime))
     }
@@ -184,7 +191,16 @@ object FilterData {
         endTime: String = beginTime
     ): Lecture? {
         return roomLectures.firstOrNull { lecture ->
-            lecture.events.any { event -> Log.d(TAG, "is ${event.time} between $beginTime and $endTime? : ${checkTimeInBetween(event.time, beginTime, endTime)}"); checkTimeInBetween(event.time, beginTime, endTime) }
+            lecture.events.any { event ->
+                Log.d(
+                    TAG,
+                    "is ${event.time} between $beginTime and $endTime? : ${checkTimeInBetween(
+                        event.time,
+                        beginTime,
+                        endTime
+                    )}"
+                ); checkTimeInBetween(event.time, beginTime, endTime)
+            }
         }
     }
 
@@ -192,7 +208,7 @@ object FilterData {
         building: Building,
         ignoreTypeAndFaculty: Boolean = false
     ): List<Lecture> {
-        Log.d(TAG, "filtering data")
+//        Log.d(TAG, "filtering data")
         val allLectures = Storage.getBuildingLectures(building)
         var filteredLectures = allLectures!!.filter { lecture ->
             lecture.events.any { event ->
@@ -223,14 +239,34 @@ object FilterData {
         return filteredLectures
     }
 
-    private fun checkTimeInBetween(timeString: String, beginTime: String, endTime: String = beginTime): Boolean {
+    private fun checkTimeInBetween(
+        timeString: String,
+        beginTime: String,
+        endTime: String = beginTime,
+        swapTimeArguments: Boolean = false
+    ): Boolean {
         val times = timeRegex.findAll(timeString).toList().map { it -> it.value }
         if (times.size < 2) return false
         val dateFormat = SimpleDateFormat("HH:mm", Locale.GERMANY)
 
-        return dateFormat.parse(times[0]) <= dateFormat.parse(beginTime) && dateFormat.parse(endTime) <= dateFormat.parse(
-            times[1]
-        )
+        val beginsInBetween = dateFormat.parse(beginTime) < dateFormat.parse(times[1])
+
+        val endInBetween = dateFormat.parse(times[0]) < dateFormat.parse(endTime)
+
+
+
+        Log.d(TAG, "-------------")
+        Log.d(TAG, "$beginTime is before ${times[1]}: $beginsInBetween")
+        Log.d(TAG, "${times[0]} is before $endTime: $endInBetween")
+
+        return if (swapTimeArguments) {
+            beginsInBetween && endInBetween
+        } else {
+            dateFormat.parse(times[0]) <= dateFormat.parse(beginTime) && dateFormat.parse(endTime) <= dateFormat.parse(
+                times[1]
+            )
+        }
+
     }
 
     private fun checkEventType(lectureType: String, eventType: String): Boolean {

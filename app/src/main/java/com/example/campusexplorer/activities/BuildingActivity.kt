@@ -64,11 +64,11 @@ class BuildingActivity : AppCompatActivity(), MapLoadedObserver, FloorChangeObse
         bottomNavigation.setOnNavigationItemSelectedListener {
             when(it.itemId){
                 R.id.action_free_rooms -> {
-                    fragObj.updateSeekBar(it)
+                    fragObj.updateFragmentOnMenuSelection(it)
                     true
                 }
                 R.id.action_events -> {
-                    fragObj.updateSeekBar(it)
+                    fragObj.updateFragmentOnMenuSelection(it)
                     true
                 }
                 else -> {

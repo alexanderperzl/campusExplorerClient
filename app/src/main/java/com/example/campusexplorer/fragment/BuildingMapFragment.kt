@@ -16,7 +16,6 @@ import com.example.campusexplorer.SliderRangeTimeConverter
 import com.example.campusexplorer.activities.RoomDetailActivity
 import com.example.campusexplorer.extensions.toFile
 import com.example.campusexplorer.filter.FilterData
-import com.example.campusexplorer.model.Building
 import com.example.campusexplorer.model.Floor
 import com.example.campusexplorer.model.Lecture
 import com.example.campusexplorer.model.Room
@@ -24,6 +23,7 @@ import com.example.campusexplorer.storage.Storage
 import com.example.campusexplorer.util.PinColor
 import com.example.campusexplorer.view.PinView
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import de.number42.subsampling_pdf_decoder.PDFDecoder
 import de.number42.subsampling_pdf_decoder.PDFRegionDecoder
 import io.apptik.widget.MultiSlider
@@ -74,12 +74,11 @@ class BuildingMapFragment : Fragment() {
         dialog = Dialog(activity)
     }
 
-    fun updateSeekBar(menuItem: MenuItem) {
+    fun updateFragmentOnMenuSelection(menuItem: MenuItem) {
         when (menuItem.itemId) {
             R.id.action_free_rooms -> {
                 seekBar.addThumb()
                 seekbarState = menuItem.itemId
-                seekBarToTime()
             }
             R.id.action_events -> {
                 seekBar.removeThumb(1)
@@ -87,6 +86,42 @@ class BuildingMapFragment : Fragment() {
                 seekBarToTime()
             }
         }
+        updateUI()
+    }
+
+    private fun updateUI() {
+        when (seekbarState) {
+            R.id.action_free_rooms -> {
+                updateUIForFreeRooms()
+            }
+            R.id.action_events -> {
+                updateUIForEvents()
+            }
+        }
+    }
+
+    private fun updateUIForFreeRooms() {
+        val seekbarValue = seekBarToTime()
+        floorList = getOrderedFloors(buildingId!!)
+        currentFloorIndex = floorList.indexOf(floorList.first { it -> it.levelDouble == 0.0 })
+        val building = Storage.findBuilding(buildingId!!)
+        val rooms: List<Room> =
+            FilterData.getFreeRoomsForFloor(building!!, floorList[currentFloorIndex], seekbarValue[0], seekbarValue[1])
+        val gson = Gson()
+        Log.d(TAG, "rooms after filter: ${gson.toJson(rooms.map { it.name })}")
+        setMarkersForFreeRooms(rooms)
+    }
+
+    private fun updateUIForEvents() {
+        val seekbarValue = seekBarToTime()
+        floorList = getOrderedFloors(buildingId!!)
+        currentFloorIndex = floorList.indexOf(floorList.first { it -> it.levelDouble == 0.0 })
+        val building = Storage.findBuilding(buildingId!!)
+        val rooms =
+            FilterData.getFilteredFloors(building!!, floorList[currentFloorIndex], seekbarValue[0], seekbarValue[1])
+        Log.d(TAG, "room list in oncreate: $rooms")
+
+        setMarkers(rooms)
     }
 
     companion object {
@@ -101,25 +136,15 @@ class BuildingMapFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val building = Storage.findBuilding(buildingId!!)
-        val seekBarValues = seekBarToTime()
-        rooms = FilterData.getFilteredFloors(
-            building!!,
-            floorList[currentFloorIndex],
-            seekBarValues[0],
-            seekBarValues[1]
-        )
-        mapView.clearAllPins()
-        setMarkers(rooms)
+        updateUI()
         dialog.dismiss()
     }
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_building_map, container, false)
 
-        return view
+        return inflater.inflate(R.layout.fragment_building_map, container, false)
     }
 
 
@@ -142,7 +167,7 @@ class BuildingMapFragment : Fragment() {
         val building = Storage.findBuilding(buildingId!!)
         val seekbarValue = seekBarToTime()
 
-        seekBar.setOnThumbValueChangeListener { _, _, _, _ -> seekBarUpdate(building!!, floorList[currentFloorIndex]) }
+        seekBar.setOnThumbValueChangeListener { _, _, _, _ -> updateUI() }
 
 
         rooms = FilterData.getFilteredFloors(building!!, floorList[currentFloorIndex], seekbarValue[0], seekbarValue[1])
@@ -171,16 +196,10 @@ class BuildingMapFragment : Fragment() {
         mapView.setOnTouchListener { _, motionEvent -> gestureDetector.onTouchEvent(motionEvent) }
     }
 
-    private fun seekBarUpdate(building: Building, floor: Floor) {
-        //            if (thumbIndex == 0)time.text = value.toString()
-        val seekbarValue = seekBarToTime()
-        rooms = FilterData.getFilteredFloors(building, floor, seekbarValue[0], seekbarValue[1])
-        Log.d(TAG, "room list in seek bar update $rooms")
-
-        setMarkers(rooms)
-    }
-
     private fun showDialogWindow(e: MotionEvent, roomData: Map<String, String>) {
+        if (seekbarState == R.id.action_free_rooms) {
+            return
+        }
         dialog.setContentView(R.layout.info_window)
         val dialogWindow = dialog.window
         dialogWindow.setGravity(Gravity.START or Gravity.TOP)
@@ -203,7 +222,7 @@ class BuildingMapFragment : Fragment() {
             seekBarValues[0],
             seekBarValues[1]
         )
-        Log.d(TAG, "lecture list of ${roomTriple.first} is ${roomTriple.second!!}")
+        Log.d(TAG, "lecture list of ${roomTriple.first} is ${roomTriple.second}")
         val eventName = roomTriple.third!!.name
         infoWindowButton.text = eventName
         infoWindowButton.setOnClickListener { openRoomDetailActivity(roomData) }
@@ -241,7 +260,7 @@ class BuildingMapFragment : Fragment() {
             R.id.action_events -> {
                 times.add(SliderRangeTimeConverter.valueToTime(seekBar.getThumb(0).value)!!)
                 times.add(SliderRangeTimeConverter.valueToTime(seekBar.getThumb(0).value)!!)
-                time.text = "${times[0]}"
+                time.text = times[0]
             }
             R.id.action_free_rooms -> {
                 times.add(SliderRangeTimeConverter.valueToTime(seekBar.getThumb(0).value)!!)
@@ -251,6 +270,25 @@ class BuildingMapFragment : Fragment() {
         }
 
         return times
+    }
+
+    private fun setMarkersForFreeRooms(rooms: List<Room>) {
+        // TODO Hier sollte der Wert des Zeitsliders übergeben werden // DONE
+        val floor = floorList[currentFloorIndex]
+        val markerOffsetX = floor.markerOffsetX ?: 0
+        val markerOffsetY = floor.markerOffsetY ?: 0
+        mapView.clearAllPins()
+        rooms.forEach {
+            Log.d(TAG, "inside room: ${it.name}")
+            mapView.addPin(
+                PointF((it.mapX - markerOffsetX).toFloat(), (it.mapY - markerOffsetY).toFloat()),
+                mutableMapOf(Pair("roomId", it._id)),
+                // TODO Hier sollte der Wert des Zeitsliders übergeben werden // DONE
+//                roomEventToColor(it, lectures)
+                PinColor.eventTypeToColor("Seminar")
+            )
+        }
+//        setPinClickListener()
     }
 
     private fun setMarkers(rooms: List<Room>) {
@@ -332,15 +370,11 @@ class BuildingMapFragment : Fragment() {
     private fun updateFloor() {
         notifyFloorChangeObserver()
         textFloor.text = floorList[currentFloorIndex].level
-        mapView.clearAllPins()
+//        mapView.clearAllPins()
         setPDF(mapView, floorList[currentFloorIndex].mapFileName)
         val currFloor = floorList[currentFloorIndex]
         mapView.setOriginalDimensions(currFloor.mapWidth, currFloor.mapHeight)
-        val building = Storage.findBuilding(buildingId!!)
-        val seekBarValue = seekBarToTime()
-        val rooms =
-            FilterData.getFilteredFloors(building!!, floorList[currentFloorIndex], seekBarValue[0], seekBarValue[1])
-        setMarkers(rooms)
+        updateUI()
     }
 
     private fun getOrderedFloors(buildingId: String): ArrayList<Floor> {
