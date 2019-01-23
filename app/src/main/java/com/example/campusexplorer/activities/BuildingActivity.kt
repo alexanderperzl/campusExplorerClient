@@ -85,12 +85,9 @@ class BuildingActivity : AppCompatActivity(), MapLoadedObserver, FloorChangeObse
         spinnerWrapper.visibility = View.VISIBLE
 
         if (Storage.hasLecturesForBuilding(building)) {
-
             log.info("lectures already loaded")
-//            FilterData.getFilteredDataForFloor(building)
-//            FilterData.getRoomTriple(Room("", "B 001", "", 0, 0), FilterData.getFilteredDataForFloor(building))
+            PinView.addObserver(this)
             startFragment(fragObj)
-            spinnerWrapper.visibility = View.GONE
         } else {
             loadLectures(buildingIdServer ?: "")
                 .subscribeOn(Schedulers.io())
