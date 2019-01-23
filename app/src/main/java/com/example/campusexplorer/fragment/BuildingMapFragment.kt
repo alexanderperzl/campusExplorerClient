@@ -23,11 +23,12 @@ import com.example.campusexplorer.storage.Storage
 import com.example.campusexplorer.util.PinColor
 import com.example.campusexplorer.view.PinView
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import de.number42.subsampling_pdf_decoder.PDFDecoder
 import de.number42.subsampling_pdf_decoder.PDFRegionDecoder
 import io.apptik.widget.MultiSlider
 import java.io.File
+import java.time.LocalDateTime
+import java.util.*
 import java.util.logging.Logger
 
 
@@ -61,6 +62,8 @@ class BuildingMapFragment : Fragment() {
     private lateinit var rooms: List<Room>
     private var floorChangeObserver: MutableList<FloorChangeObserver> = ArrayList()
     private lateinit var seekBar: MultiSlider
+    private var seekBarLastChangeTimer: Timer? = null
+    private val updateUiTimeDeltaThumbChange = 500L
     private lateinit var time: TextView
     private var seekbarState: Int = R.id.action_events
 
@@ -167,8 +170,13 @@ class BuildingMapFragment : Fragment() {
         val building = Storage.findBuilding(buildingId!!)
         val seekbarValue = seekBarToTime()
 
-        seekBar.setOnThumbValueChangeListener { _, _, _, _ -> updateUI() }
-
+        seekBar.setOnThumbValueChangeListener { _, _, _, _ ->
+            seekBarLastChangeTimer?.cancel()
+            seekBarLastChangeTimer = Timer()
+            val updateTask = UpdateUiTask()
+            updateTask.fragmentRef = this
+            seekBarLastChangeTimer!!.schedule(updateTask, updateUiTimeDeltaThumbChange)
+        }
 
         rooms = FilterData.getFilteredFloors(building!!, floorList[currentFloorIndex], seekbarValue[0], seekbarValue[1])
         Log.d(TAG, "room list in oncreate: $rooms")
@@ -176,6 +184,20 @@ class BuildingMapFragment : Fragment() {
         setMarkers(rooms)
 
     }
+
+    class UpdateUiTask: TimerTask() {
+
+        lateinit var fragmentRef: BuildingMapFragment
+
+        override fun run() {
+            fragmentRef.activity!!.runOnUiThread {
+                fragmentRef.updateUI()
+            }
+
+        }
+    }
+
+
 
     private fun setPinClickListener() {
 
