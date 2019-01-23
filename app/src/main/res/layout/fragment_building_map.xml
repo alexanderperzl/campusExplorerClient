@@ -21,31 +21,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/button_floor_up"
-                android:src="@drawable/ic_arrow_drop_up_black_24dp"
-                android:alpha="0.6"/>
+                android:src="@drawable/ic_arrow_drop_up_white_24dp"
+                android:alpha="0.9" android:backgroundTint="#555"/>
         <Button
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:id="@+id/text_floor"
                 android:text="Eg" android:textAlignment="center"
                 android:textSize="12sp"
-                android:alpha="0.6"/>
+                android:alpha="0.9" android:background="@drawable/button_rounded_corner"
+                android:textColor="@color/common_google_signin_btn_text_dark_default"
+        />
         <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/button_floor_down"
-                android:src="@drawable/ic_arrow_drop_down_black_24dp"
-                android:alpha="0.6"/>
+                android:src="@drawable/ic_arrow_drop_down_white_24dp"
+                android:alpha="0.9" android:backgroundTint="#555"/>
     </LinearLayout>
+
     <TextView
-            android:text="TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
             android:id="@+id/time"
             android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/seekbar"
-            android:textSize="18sp" android:textStyle="bold"/>
+            android:textSize="18sp" android:textStyle="bold" android:text="8:00"
+            android:background="@drawable/rounded_corner" android:alpha="0.9"/>
     <io.apptik.widget.MultiSlider
+            android:background="@drawable/rounded_corner" android:alpha="0.9"
             android:id="@+id/seekbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
