@@ -301,7 +301,10 @@ class BuildingMapFragment : Fragment() {
         val floor = floorList[currentFloorIndex]
         val markerOffsetX = floor.markerOffsetX ?: 0
         val markerOffsetY = floor.markerOffsetY ?: 0
+        Log.d(TAG, "before clear")
         mapView.clearAllPins()
+
+        Log.d(TAG, "after clear")
         rooms.forEach {
             Log.d(TAG, "inside room: ${it.name}")
             mapView.addPin(
