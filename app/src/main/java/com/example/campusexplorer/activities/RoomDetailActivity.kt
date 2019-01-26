@@ -14,9 +14,9 @@ import android.view.MenuItem
 import android.widget.EditText
 import android.widget.TextView
 import com.example.campusexplorer.R
+import com.example.campusexplorer.SharedPrefmanager
 import com.example.campusexplorer.adapter.RoomDetailAdapter
 import com.example.campusexplorer.filter.FilterData
-import com.example.campusexplorer.server.IpAddress
 import com.example.campusexplorer.storage.Storage
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
@@ -111,13 +111,14 @@ class RoomDetailActivity : AppCompatActivity() {
 
                 // Create the AlertDialog
                 val view = layoutInflater.inflate(R.layout.ip_alert, null)
+                val ipAddress: EditText = view.findViewById(R.id.ip_edit)
+                ipAddress.setText(SharedPrefmanager.getIP())
                 builder.setView(view)
                     .setPositiveButton(
                         "OK"
                     ) { _, _ ->
                         // User clicked OK button
-                        val ipAddress: EditText = view.findViewById(R.id.ip_edit)
-                        IpAddress.IP = ipAddress.text.toString()
+                        SharedPrefmanager.saveIP(ipAddress.text.toString())
                     }
                     .setNegativeButton(
                         "No!"

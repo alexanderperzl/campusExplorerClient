@@ -26,6 +26,7 @@ import com.google.gson.Gson
 import de.number42.subsampling_pdf_decoder.PDFDecoder
 import de.number42.subsampling_pdf_decoder.PDFRegionDecoder
 import io.apptik.widget.MultiSlider
+import kotlinx.android.synthetic.main.fragment_building_map.*
 import java.io.File
 import java.time.LocalDateTime
 import java.util.*
@@ -117,6 +118,7 @@ class BuildingMapFragment : Fragment() {
 
     private fun updateUIForEvents() {
         val seekbarValue = seekBarToTime()
+        seekbar.getThumb(0).value = seekbar.getThumb(0).value
         floorList = getOrderedFloors(buildingId!!)
         currentFloorIndex = floorList.indexOf(floorList.first { it -> it.levelDouble == 0.0 })
         val building = Storage.findBuilding(buildingId!!)

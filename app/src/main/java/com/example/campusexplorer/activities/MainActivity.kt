@@ -3,7 +3,10 @@ package com.example.campusexplorer.activities
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
@@ -20,7 +23,6 @@ import com.example.campusexplorer.*
 import com.example.campusexplorer.model.Building
 import com.example.campusexplorer.model.Floor
 import com.example.campusexplorer.model.Room
-import com.example.campusexplorer.server.IpAddress
 import com.example.campusexplorer.service.ImportService
 import com.example.campusexplorer.storage.Storage
 import com.google.android.gms.location.FusedLocationProviderClient

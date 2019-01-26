@@ -18,7 +18,6 @@ import com.example.campusexplorer.SharedPrefmanager
 import com.example.campusexplorer.fragment.BuildingMapFragment
 import com.example.campusexplorer.fragment.FloorChangeObserver
 import com.example.campusexplorer.model.Lecture
-import com.example.campusexplorer.server.IpAddress
 import com.example.campusexplorer.storage.Storage
 import com.example.campusexplorer.view.MapLoadedObserver
 import com.example.campusexplorer.view.PinView
@@ -174,13 +173,14 @@ class BuildingActivity : AppCompatActivity(), MapLoadedObserver, FloorChangeObse
 
                 // Create the AlertDialog
                 val view = layoutInflater.inflate(R.layout.ip_alert, null)
+                val ipAddress: EditText = view.findViewById(R.id.ip_edit)
+                ipAddress.setText(SharedPrefmanager.getIP())
                 builder.setView(view)
                     .setPositiveButton(
                         "OK"
                     ) { _, _ ->
                         // User clicked OK button
-                        val ipAddress: EditText = view.findViewById(R.id.ip_edit)
-                        IpAddress.IP = ipAddress.text.toString()
+                        SharedPrefmanager.saveIP(ipAddress.text.toString())
                     }
                     .setNegativeButton(
                         "No!"
