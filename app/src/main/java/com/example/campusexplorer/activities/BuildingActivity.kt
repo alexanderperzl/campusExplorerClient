@@ -1,5 +1,7 @@
 package com.example.campusexplorer.activities
 
+import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
@@ -9,8 +11,10 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.EditText
 import com.example.campusexplorer.BuildingIDConverter
 import com.example.campusexplorer.R
+import com.example.campusexplorer.SharedPrefmanager
 import com.example.campusexplorer.fragment.BuildingMapFragment
 import com.example.campusexplorer.fragment.FloorChangeObserver
 import com.example.campusexplorer.model.Lecture
@@ -40,6 +44,7 @@ class BuildingActivity : AppCompatActivity(), MapLoadedObserver, FloorChangeObse
     private lateinit var bottomNavigation: BottomNavigationView
     private lateinit var fragObj: BuildingMapFragment
 
+    @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_building)
@@ -121,7 +126,7 @@ class BuildingActivity : AppCompatActivity(), MapLoadedObserver, FloorChangeObse
 
     private fun loadLectures(building: String): Observable<List<Lecture>> {
         return Observable.just(building).map {
-            val url = URL("http://${IpAddress.IP}:8080/postBuilding")
+            val url = URL("http://${SharedPrefmanager.getIP()}:8080/postBuilding")
             val conn = url.openConnection() as HttpURLConnection
             conn.doOutput = true
             conn.setRequestProperty("Content-Type", "application/json")
@@ -130,7 +135,7 @@ class BuildingActivity : AppCompatActivity(), MapLoadedObserver, FloorChangeObse
             val bodyStrings = params.entries.map {
                 "\"" + it.key + "\":\"" + it.value + "\""
             }.joinToString(prefix = "{", postfix = "}", separator = ",")
-            log.info("Sending request to url ${url.toString()} with body $bodyStrings")
+            log.info("Sending request to url $url with body $bodyStrings")
             val outputStream = BufferedOutputStream(conn.outputStream)
             outputStream.write(bodyStrings.toByteArray())
             outputStream.flush()
@@ -152,6 +157,7 @@ class BuildingActivity : AppCompatActivity(), MapLoadedObserver, FloorChangeObse
         return true
     }
 
+    @SuppressLint("InflateParams")
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_settings -> {
             val intent = Intent(this, SettingsActivity::class.java)
@@ -162,6 +168,36 @@ class BuildingActivity : AppCompatActivity(), MapLoadedObserver, FloorChangeObse
             finish()
             true
         }
+        R.id.ip -> {
+            val alertDialog: AlertDialog = this.let {
+                val builder = AlertDialog.Builder(it)
+
+                // Create the AlertDialog
+                val view = layoutInflater.inflate(R.layout.ip_alert, null)
+                builder.setView(view)
+                    .setPositiveButton(
+                        "OK"
+                    ) { _, _ ->
+                        // User clicked OK button
+                        val ipAddress: EditText = view.findViewById(R.id.ip_edit)
+                        IpAddress.IP = ipAddress.text.toString()
+                    }
+                    .setNegativeButton(
+                        "No!"
+                    ) { dialog, _ ->
+                        dialog.cancel()
+                    }
+                builder.create()
+            }
+
+            alertDialog.show()
+            true
+        }
+        R.id.show_tour -> {
+            val intent = Intent(this, PagerActivity::class.java)
+            startActivity(intent)
+            true
+        }
 
         else -> {
             // If we got here, the user's action was not recognized.
@@ -169,5 +205,7 @@ class BuildingActivity : AppCompatActivity(), MapLoadedObserver, FloorChangeObse
             super.onOptionsItemSelected(item)
         }
     }
+
+
 
 }

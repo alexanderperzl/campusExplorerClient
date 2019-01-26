@@ -103,7 +103,7 @@ object FilterData {
         filteredLectures = filteredLectures.asSequence()
             // remove all events which are not on this floor
             .map { lecture ->
-                Lecture(lecture.id, lecture.name, lecture.events.filter { event ->
+                Lecture(lecture._id, lecture.name, lecture.events.filter { event ->
                     rooms.asSequence().map { room -> room.name }.contains(event.room) && checkWeekDay(
                         event.date,
                         event.cycle,
@@ -139,7 +139,7 @@ object FilterData {
         val roomLectures = filteredLectures.asSequence()
             // remove all events which are not in this room
             .map { lecture ->
-                Lecture(lecture.id, lecture.name, lecture.events.filter { event ->
+                Lecture(lecture._id, lecture.name, lecture.events.filter { event ->
                     room.name == event.room && checkWeekDay(
                         event.date,
                         event.cycle,
@@ -162,7 +162,7 @@ object FilterData {
             .fold(emptyList()) { acc: List<Lecture>, lecture: Lecture ->
                 acc.union(lecture.events.map { event ->
                     Lecture(
-                        lecture.id,
+                        lecture._id,
                         lecture.name,
                         listOf(event),
                         lecture.department,
@@ -224,7 +224,7 @@ object FilterData {
         }
         filteredLectures = filteredLectures.map { lecture ->
             // build a new Lecture object where the Event.room property is only the room, instead of "building - room"
-            Lecture(lecture.id, lecture.name, lecture.events.map { event ->
+            Lecture(lecture._id, lecture.name, lecture.events.map { event ->
                 // here, build a new event Object, where the room value gets adjusted
                 Event(
                     event.room.split(" - ").getOrElse(1) { "" },

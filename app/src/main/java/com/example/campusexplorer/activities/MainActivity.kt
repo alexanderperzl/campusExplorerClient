@@ -1,10 +1,9 @@
 package com.example.campusexplorer.activities
 
 import android.Manifest
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.content.*
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
@@ -15,11 +14,13 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.EditText
 import android.widget.Toast
 import com.example.campusexplorer.*
 import com.example.campusexplorer.model.Building
 import com.example.campusexplorer.model.Floor
 import com.example.campusexplorer.model.Room
+import com.example.campusexplorer.server.IpAddress
 import com.example.campusexplorer.service.ImportService
 import com.example.campusexplorer.storage.Storage
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -51,8 +52,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ClusterManager.OnC
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
+
         SharedPrefmanager.init(this)
+        Log.d(TAG, "is it true?" + SharedPrefmanager.getIntroBool())
         if (SharedPrefmanager.getIntroBool() == false){
+            Log.d(TAG, "pager says hi")
             val intent = Intent(this, PagerActivity::class.java)
             startActivity(intent)
         }
@@ -255,9 +260,41 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ClusterManager.OnC
         return true
     }
 
+    @SuppressLint("InflateParams")
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_settings -> {
             val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+            true
+        }
+        R.id.ip -> {
+            val alertDialog: AlertDialog = this.let {
+                val builder = AlertDialog.Builder(it)
+
+                // Create the AlertDialog
+                val view = layoutInflater.inflate(R.layout.ip_alert, null)
+                val ipAddress: EditText = view.findViewById(R.id.ip_edit)
+                ipAddress.setText(SharedPrefmanager.getIP())
+                builder.setView(view)
+                    .setPositiveButton(
+                    "OK"
+                ) { _, _ ->
+                    // User clicked OK button
+                        SharedPrefmanager.saveIP(ipAddress.text.toString())
+                }
+                    .setNegativeButton(
+                    "No!"
+                ) { dialog, _ ->
+                        dialog.cancel()
+                }
+                builder.create()
+            }
+
+            alertDialog.show()
+            true
+        }
+        R.id.show_tour -> {
+            val intent = Intent(this, PagerActivity::class.java)
             startActivity(intent)
             true
         }

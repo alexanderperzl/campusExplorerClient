@@ -1,5 +1,7 @@
 package com.example.campusexplorer.activities
 
+import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -9,10 +11,12 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.EditText
 import android.widget.TextView
 import com.example.campusexplorer.R
 import com.example.campusexplorer.adapter.RoomDetailAdapter
 import com.example.campusexplorer.filter.FilterData
+import com.example.campusexplorer.server.IpAddress
 import com.example.campusexplorer.storage.Storage
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
@@ -88,6 +92,7 @@ class RoomDetailActivity : AppCompatActivity() {
         return true
     }
 
+    @SuppressLint("InflateParams")
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_settings -> {
             val intent = Intent(this, SettingsActivity::class.java)
@@ -97,6 +102,37 @@ class RoomDetailActivity : AppCompatActivity() {
 
         android.R.id.home -> {
             finish()
+            true
+        }
+
+        R.id.ip -> {
+            val alertDialog: AlertDialog = this.let {
+                val builder = AlertDialog.Builder(it)
+
+                // Create the AlertDialog
+                val view = layoutInflater.inflate(R.layout.ip_alert, null)
+                builder.setView(view)
+                    .setPositiveButton(
+                        "OK"
+                    ) { _, _ ->
+                        // User clicked OK button
+                        val ipAddress: EditText = view.findViewById(R.id.ip_edit)
+                        IpAddress.IP = ipAddress.text.toString()
+                    }
+                    .setNegativeButton(
+                        "No!"
+                    ) { dialog, _ ->
+                        dialog.cancel()
+                    }
+                builder.create()
+            }
+
+            alertDialog.show()
+            true
+        }
+        R.id.show_tour -> {
+            val intent = Intent(this, PagerActivity::class.java)
+            startActivity(intent)
             true
         }
 

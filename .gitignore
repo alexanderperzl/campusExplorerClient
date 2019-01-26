@@ -69,4 +69,4 @@ fastlane/readme.md
 
 cygwin_android_studio.bat
 
-app/src/main/java/com/example/campusexplorer/server/IpAddress.kt
+# app/src/main/java/com/example/campusexplorer/server/IpAddress.kt

@@ -12,6 +12,7 @@ object SharedPrefmanager {
 
     private val ID = "campusExplorer"
     private val INTRO_BOOL = "INTRO_BOOL"
+    private val IP = "IP"
 
 
     fun init(context: Context) {
@@ -27,5 +28,14 @@ object SharedPrefmanager {
         val prefsEditor = sharedPreferences?.edit()
         prefsEditor?.putBoolean(INTRO_BOOL, boolean)
         prefsEditor?.apply()
+    }
+    fun saveIP(ip : String){
+        val prefsEditor = sharedPreferences?.edit()
+        prefsEditor?.putString(IP, ip)
+        prefsEditor?.apply()
+    }
+
+    fun getIP() : String{
+        return sharedPreferences?.getString(IP, "")!!
     }
 }

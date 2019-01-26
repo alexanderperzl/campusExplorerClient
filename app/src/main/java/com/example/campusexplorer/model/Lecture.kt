@@ -1,7 +1,7 @@
 package com.example.campusexplorer.model
 
 data class Lecture(
-    val id: String,
+    val _id: String,
     val name: String,
     var events: List<Event>,
     val department: String,
