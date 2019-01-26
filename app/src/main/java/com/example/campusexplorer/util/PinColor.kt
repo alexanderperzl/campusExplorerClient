@@ -1,12 +1,14 @@
 package com.example.campusexplorer.util
 
-import android.graphics.Color
+import android.content.Context
+import android.support.v4.content.ContextCompat
+import com.example.campusexplorer.R
 
 object PinColor {
 
 
     enum class Color {
-        Green, Orange, Blue
+        Green, Orange, Blue, Grey
     }
 
     fun eventTypeToColor(type: String): Color {
@@ -14,17 +16,19 @@ object PinColor {
             Color.Green
         } else if (type == "Übung") {
             Color.Orange
-        } else {
+        } else if (type == "Seminar"){
             Color.Blue
+        } else {
+            Color.Grey
         }
     }
 
-    fun eventTypeToUiColor(type: String): Int? {
+    fun eventTypeToUiColor(type: String, context:Context): Int? {
         return when (type) {
-            "Vorlesung" -> android.graphics.Color.argb(0xFF, 0x00, 0x85, 0x77)
-            "Übung" -> android.graphics.Color.argb(0xFF, 0xD6, 0x5B, 0x00)
-            "Seminar" -> android.graphics.Color.argb(0xFF, 0x0E, 0x3B, 0x8E)
-            else -> android.graphics.Color.argb(0xFF, 0x00, 0x00, 0x8E)
+            "Vorlesung" -> ContextCompat.getColor(context, R.color.eventVorlesung)
+            "Übung" -> ContextCompat.getColor(context, R.color.eventUebung)
+            "Seminar" -> ContextCompat.getColor(context, R.color.eventSeminar)
+            else -> ContextCompat.getColor(context, R.color.eventOther)
         }
     }
 

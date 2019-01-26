@@ -47,9 +47,9 @@
             android:id="@+id/time"
             android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/seekbar"
             android:textSize="18sp" android:textStyle="bold" android:text="8:00"
-            android:background="@drawable/rounded_corner" android:alpha="0.9"/>
+            android:background="@drawable/time_display_background" android:alpha="0.9"/>
     <io.apptik.widget.MultiSlider
-            android:background="@drawable/rounded_corner" android:alpha="0.9"
+            android:background="@drawable/slider_background" android:alpha="0.9"
             android:id="@+id/seekbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

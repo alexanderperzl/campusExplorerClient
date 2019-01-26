@@ -29,7 +29,7 @@ class SettingsActivity : AppCompatActivity() {
         actionBar!!.setDisplayHomeAsUpEnabled(true)
 
         facultyManager = LinearLayoutManager(this)
-        facultyAdapter = FilterAdapter(FilterData.faculties)
+        facultyAdapter = FilterAdapter(FilterData.faculties, this)
 
         facultyView = findViewById<RecyclerView>(R.id.filter_list_fakultaeten).apply {
             // use this setting to improve performance if you know that changes
@@ -47,7 +47,7 @@ class SettingsActivity : AppCompatActivity() {
 
 
             eventManager = LinearLayoutManager(this)
-            eventAdapter = FilterAdapter(FilterData.eventTypes)
+            eventAdapter = FilterAdapter(FilterData.eventTypes, this)
 
             eventView = findViewById<RecyclerView>(R.id.filter_list_veranstaltungen).apply {
                 // use this setting to improve performance if you know that changes

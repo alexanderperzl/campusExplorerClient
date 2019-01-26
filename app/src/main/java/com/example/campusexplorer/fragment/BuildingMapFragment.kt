@@ -27,7 +27,6 @@ import de.number42.subsampling_pdf_decoder.PDFDecoder
 import de.number42.subsampling_pdf_decoder.PDFRegionDecoder
 import io.apptik.widget.MultiSlider
 import java.io.File
-import java.time.LocalDateTime
 import java.util.*
 import java.util.logging.Logger
 
@@ -246,7 +245,7 @@ class BuildingMapFragment : Fragment() {
         )
         Log.d(TAG, "lecture list of ${roomTriple.first} is ${roomTriple.second}")
         val eventName = roomTriple.third!!.name
-        infoWindowButton.text = eventName
+        infoWindowButton.text = "${room.name}\n ${eventName}"
         infoWindowButton.setOnClickListener { openRoomDetailActivity(roomData) }
     }
 
