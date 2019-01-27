@@ -4,13 +4,9 @@
     <color name="colorPrimaryDark">#052736</color>
     <color name="colorAccent">#d81b60</color>
     <color name="eventVorlesung">#CC2936</color>
-    <color name="eventVorlesungLight">#CC2936</color>
-    <color name="eventUebung">#D65B00</color>
-    <color name="eventUebungLight">#D65B00</color>
+    <color name="eventUebung">#FC9241</color>
     <color name="eventSeminar">#388697</color>
-    <color name="eventSeminarLight">#388697</color>
-    <color name="eventOther">#E9A907</color>
-    <color name="eventOtherLight">#E9A907</color>
+    <color name="eventOther">#FFDF51</color>
     <color name="highlightEvent">#CDF5FF</color>
     <color name="spinnerBackground">#40CDF5FF</color>
     <color name="backgroundLightGrey">#ececec</color>
