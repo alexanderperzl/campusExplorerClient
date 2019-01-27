@@ -18,7 +18,7 @@ class CustomClusterRenderer(
     private var resources: Resources = context.resources
     override fun onBeforeClusterItemRendered(item: BuildingMarkerItem, markerOptions: MarkerOptions?) {
         val markerDescriptor =
-            BitmapDescriptorFactory.fromBitmap(BitmapUtil.createCrispBitmap(R.drawable.pin_64, resources))
+            BitmapDescriptorFactory.fromBitmap(BitmapUtil.createCrispBitmap(R.drawable.pin_vorlesung, resources))
         markerOptions?.icon(markerDescriptor)
     }
 }

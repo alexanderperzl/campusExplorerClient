@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574b</color>
+    <color name="colorPrimary">#08415C</color>
+    <color name="colorPrimaryDark">#052736</color>
     <color name="colorAccent">#d81b60</color>
-    <color name="eventVorlesung">#008577</color>
-    <color name="eventVorlesungLight">#7accbc</color>
+    <color name="eventVorlesung">#CC2936</color>
+    <color name="eventVorlesungLight">#CC2936</color>
     <color name="eventUebung">#D65B00</color>
-    <color name="eventUebungLight">#e6a473</color>
-    <color name="eventSeminar">#0e3b8e</color>
-    <color name="eventSeminarLight">#8fa4cc</color>
-    <color name="eventOther">#515151</color>
-    <color name="eventOtherLight">#999999</color>
+    <color name="eventUebungLight">#D65B00</color>
+    <color name="eventSeminar">#388697</color>
+    <color name="eventSeminarLight">#388697</color>
+    <color name="eventOther">#E9A907</color>
+    <color name="eventOtherLight">#E9A907</color>
+    <color name="highlightEvent">#CDF5FF</color>
+    <color name="spinnerBackground">#40CDF5FF</color>
     <color name="backgroundLightGrey">#ececec</color>
 </resources>

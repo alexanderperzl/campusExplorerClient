@@ -64,7 +64,7 @@ class RoomDetailActivity : AppCompatActivity() {
         actionBar!!.setDisplayHomeAsUpEnabled(true)
 
         eventManager = LinearLayoutManager(this)
-        eventAdapter = RoomDetailAdapter(roomTriple)
+        eventAdapter = RoomDetailAdapter(roomTriple, this)
 
         eventView = findViewById<RecyclerView>(R.id.lecture_list_detail).apply {
             // use this setting to improve performance if you know that changes

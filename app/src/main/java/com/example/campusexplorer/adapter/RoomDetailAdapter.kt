@@ -1,6 +1,8 @@
 package com.example.campusexplorer.adapter
 
+import android.content.Context
 import android.support.constraint.ConstraintLayout
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.text.Html
 import android.text.method.LinkMovementMethod
@@ -17,7 +19,7 @@ import com.example.campusexplorer.model.Room
 import com.example.campusexplorer.util.PinColor.getEventTypeGroup
 
 
-class RoomDetailAdapter(private val myDataset: Triple<Room, List<Lecture>, Lecture?>) :
+class RoomDetailAdapter(private val myDataset: Triple<Room, List<Lecture>, Lecture?>, private val context: Context) :
     RecyclerView.Adapter<RoomDetailAdapter.MyViewHolder>() {
 
     val TAG = "RoomDetailActivity"
@@ -33,7 +35,7 @@ class RoomDetailAdapter(private val myDataset: Triple<Room, List<Lecture>, Lectu
         val event_link = view.findViewById<TextView>(R.id.event_link)
         val event_faculty = view.findViewById<TextView>(R.id.event_faculty)
         val event_type_icon = view.findViewById<ImageView>(R.id.event_type_icon)
-        val background = view.findViewById<ConstraintLayout>(R.id.item_container)
+        var background = view.findViewById<ConstraintLayout>(R.id.item_container)
     }
 
 
@@ -67,7 +69,7 @@ class RoomDetailAdapter(private val myDataset: Triple<Room, List<Lecture>, Lectu
         }
         if (currentLecture.events[0] == myDataset.third!!.events[0]) {
             Log.d(TAG, "$currentLecture is the current third ${myDataset.third}")
-            holder.background.setBackgroundResource(android.R.color.holo_green_dark)
+            holder.background.setBackgroundColor(ContextCompat.getColor(context, R.color.highlightEvent))
         }
 
         var events: List<Event> = currentLecture.events.distinctBy { it.dayOfWeek to it.time }

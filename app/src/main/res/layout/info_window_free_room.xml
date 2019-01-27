@@ -8,7 +8,7 @@
     <TextView
             android:text="TextView"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:id="@+id/room_name"/>
+            android:layout_height="wrap_content" android:id="@+id/room_name" android:textStyle="bold"/>
     <TextView
             android:text="@string/free_room_description"
             android:layout_width="wrap_content"
