@@ -75,7 +75,10 @@ object FilterData {
     }
 
     fun getFreeRoomsForFloor(building: Building, floor: Floor, beginTime: String, endTime: String): List<Room> {
-        val filteredDataForFloor = getFilteredDataForFloor(building, floor, beginTime, endTime, true)
+        val filteredDataForFloor = getFilteredDataForFloor(building, floor, beginTime, endTime,
+            swapTimeArguments = true,
+            ignoreTypeAndFaculty = true
+        )
         val filteredLecturesForBuilding = getFilteredDataForBuilding(building, true)
         val gson = Gson()
         Log.d(TAG, "begin: $beginTime, end: $endTime")
@@ -120,9 +123,9 @@ object FilterData {
         building: Building,
         floor: Floor = Floor("g707000", "", "", "", 0.0, 0, 0, 0, 0, ""),
         beginTime: String = "14:00",
-        endTime: String = beginTime, swapTimeArguments: Boolean = false
+        endTime: String = beginTime, swapTimeArguments: Boolean = false, ignoreTypeAndFaculty: Boolean = false
     ): List<Lecture> {
-        var filteredLectures = getFilteredDataForBuilding(building)
+        var filteredLectures = getFilteredDataForBuilding(building,ignoreTypeAndFaculty)
         val rooms = Storage.findAllRooms(floor._id)
 
         filteredLectures = filteredLectures.asSequence()
