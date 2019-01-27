@@ -21,4 +21,8 @@ object SliderRangeTimeConverter {
     fun valueToTime(id: Int): String? {
         return mapping[id]
     }
+
+    fun timeToValue(time: String): Int? {
+        return mapping.toList().fold(0){acc, (key, value)-> if (value == time) key else acc}
+    }
 }

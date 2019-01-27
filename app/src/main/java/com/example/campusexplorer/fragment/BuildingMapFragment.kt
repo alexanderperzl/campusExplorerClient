@@ -28,6 +28,7 @@ import de.number42.subsampling_pdf_decoder.PDFRegionDecoder
 import io.apptik.widget.MultiSlider
 import kotlinx.android.synthetic.main.fragment_building_map.*
 import java.io.File
+import java.text.SimpleDateFormat
 import java.util.*
 import java.util.logging.Logger
 import kotlin.collections.ArrayList
@@ -155,7 +156,10 @@ class BuildingMapFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initUIElements(view)
-
+        val simpleDateFormat = SimpleDateFormat("HH:00", Locale.GERMANY)
+        val currentTime = simpleDateFormat.format(Date())
+        Log.d(TAG, "current Time is $currentTime")
+        seekBar.getThumb(0).value = SliderRangeTimeConverter.timeToValue(currentTime)!!
         seekBarToTime()
 
         floorList = getOrderedFloors(buildingId!!)

@@ -185,8 +185,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ClusterManager.OnC
 
         override fun onReceive(context: Context, intent: Intent) {
             // get all buildings of which we have buildingId in our BuildingIDConverter; to try out clustering comment out the filtering
-            val buildings = Storage.getAllBuildings()
-                //?.filter { buildingId -> BuildingIDConverter.getKeys().contains(buildingId.key) }
+            val buildings = Storage.getAllBuildings()?.filter { buildingId -> BuildingIDConverter.getKeys().contains(buildingId.key) }
 
             buildings?.forEach { building ->
                 setMarker(building)
