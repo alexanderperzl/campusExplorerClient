@@ -10,9 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.example.campusexplorer.R
 import com.example.campusexplorer.model.Event
 import com.example.campusexplorer.model.Lecture
 import com.example.campusexplorer.model.Room
+import com.example.campusexplorer.util.PinColor.getEventTypeGroup
 
 
 class RoomDetailAdapter(private val myDataset : Triple<Room, List<Lecture>, Lecture?>) :
@@ -55,9 +57,10 @@ class RoomDetailAdapter(private val myDataset : Triple<Room, List<Lecture>, Lect
         holder.event_link.text = linkText
         holder.event_link.movementMethod = LinkMovementMethod.getInstance()
 
-        val eventIcon = getEventTypeIcon(currentLecture.type)
+        val eventTypeGroup = getEventTypeGroup(currentLecture.type)
+        val eventIcon = getEventTypeIcon(eventTypeGroup)
         holder.event_type_icon.setImageResource(eventIcon)
-        val eventIconBackground = getEventTypeIconBackground(currentLecture.type)
+        val eventIconBackground = getEventTypeIconBackground(eventTypeGroup)
         holder.event_type_icon.setBackgroundResource(eventIconBackground)
         if (myDataset.second.indexOf(currentLecture) < myDataset.second.indexOfFirst { lecture ->  lecture.events[0] == myDataset.third!!.events[0]} ){
             holder.background.alpha = 0.5f

@@ -320,7 +320,7 @@ class BuildingMapFragment : Fragment() {
                 mutableMapOf(Pair("roomId", it._id)),
                 // TODO Hier sollte der Wert des Zeitsliders übergeben werden // DONE
 //                roomEventToColor(it, lectures)
-                PinColor.eventTypeToColor("Seminar")
+                PinColor.eventTypeToColor("FreeRoom")
             )
         }
 //        setPinClickListener()
