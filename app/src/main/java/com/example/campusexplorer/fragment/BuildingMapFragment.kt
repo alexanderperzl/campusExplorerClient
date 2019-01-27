@@ -21,6 +21,7 @@ import com.example.campusexplorer.model.Lecture
 import com.example.campusexplorer.model.Room
 import com.example.campusexplorer.storage.Storage
 import com.example.campusexplorer.util.PinColor
+import com.example.campusexplorer.util.PinColor.eventTypeToUiColor
 import com.example.campusexplorer.view.PinView
 import com.google.gson.Gson
 import de.number42.subsampling_pdf_decoder.PDFDecoder
@@ -234,8 +235,7 @@ class BuildingMapFragment : Fragment() {
         layoutParams.y = e.y.toInt() - 30
         dialogWindow.attributes = layoutParams
         dialog.show()
-        val infoWindowButton = dialog.findViewById<Button>(R.id.infoWindowButton)
-        // TODO Hier sollte eig der name der aktuellen Veranstaltung gesetzt werden. Muesste aber noch korrekt geholt werden
+        val popUpWindow = dialog.findViewById<View>(R.id.infoWindowButton)
         val seekBarValues = seekBarToTime()
         val room = Storage.findRoom(roomData["roomId"]!!)
         val floor = Storage.findFloor(room!!.floor)
@@ -249,8 +249,14 @@ class BuildingMapFragment : Fragment() {
         )
         Log.d(TAG, "lecture list of ${roomTriple.first} is ${roomTriple.second}")
         val eventName = roomTriple.third!!.name
-        infoWindowButton.text = "${room.name}\n ${eventName}"
-        infoWindowButton.setOnClickListener { openRoomDetailActivity(roomData) }
+        val eventType = roomTriple.third!!.type
+        popUpWindow.findViewById<TextView>(R.id.room_name).text = "Raum: ${room.name}"
+        val popUpEventTypeText = popUpWindow.findViewById<TextView>(R.id.event_type)
+        popUpEventTypeText.text = "Typ: ${eventType}"
+        val color = eventTypeToUiColor(eventType, activity!!.applicationContext)
+        popUpEventTypeText.setTextColor(color!!)
+        popUpWindow.findViewById<TextView>(R.id.event_name).text = eventName
+        popUpWindow.setOnClickListener { openRoomDetailActivity(roomData) }
     }
 
     private fun openRoomDetailActivity(roomData: Map<String, String>) {
