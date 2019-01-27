@@ -29,6 +29,7 @@ import io.apptik.widget.MultiSlider
 import java.io.File
 import java.util.*
 import java.util.logging.Logger
+import kotlin.collections.ArrayList
 
 
 /**
@@ -105,7 +106,6 @@ class BuildingMapFragment : Fragment() {
     private fun updateUIForFreeRooms() {
         val seekbarValue = seekBarToTime()
         floorList = getOrderedFloors(buildingId!!)
-        currentFloorIndex = floorList.indexOf(floorList.first { it -> it.levelDouble == 0.0 })
         val building = Storage.findBuilding(buildingId!!)
         val rooms: List<Room> =
             FilterData.getFreeRoomsForFloor(building!!, floorList[currentFloorIndex], seekbarValue[0], seekbarValue[1])
@@ -117,7 +117,6 @@ class BuildingMapFragment : Fragment() {
     private fun updateUIForEvents() {
         val seekbarValue = seekBarToTime()
         floorList = getOrderedFloors(buildingId!!)
-        currentFloorIndex = floorList.indexOf(floorList.first { it -> it.levelDouble == 0.0 })
         val building = Storage.findBuilding(buildingId!!)
         val rooms =
             FilterData.getFilteredFloors(building!!, floorList[currentFloorIndex], seekbarValue[0], seekbarValue[1])
@@ -184,7 +183,7 @@ class BuildingMapFragment : Fragment() {
 
     }
 
-    class UpdateUiTask: TimerTask() {
+    class UpdateUiTask : TimerTask() {
 
         lateinit var fragmentRef: BuildingMapFragment
 
@@ -195,7 +194,6 @@ class BuildingMapFragment : Fragment() {
 
         }
     }
-
 
 
     private fun setPinClickListener() {
@@ -400,7 +398,7 @@ class BuildingMapFragment : Fragment() {
 
     private fun getOrderedFloors(buildingId: String): ArrayList<Floor> {
         val buildingMap = Storage.findBuildingById(buildingId)?.second
-
+        floorList = ArrayList()
         buildingMap?.forEach { it ->
             floorList.add(it.value.first)
         }
