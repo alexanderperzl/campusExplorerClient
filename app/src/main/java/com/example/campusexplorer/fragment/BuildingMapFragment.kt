@@ -164,7 +164,7 @@ class BuildingMapFragment : Fragment() {
         seekBarToTime()
 
         floorList = getOrderedFloors(buildingId!!)
-        currentFloorIndex = floorList.indexOf(floorList.first { it.levelDouble == 0.0 })
+        currentFloorIndex = Math.max(0, floorList.indexOfFirst { it.levelDouble == 0.0 })
         updateLevelArrows()
         updateFloor()
 
