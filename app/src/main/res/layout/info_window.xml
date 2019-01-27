@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                             android:layout_width="wrap_content"
-                                             android:layout_height="wrap_content"
-                                             android:id="@+id/relativeLayout">
-    <Button
-            android:text="Button"
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+                                              android:layout_width="wrap_content"
+                                              android:layout_height="wrap_content"
+                                              android:layout_margin="8dp"
+                                              android:id="@+id/infoWindowButton"
+                                              android:clickable="true"
+                                              android:orientation="vertical"
+                                              android:background="?attr/selectableItemBackgroundBorderless">
+    <TextView
+            android:text="TextView"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:id="@+id/infoWindowButton"
-            style="@style/Widget.AppCompat.Button.Borderless"/>
-    <!--<TextView
-            android:id="@+id/tooltip_text"
+            android:layout_height="wrap_content" android:id="@+id/room_name"/>
+    <TextView
+            android:text="TextView"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="10dp"
-            android:text="tooltip text"
-            android:textStyle="bold" android:background="@color/common_google_signin_btn_text_dark_default"
-            app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"/>-->
-</android.support.constraint.ConstraintLayout>
+            android:layout_height="wrap_content" android:id="@+id/event_type"/>
+    <TextView
+            android:text="TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/event_name"/>
+</android.support.v7.widget.LinearLayoutCompat>
