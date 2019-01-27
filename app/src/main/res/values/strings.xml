@@ -87,4 +87,5 @@
     <string name="tut_page_1_description">Find free rooms where no lectures are taking place at the moment</string>
     <string name="tut_page_2_header">Filter</string>
     <string name="tut_page_2_description">Set search results to your event preferences</string>
+    <string name="settings">Settings</string>
 </resources>

@@ -4,8 +4,8 @@
 
     <item
             android:id="@+id/action_settings"
-            android:icon="@drawable/ic_filter_list_black_24dp"
-            android:title="Settings"
+            android:icon="@drawable/ic_filter_list_white_200dp"
+            android:title="@string/settings"
             app:showAsAction="ifRoom"/>
     <item android:title="Server IP" android:id="@+id/ip"/>
     <item android:title="Show Tour" android:id="@+id/show_tour"/>

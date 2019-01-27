@@ -4,7 +4,12 @@
     <color name="colorPrimaryDark">#00574b</color>
     <color name="colorAccent">#d81b60</color>
     <color name="eventVorlesung">#008577</color>
+    <color name="eventVorlesungLight">#7accbc</color>
     <color name="eventUebung">#D65B00</color>
+    <color name="eventUebungLight">#e6a473</color>
     <color name="eventSeminar">#0e3b8e</color>
+    <color name="eventSeminarLight">#8fa4cc</color>
+    <color name="eventOther">#515151</color>
+    <color name="eventOtherLight">#999999</color>
     <color name="backgroundLightGrey">#ececec</color>
 </resources>

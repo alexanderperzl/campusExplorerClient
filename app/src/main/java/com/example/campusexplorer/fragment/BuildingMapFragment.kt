@@ -28,9 +28,9 @@ import de.number42.subsampling_pdf_decoder.PDFRegionDecoder
 import io.apptik.widget.MultiSlider
 import kotlinx.android.synthetic.main.fragment_building_map.*
 import java.io.File
-import java.time.LocalDateTime
 import java.util.*
 import java.util.logging.Logger
+import kotlin.collections.ArrayList
 
 
 /**
@@ -107,7 +107,6 @@ class BuildingMapFragment : Fragment() {
     private fun updateUIForFreeRooms() {
         val seekbarValue = seekBarToTime()
         floorList = getOrderedFloors(buildingId!!)
-        currentFloorIndex = floorList.indexOf(floorList.first { it -> it.levelDouble == 0.0 })
         val building = Storage.findBuilding(buildingId!!)
         val rooms: List<Room> =
             FilterData.getFreeRoomsForFloor(building!!, floorList[currentFloorIndex], seekbarValue[0], seekbarValue[1])
@@ -120,7 +119,6 @@ class BuildingMapFragment : Fragment() {
         val seekbarValue = seekBarToTime()
         seekbar.getThumb(0).value = seekbar.getThumb(0).value
         floorList = getOrderedFloors(buildingId!!)
-        currentFloorIndex = floorList.indexOf(floorList.first { it -> it.levelDouble == 0.0 })
         val building = Storage.findBuilding(buildingId!!)
         val rooms =
             FilterData.getFilteredFloors(building!!, floorList[currentFloorIndex], seekbarValue[0], seekbarValue[1])
@@ -187,7 +185,7 @@ class BuildingMapFragment : Fragment() {
 
     }
 
-    class UpdateUiTask: TimerTask() {
+    class UpdateUiTask : TimerTask() {
 
         lateinit var fragmentRef: BuildingMapFragment
 
@@ -198,7 +196,6 @@ class BuildingMapFragment : Fragment() {
 
         }
     }
-
 
 
     private fun setPinClickListener() {
@@ -248,7 +245,7 @@ class BuildingMapFragment : Fragment() {
         )
         Log.d(TAG, "lecture list of ${roomTriple.first} is ${roomTriple.second}")
         val eventName = roomTriple.third!!.name
-        infoWindowButton.text = eventName
+        infoWindowButton.text = "${room.name}\n ${eventName}"
         infoWindowButton.setOnClickListener { openRoomDetailActivity(roomData) }
     }
 
@@ -406,7 +403,7 @@ class BuildingMapFragment : Fragment() {
 
     private fun getOrderedFloors(buildingId: String): ArrayList<Floor> {
         val buildingMap = Storage.findBuildingById(buildingId)?.second
-
+        floorList = ArrayList()
         buildingMap?.forEach { it ->
             floorList.add(it.value.first)
         }

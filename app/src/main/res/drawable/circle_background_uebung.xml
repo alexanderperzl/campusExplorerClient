@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/eventUebungLight"/>
+
+    <padding
+            android:left="13dp"
+            android:right="13dp"
+            android:bottom="13dp"
+            android:top="13dp" />
+
+    <corners android:radius="100dp" />
+</shape>
