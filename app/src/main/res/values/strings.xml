@@ -81,12 +81,12 @@
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
 
-    <string name="tut_page_0_header">Explore</string>
-    <string name="tut_page_0_description">Find interesting lectures in university buildings near you</string>
-    <string name="tut_page_1_header">Find</string>
-    <string name="tut_page_1_description">Find free rooms where no lectures are taking place at the moment</string>
+    <string name="tut_page_0_header">Erkunde</string>
+    <string name="tut_page_0_description">Sehe interessante Vorlesungen in Gebäuden in deiner Nähe.</string>
+    <string name="tut_page_1_header">Finde</string>
+    <string name="tut_page_1_description">Finde freie Räume, in denen keine Vorlesungen stattfinden.</string>
     <string name="tut_page_2_header">Filter</string>
-    <string name="tut_page_2_description">Set search results to your event preferences</string>
+    <string name="tut_page_2_description">Setze den Filter auf die Veranstaltungen, die du sehen willst.</string>
     <string name="settings">Settings</string>
     <string name="free_room_description">Keine Veranstaltungen im gewählten Zeitraum</string>
 </resources>
