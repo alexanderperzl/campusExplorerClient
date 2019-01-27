@@ -1,13 +1,15 @@
 package com.example.campusexplorer.view
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.PointF
 import android.util.AttributeSet
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.example.campusexplorer.R
 import com.example.campusexplorer.util.BitmapUtil
 import com.example.campusexplorer.util.PinColor
-import java.util.logging.Logger
 
 interface MapLoadedObserver {
 
@@ -15,8 +17,8 @@ interface MapLoadedObserver {
 
 }
 
-class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = null) : SubsamplingScaleImageView(context, attr) {
-
+class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = null) :
+    SubsamplingScaleImageView(context, attr) {
 
     companion object {
 
@@ -33,7 +35,6 @@ class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = 
                 it.onMapLoaded()
             }
         }
-
     }
 
     private val paint = Paint()
@@ -42,10 +43,12 @@ class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = 
     private var pinGreen = BitmapUtil.createCrispBitmap(R.drawable.pin_64, resources)
     private var pinOrange = BitmapUtil.createCrispBitmap(R.drawable.pin_64_orange, resources)
     private var pinBlue = BitmapUtil.createCrispBitmap(R.drawable.pin_64_blue, resources)
+    private var pinGrey = BitmapUtil.createCrispBitmap(R.drawable.pin_64_grey, resources)
     private var originalHeight: Int = 0
     private var originalWidth: Int = 0
 
-    init {}
+    init {
+    }
 
     fun addPin(sPin: PointF, data: Map<String, String>, color: PinColor.Color) {
         sPinList.add(Triple(sPin, data, color))
@@ -66,7 +69,7 @@ class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = 
 
         paint.isAntiAlias = true
 
-        scaledMarkers.forEach {sPin ->
+        scaledMarkers.forEach { sPin ->
             val coloredPin = pinForColor(sPin.third)
             sourceToViewCoord(sPin.first, vPin)
             val vX = vPin.x - coloredPin.width / 2
@@ -82,30 +85,31 @@ class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = 
     }
 
     private fun createScaledPointsFromPinList(): List<Triple<PointF, Map<String, String>, PinColor.Color>> {
-        return sPinList.map {sPin -> Triple(
-            PointF(
-                markerXToCanvasX(sPin.first.x),
-                markerYToCanvasY(sPin.first.y)
-            ),
-            sPin.second,
-            sPin.third
-        )}
+        return sPinList.map { sPin ->
+            Triple(
+                PointF(
+                    markerXToCanvasX(sPin.first.x),
+                    markerYToCanvasY(sPin.first.y)
+                ),
+                sPin.second,
+                sPin.third
+            )
+        }
     }
 
     private fun pinForColor(color: PinColor.Color): Bitmap {
-        return if (color == PinColor.Color.Orange) {
-            pinOrange
-        } else if (color == PinColor.Color.Green) {
-            pinGreen
-        } else {
-            pinBlue
+        return when (color) {
+            PinColor.Color.Orange -> pinOrange
+            PinColor.Color.Green -> pinGreen
+            PinColor.Color.Blue -> pinBlue
+            else -> pinGrey
         }
     }
 
     fun dataForClick(x: Float, y: Float): Map<String, String>? {
         val scaledMarkers = createScaledPointsFromPinList()
 
-        scaledMarkers.forEach {sPin ->
+        scaledMarkers.forEach { sPin ->
             sourceToViewCoord(sPin.first, vPin)
             val pin = pinForColor(sPin.third)
             val vX = vPin.x - pin.width / 2

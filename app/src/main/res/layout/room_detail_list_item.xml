@@ -6,15 +6,16 @@
         android:layout_height="wrap_content">
 
     <ImageView
-            android:layout_height="60dp" android:src="@drawable/icon_vorlesung" android:id="@+id/event_type_icon"
-            android:background="@drawable/circle_background_seminar" android:layout_width="60dp"
-            app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent" android:contentDescription="Event Icon"/>
+            android:layout_height="50dp" android:src="@drawable/icon_vorlesung" android:id="@+id/event_type_icon"
+            android:background="@drawable/circle_background_seminar" android:layout_width="50dp"
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp" app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="Event Icon"/>
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="0dp"
             android:layout_height="wrap_content" android:layout_toEndOf="@+id/event_type_icon"
-            android:layout_marginStart="8dp" app:layout_constraintStart_toEndOf="@+id/event_type_icon"
+            android:layout_marginStart="16dp" app:layout_constraintStart_toEndOf="@+id/event_type_icon"
             android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp" android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent">
