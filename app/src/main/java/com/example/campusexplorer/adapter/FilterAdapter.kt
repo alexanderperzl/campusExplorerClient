@@ -46,7 +46,7 @@ class FilterAdapter(private val myDataset: List<FilterObject>, private val conte
         System.out.println(myDataset[position].name)
         val color = PinColor.eventTypeToUiColor(myDataset[position].name, context)
         if (color != null) {
-            setColorOfHolder(holder, color)
+            if (!holder.switch.isChecked) setColorOfHolder(holder, Color.WHITE) else setColorOfHolder(holder, color)
         }
         holder.switch.setOnCheckedChangeListener { switch, isChecked ->
             FilterData.setValue(isChecked, switch.text.toString())
