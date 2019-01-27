@@ -88,4 +88,5 @@
     <string name="tut_page_2_header">Filter</string>
     <string name="tut_page_2_description">Set search results to your event preferences</string>
     <string name="settings">Settings</string>
+    <string name="free_room_description">Keine Veranstaltungen im gewählten Zeitraum</string>
 </resources>

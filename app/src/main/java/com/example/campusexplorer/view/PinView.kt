@@ -44,6 +44,7 @@ class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = 
     private var pinOrange = BitmapUtil.createCrispBitmap(R.drawable.pin_64_orange, resources)
     private var pinBlue = BitmapUtil.createCrispBitmap(R.drawable.pin_64_blue, resources)
     private var pinGrey = BitmapUtil.createCrispBitmap(R.drawable.pin_64_grey, resources)
+    private var pinFreeRoom = BitmapUtil.createCrispBitmap(R.drawable.pin_64_free_room, resources)
     private var originalHeight: Int = 0
     private var originalWidth: Int = 0
 
@@ -102,6 +103,7 @@ class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = 
             PinColor.Color.Orange -> pinOrange
             PinColor.Color.Green -> pinGreen
             PinColor.Color.Blue -> pinBlue
+            PinColor.Color.FreeRoom -> pinFreeRoom
             else -> pinGrey
         }
     }

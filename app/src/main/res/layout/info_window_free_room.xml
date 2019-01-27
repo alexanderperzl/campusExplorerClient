@@ -3,20 +3,15 @@
                                               android:layout_width="wrap_content"
                                               android:layout_height="wrap_content"
                                               android:layout_margin="8dp"
-                                              android:id="@+id/infoWindow"
-                                              android:clickable="true"
-                                              android:orientation="vertical"
-                                              android:background="?attr/selectableItemBackgroundBorderless">
+                                              android:id="@+id/infoWindowFreeRoom"
+                                              android:orientation="vertical">
     <TextView
             android:text="TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:id="@+id/room_name"/>
     <TextView
-            android:text="TextView"
+            android:text="@string/free_room_description"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:id="@+id/event_type"/>
-    <TextView
-            android:text="TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:id="@+id/event_name"/>
+            android:layout_height="wrap_content"/>
+
 </android.support.v7.widget.LinearLayoutCompat>

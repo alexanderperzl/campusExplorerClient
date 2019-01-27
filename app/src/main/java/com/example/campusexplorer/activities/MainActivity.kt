@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ClusterManager.OnC
 
         SharedPrefmanager.init(this)
         Log.d(TAG, "is it true?" + SharedPrefmanager.getIntroBool())
-        if (SharedPrefmanager.getIntroBool() == false){
+        if (SharedPrefmanager.getIntroBool() == false) {
             Log.d(TAG, "pager says hi")
             val intent = Intent(this, PagerActivity::class.java)
             startActivity(intent)
@@ -134,7 +134,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ClusterManager.OnC
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             fusedLocationClient.lastLocation
-                .addOnSuccessListener { location : Location? ->
+                .addOnSuccessListener { location: Location? ->
                     if (location != null) {
                         animateToCurrentPositionWhenInCampus(location)
                     }
@@ -155,8 +155,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ClusterManager.OnC
 
     private fun animateToCurrentPositionWhenInCampus(location: Location) {
         val distance = FloatArray(2)
-        Location.distanceBetween( location.getLatitude(), location.getLongitude(),
-            campusCenter.latitude, campusCenter.longitude, distance)
+        Location.distanceBetween(
+            location.getLatitude(), location.getLongitude(),
+            campusCenter.latitude, campusCenter.longitude, distance
+        )
         if (distance[0] < campusRadiusInMeters) {
             animateToCenter(LatLng(location.latitude, location.longitude))
         }
@@ -185,7 +187,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ClusterManager.OnC
 
         override fun onReceive(context: Context, intent: Intent) {
             // get all buildings of which we have buildingId in our BuildingIDConverter; to try out clustering comment out the filtering
-            val buildings = Storage.getAllBuildings()?.filter { buildingId -> BuildingIDConverter.getKeys().contains(buildingId.key) }
+            val buildings = Storage.getAllBuildings()
+                ?.filter { buildingId -> BuildingIDConverter.getKeys().contains(buildingId.key) }
 
             buildings?.forEach { building ->
                 setMarker(building)
@@ -278,16 +281,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ClusterManager.OnC
                 ipAddress.setText(SharedPrefmanager.getIP())
                 builder.setView(view)
                     .setPositiveButton(
-                    "OK"
-                ) { _, _ ->
-                    // User clicked OK button
+                        "OK"
+                    ) { _, _ ->
+                        // User clicked OK button
                         SharedPrefmanager.saveIP(ipAddress.text.toString())
-                }
+                    }
                     .setNegativeButton(
-                    "No!"
-                ) { dialog, _ ->
+                        "No!"
+                    ) { dialog, _ ->
                         dialog.cancel()
-                }
+                    }
                 builder.create()
             }
 

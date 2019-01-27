@@ -40,29 +40,30 @@ class SettingsActivity : AppCompatActivity() {
             layoutManager = facultyManager
 
             // specify an viewAdapter (see also next example)
-            adapter = facultyAdapter}
-
-        facultyView.addItemDecoration(DividerItemDecoration(this,DividerItemDecoration.VERTICAL))
-
-
-
-            eventManager = LinearLayoutManager(this)
-            eventAdapter = FilterAdapter(FilterData.eventTypes, this)
-
-            eventView = findViewById<RecyclerView>(R.id.filter_list_veranstaltungen).apply {
-                // use this setting to improve performance if you know that changes
-                // in content do not change the layout size of the RecyclerView
-                setHasFixedSize(true)
-
-                // use a linear layout manager
-                layoutManager = eventManager
-
-                // specify an viewAdapter (see also next example)
-                adapter = eventAdapter
-            }
-        eventView.addItemDecoration(DividerItemDecoration(this,DividerItemDecoration.VERTICAL))
-
+            adapter = facultyAdapter
         }
+
+        facultyView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+
+
+
+        eventManager = LinearLayoutManager(this)
+        eventAdapter = FilterAdapter(FilterData.eventTypes, this)
+
+        eventView = findViewById<RecyclerView>(R.id.filter_list_veranstaltungen).apply {
+            // use this setting to improve performance if you know that changes
+            // in content do not change the layout size of the RecyclerView
+            setHasFixedSize(true)
+
+            // use a linear layout manager
+            layoutManager = eventManager
+
+            // specify an viewAdapter (see also next example)
+            adapter = eventAdapter
+        }
+        eventView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

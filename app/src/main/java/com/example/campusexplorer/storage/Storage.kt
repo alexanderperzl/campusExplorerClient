@@ -91,10 +91,6 @@ object Storage {
         return roomData
     }
 
-    fun findFloors(buildingId: String): MutableMap<String, Pair<Floor, MutableMap<String, Room>>>? {
-        return roomData[buildingId]?.second
-    }
-
     fun findAllRooms(floorId: String): List<Room> {
         val buildingId = findBuildingForFloor(floorId)?._id ?: return emptyList()
         val floors = roomData[buildingId]?.second ?: return emptyList()
@@ -103,17 +99,6 @@ object Storage {
             rooms.map { it.value }.toList()
         } else {
             emptyList<Room>()
-        }
-    }
-
-    fun findRoom(buildingId: String, floorId: String, roomName: String): Room? {
-        val floors = roomData[buildingId]?.second ?: return null
-        val rooms = floors[floorId]?.second ?: return null
-        val room = rooms.values.filter { it.name == roomName }
-        return if (room.count() > 0) {
-            room[0]
-        } else {
-            null
         }
     }
 

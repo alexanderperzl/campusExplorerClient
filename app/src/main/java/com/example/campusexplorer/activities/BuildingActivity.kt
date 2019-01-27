@@ -57,7 +57,7 @@ class BuildingActivity : AppCompatActivity(), MapLoadedObserver, FloorChangeObse
 
         val building = Storage.findBuilding(buildingId)!!
 
-        Log.d(TAG,buildingId)
+        Log.d(TAG, buildingId)
 
         val buildingIdServer = BuildingIDConverter.fromClientToServer(buildingId)
 
@@ -66,7 +66,7 @@ class BuildingActivity : AppCompatActivity(), MapLoadedObserver, FloorChangeObse
 
 
         bottomNavigation.setOnNavigationItemSelectedListener {
-            when(it.itemId){
+            when (it.itemId) {
                 R.id.action_free_rooms -> {
                     fragObj.updateFragmentOnMenuSelection(it)
                     true
@@ -82,8 +82,6 @@ class BuildingActivity : AppCompatActivity(), MapLoadedObserver, FloorChangeObse
         }
 
         bottomNavigation.setOnNavigationItemReselectedListener {} //This is important so the seekbar only gets updated on initial menut item selection
-
-
 
 
         spinnerWrapper.visibility = View.VISIBLE
@@ -116,7 +114,7 @@ class BuildingActivity : AppCompatActivity(), MapLoadedObserver, FloorChangeObse
         spinnerWrapper.visibility = View.VISIBLE
     }
 
-    private fun startFragment(fragment: BuildingMapFragment){
+    private fun startFragment(fragment: BuildingMapFragment) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.buildingMapFragmentContainer, fragment)
         transaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
@@ -163,7 +161,7 @@ class BuildingActivity : AppCompatActivity(), MapLoadedObserver, FloorChangeObse
             startActivity(intent)
             true
         }
-        android.R.id.home-> {
+        android.R.id.home -> {
             finish()
             true
         }
@@ -205,7 +203,6 @@ class BuildingActivity : AppCompatActivity(), MapLoadedObserver, FloorChangeObse
             super.onOptionsItemSelected(item)
         }
     }
-
 
 
 }
