@@ -240,8 +240,7 @@ class BuildingMapFragment : Fragment() {
         val roomTriple = FilterData.getRoomTriple(
             room!!,
             lectures,
-            seekBarValues[0],
-            seekBarValues[1]
+            seekBarValues[0]
         )
         Log.d(TAG, "lecture list of ${roomTriple.first} is ${roomTriple.second}")
         val eventName = roomTriple.third!!.name
@@ -255,6 +254,7 @@ class BuildingMapFragment : Fragment() {
         val intent = Intent(context, RoomDetailActivity::class.java)
         intent.putExtra("room", roomId)
         intent.putExtra("building", buildingId)
+        intent.putExtra("time", seekBarToTime()[0])
         startActivity(intent)
     }
 
@@ -348,7 +348,7 @@ class BuildingMapFragment : Fragment() {
         // TODO Hier sollte der Wert des Zeitsliders übergeben werden // DONE
         val seekBarValue = seekBarToTime()
         Log.d(TAG, "0: ${seekBarValue[0]}, 1: ${seekBarValue[1]} ")
-        val roomTriple = FilterData.getRoomTriple(room, lectures, seekBarValue[0], seekBarValue[1])
+        val roomTriple = FilterData.getRoomTriple(room, lectures, seekBarValue[0])
         return PinColor.eventTypeToColor(roomTriple.third!!.type)
     }
 

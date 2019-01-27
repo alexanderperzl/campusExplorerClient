@@ -8,4 +8,8 @@ data class Event(
     var dayOfWeek: String,
     var cycle: String
 
-)
+) {
+    override fun toString(): String {
+        return "Event(room='$room', building='$building', time='$time', date='$date', dayOfWeek='$dayOfWeek', cycle='$cycle')"
+    }
+}
