@@ -23,6 +23,6 @@ object SliderRangeTimeConverter {
     }
 
     fun timeToValue(time: String): Int? {
-        return mapping.toList().fold(0){acc, (key, value)-> if (value == time) key else acc}
+        return mapping.toList().fold(0) { acc, (key, value) -> if (value == time) key else acc }
     }
 }

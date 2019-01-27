@@ -17,7 +17,7 @@ import com.example.campusexplorer.model.Room
 import com.example.campusexplorer.util.PinColor.getEventTypeGroup
 
 
-class RoomDetailAdapter(private val myDataset : Triple<Room, List<Lecture>, Lecture?>) :
+class RoomDetailAdapter(private val myDataset: Triple<Room, List<Lecture>, Lecture?>) :
     RecyclerView.Adapter<RoomDetailAdapter.MyViewHolder>() {
 
     val TAG = "RoomDetailActivity"
@@ -26,7 +26,7 @@ class RoomDetailAdapter(private val myDataset : Triple<Room, List<Lecture>, Lect
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder.
     // Each data item is just a string in this case that is shown in a TextView.
-    class MyViewHolder(view: View) : RecyclerView.ViewHolder(view){
+    class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val event_name = view.findViewById<TextView>(R.id.event_name)
         val event_type = view.findViewById<TextView>(R.id.event_type)
         val event_times = view.findViewById<TextView>(R.id.event_time)
@@ -49,9 +49,9 @@ class RoomDetailAdapter(private val myDataset : Triple<Room, List<Lecture>, Lect
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        val currentLecture : Lecture = myDataset.second[position]
+        val currentLecture: Lecture = myDataset.second[position]
         holder.event_name.text = currentLecture.name
-        holder.event_type.text =currentLecture.type
+        holder.event_type.text = currentLecture.type
         holder.event_faculty.text = currentLecture.faculty
         val linkText = Html.fromHtml("<a href=\"${currentLecture.link}\">LSF-Link</a>", Html.FROM_HTML_MODE_LEGACY)
         holder.event_link.text = linkText
@@ -62,22 +62,24 @@ class RoomDetailAdapter(private val myDataset : Triple<Room, List<Lecture>, Lect
         holder.event_type_icon.setImageResource(eventIcon)
         val eventIconBackground = getEventTypeIconBackground(eventTypeGroup)
         holder.event_type_icon.setBackgroundResource(eventIconBackground)
-        if (myDataset.second.indexOf(currentLecture) < myDataset.second.indexOfFirst { lecture ->  lecture.events[0] == myDataset.third!!.events[0]} ){
+        if (myDataset.second.indexOf(currentLecture) < myDataset.second.indexOfFirst { lecture -> lecture.events[0] == myDataset.third!!.events[0] }) {
             holder.background.alpha = 0.5f
         }
-        if (currentLecture.events[0] == myDataset.third!!.events[0]){
+        if (currentLecture.events[0] == myDataset.third!!.events[0]) {
             Log.d(TAG, "$currentLecture is the current third ${myDataset.third}")
             holder.background.setBackgroundResource(android.R.color.holo_green_dark)
         }
 
-        var events : List<Event> = currentLecture.events.distinctBy {it.dayOfWeek to it.time}
-        val eventTimes = events.fold("") { accumulator, item -> accumulator + "${item.cycle}, ${item.dayOfWeek}, ${item.time} \n"}.replaceAfterLast("t.", "")
+        var events: List<Event> = currentLecture.events.distinctBy { it.dayOfWeek to it.time }
+        val eventTimes =
+            events.fold("") { accumulator, item -> accumulator + "${item.cycle}, ${item.dayOfWeek}, ${item.time} \n" }
+                .replaceAfterLast("t.", "")
 
         holder.event_times.text = eventTimes
     }
 
     private fun getEventTypeIcon(eventType: String): Int {
-        return when(eventType) {
+        return when (eventType) {
             "Vorlesung" -> R.drawable.icon_vorlesung
             "Übung" -> R.drawable.icon_uebung
             "Seminar" -> R.drawable.icon_seminar

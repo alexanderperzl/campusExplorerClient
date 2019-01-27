@@ -20,7 +20,7 @@ class FilterAdapter(private val myDataset: List<FilterObject>, private val conte
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder.
     // Each data item is just a string in this case that is shown in a TextView.
-    class MyViewHolder(view: View) : RecyclerView.ViewHolder(view){
+    class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val switch = view.findViewById<Switch>(R.id.toggle)
 
 
@@ -42,14 +42,14 @@ class FilterAdapter(private val myDataset: List<FilterObject>, private val conte
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         holder.switch.text = myDataset[position].name
-        holder.switch.isChecked= myDataset[position].active
+        holder.switch.isChecked = myDataset[position].active
         System.out.println(myDataset[position].name)
         val color = PinColor.eventTypeToUiColor(myDataset[position].name, context)
         if (color != null) {
             setColorOfHolder(holder, color)
         }
-        holder.switch.setOnCheckedChangeListener {switch, isChecked ->
-            FilterData.setValue(isChecked,switch.text.toString())
+        holder.switch.setOnCheckedChangeListener { switch, isChecked ->
+            FilterData.setValue(isChecked, switch.text.toString())
             val color = PinColor.eventTypeToUiColor(myDataset[position].name, context)
             if (color != null) {
                 if (!isChecked) setColorOfHolder(holder, Color.WHITE) else setColorOfHolder(holder, color)

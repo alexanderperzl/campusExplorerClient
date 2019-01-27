@@ -1,27 +1,24 @@
 package com.example.campusexplorer.activities
 
 import android.animation.ArgbEvaluator
-import android.graphics.Color
-import android.support.v7.app.AppCompatActivity
-
+import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
-import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
-
-import com.example.campusexplorer.R
-import kotlinx.android.synthetic.main.activity_pager.*
-import android.util.Log
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import com.example.campusexplorer.R
 import com.example.campusexplorer.SharedPrefmanager
+import kotlinx.android.synthetic.main.activity_pager.*
 
 
 class PagerActivity : AppCompatActivity() {
@@ -70,9 +67,6 @@ class PagerActivity : AppCompatActivity() {
         // Set up the ViewPager with the sections adapter.
         container.adapter = mSectionsPagerAdapter
 
-        //val color1 = Color.CYAN
-        //val color2 = Color.RED
-        //val color3 = Color.GREEN
 
         val color1 = getColor(R.color.eventVorlesung)
         val color2 = getColor(R.color.eventSeminar)

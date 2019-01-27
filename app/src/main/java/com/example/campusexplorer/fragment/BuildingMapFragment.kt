@@ -164,7 +164,7 @@ class BuildingMapFragment : Fragment() {
         seekBarToTime()
 
         floorList = getOrderedFloors(buildingId!!)
-        currentFloorIndex = floorList.indexOf(floorList.first { it -> it.levelDouble == 0.0 })
+        currentFloorIndex = floorList.indexOf(floorList.first { it.levelDouble == 0.0 })
         updateLevelArrows()
         updateFloor()
 
@@ -311,7 +311,6 @@ class BuildingMapFragment : Fragment() {
     }
 
     private fun setMarkersForFreeRooms(rooms: List<Room>) {
-        // TODO Hier sollte der Wert des Zeitsliders übergeben werden // DONE
         val floor = floorList[currentFloorIndex]
         val markerOffsetX = floor.markerOffsetX ?: 0
         val markerOffsetY = floor.markerOffsetY ?: 0
@@ -324,16 +323,12 @@ class BuildingMapFragment : Fragment() {
             mapView.addPin(
                 PointF((it.mapX - markerOffsetX).toFloat(), (it.mapY - markerOffsetY).toFloat()),
                 mutableMapOf(Pair("roomId", it._id)),
-                // TODO Hier sollte der Wert des Zeitsliders übergeben werden // DONE
-//                roomEventToColor(it, lectures)
                 PinColor.eventTypeToColor("FreeRoom")
             )
         }
-//        setPinClickListener()
     }
 
     private fun setMarkers(rooms: List<Room>) {
-        // TODO Hier sollte der Wert des Zeitsliders übergeben werden // DONE
         val seekBarValue = seekBarToTime()
         val lectures =
             FilterData.getFilteredDataForFloor(
@@ -351,7 +346,6 @@ class BuildingMapFragment : Fragment() {
             mapView.addPin(
                 PointF((it.mapX - markerOffsetX).toFloat(), (it.mapY - markerOffsetY).toFloat()),
                 mutableMapOf(Pair("roomId", it._id)),
-                // TODO Hier sollte der Wert des Zeitsliders übergeben werden // DONE
                 roomEventToColor(it, lectures)
             )
         }
@@ -362,7 +356,6 @@ class BuildingMapFragment : Fragment() {
         val gson = Gson()
         Log.d(TAG, "lectures" + gson.toJson(lectures))
         Log.d(TAG, "room" + room.name)
-        // TODO Hier sollte der Wert des Zeitsliders übergeben werden // DONE
         val seekBarValue = seekBarToTime()
         Log.d(TAG, "0: ${seekBarValue[0]}, 1: ${seekBarValue[1]} ")
         val roomTriple = FilterData.getRoomTriple(room, lectures, seekBarValue[0])
@@ -411,7 +404,6 @@ class BuildingMapFragment : Fragment() {
     private fun updateFloor() {
         notifyFloorChangeObserver()
         textFloor.text = floorList[currentFloorIndex].level
-//        mapView.clearAllPins()
         setPDF(mapView, floorList[currentFloorIndex].mapFileName)
         val currFloor = floorList[currentFloorIndex]
         mapView.setOriginalDimensions(currFloor.mapWidth, currFloor.mapHeight)

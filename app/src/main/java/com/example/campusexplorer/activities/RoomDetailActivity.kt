@@ -19,8 +19,6 @@ import com.example.campusexplorer.adapter.RoomDetailAdapter
 import com.example.campusexplorer.filter.FilterData
 import com.example.campusexplorer.storage.Storage
 import com.google.gson.Gson
-import java.text.SimpleDateFormat
-import java.util.*
 
 class RoomDetailActivity : AppCompatActivity() {
 

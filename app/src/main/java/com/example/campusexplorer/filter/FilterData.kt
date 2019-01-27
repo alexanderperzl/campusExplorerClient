@@ -79,8 +79,35 @@ object FilterData {
         val filteredLecturesForBuilding = getFilteredDataForBuilding(building, true)
         val gson = Gson()
         Log.d(TAG, "begin: $beginTime, end: $endTime")
-        Log.d(TAG, "filtered for floor: ${gson.toJson(filteredDataForFloor.map { lecture -> lecture.events.map { event -> Pair(event.time, event.room) } })}")
-        Log.d(TAG, "total - time is: ${filteredLecturesForBuilding.map { lecture -> lecture.events.map { event -> Pair(event.time, event.room) } }.size - filteredDataForFloor.map { lecture -> lecture.events.map { event -> Pair(event.time, event.room) } }.size}")
+        Log.d(
+            TAG,
+            "filtered for floor: ${gson.toJson(filteredDataForFloor.map { lecture ->
+                lecture.events.map { event ->
+                    Pair(
+                        event.time,
+                        event.room
+                    )
+                }
+            })}"
+        )
+        Log.d(
+            TAG,
+            "total - time is: ${filteredLecturesForBuilding.map { lecture ->
+                lecture.events.map { event ->
+                    Pair(
+                        event.time,
+                        event.room
+                    )
+                }
+            }.size - filteredDataForFloor.map { lecture ->
+                lecture.events.map { event ->
+                    Pair(
+                        event.time,
+                        event.room
+                    )
+                }
+            }.size}"
+        )
 
         val rooms = Storage.findAllRooms(floor._id)
         return rooms.filter { room ->
@@ -97,8 +124,6 @@ object FilterData {
     ): List<Lecture> {
         var filteredLectures = getFilteredDataForBuilding(building)
         val rooms = Storage.findAllRooms(floor._id)
-        val gson = Gson()
-//        Log.d(TAG, "rooms" + gson.toJson(rooms.map { room -> room.name }))
 
         filteredLectures = filteredLectures.asSequence()
             // remove all events which are not on this floor
@@ -127,7 +152,6 @@ object FilterData {
                 }
             }
             .toList()
-//        Log.d(TAG, gson.toJson(filteredLectures))
         return filteredLectures
     }
 
@@ -178,9 +202,6 @@ object FilterData {
             })
             .toList()
 
-//        Log.d(TAG, "room triple:")
-//        Log.d(TAG, gson.toJson(Triple(room, roomLectures, getCurrentLecture(roomLectures, beginTime, endTime))))
-
         return Triple(room, roomLectures, getCurrentLecture(roomLectures, beginTime))
     }
 
@@ -207,7 +228,6 @@ object FilterData {
         building: Building,
         ignoreTypeAndFaculty: Boolean = false
     ): List<Lecture> {
-//        Log.d(TAG, "filtering data")
         val allLectures = Storage.getBuildingLectures(building)
         var filteredLectures = allLectures!!.filter { lecture ->
             lecture.events.any { event ->
