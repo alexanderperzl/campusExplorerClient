@@ -1,6 +1,5 @@
 package com.example.campusexplorer.adapter
 
-import android.graphics.Color
 import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.RecyclerView
 import android.text.Html
@@ -11,11 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.example.campusexplorer.R
 import com.example.campusexplorer.model.Event
 import com.example.campusexplorer.model.Lecture
 import com.example.campusexplorer.model.Room
-import kotlin.math.absoluteValue
 
 
 class RoomDetailAdapter(private val myDataset : Triple<Room, List<Lecture>, Lecture?>) :
