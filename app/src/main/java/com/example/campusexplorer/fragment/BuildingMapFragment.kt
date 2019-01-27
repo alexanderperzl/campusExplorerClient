@@ -192,6 +192,7 @@ class BuildingMapFragment : Fragment() {
         override fun run() {
             fragmentRef.activity!!.runOnUiThread {
                 fragmentRef.updateUI()
+                fragmentRef.seekBarLastChangeTimer?.cancel()
             }
 
         }
