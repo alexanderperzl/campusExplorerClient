@@ -224,9 +224,6 @@ class BuildingMapFragment : Fragment() {
     }
 
     private fun showDialogWindow(e: MotionEvent, roomData: Map<String, String>) {
-        if (seekbarState == R.id.action_free_rooms) {
-            return
-        }
         dialog.setContentView(R.layout.info_window)
         val dialogWindow = dialog.window
         dialogWindow.setGravity(Gravity.START or Gravity.TOP)
@@ -235,28 +232,37 @@ class BuildingMapFragment : Fragment() {
         layoutParams.y = e.y.toInt() - 30
         dialogWindow.attributes = layoutParams
         dialog.show()
-        val popUpWindow = dialog.findViewById<View>(R.id.infoWindowButton)
         val seekBarValues = seekBarToTime()
         val room = Storage.findRoom(roomData["roomId"]!!)
-        val floor = Storage.findFloor(room!!.floor)
-        val building = Storage.findBuildingForFloor(floor!!._id)
-        Log.d(TAG, "room ${room.name} thinks it has events")
-        val lectures = FilterData.getFilteredDataForFloor(building!!, floor, seekBarValues[0], seekBarValues[1])
-        val roomTriple = FilterData.getRoomTriple(
-            room!!,
-            lectures,
-            seekBarValues[0]
-        )
-        Log.d(TAG, "lecture list of ${roomTriple.first} is ${roomTriple.second}")
-        val eventName = roomTriple.third!!.name
-        val eventType = roomTriple.third!!.type
-        popUpWindow.findViewById<TextView>(R.id.room_name).text = "Raum: ${room.name}"
-        val popUpEventTypeText = popUpWindow.findViewById<TextView>(R.id.event_type)
-        popUpEventTypeText.text = "Typ: ${eventType}"
-        val color = eventTypeToUiColor(eventType, activity!!.applicationContext)
-        popUpEventTypeText.setTextColor(color!!)
-        popUpWindow.findViewById<TextView>(R.id.event_name).text = eventName
-        popUpWindow.setOnClickListener { openRoomDetailActivity(roomData) }
+
+        if (seekbarState == R.id.action_free_rooms) {
+            dialog.setContentView(R.layout.info_window_free_room)
+            val popUpWindow = dialog.findViewById<View>(R.id.infoWindowFreeRoom)
+            popUpWindow.findViewById<TextView>(R.id.room_name).text = "Raum: ${room?.name}"
+        } else {
+
+            val floor = Storage.findFloor(room!!.floor)
+            val building = Storage.findBuildingForFloor(floor!!._id)
+            Log.d(TAG, "room ${room.name} thinks it has events")
+            val lectures = FilterData.getFilteredDataForFloor(building!!, floor, seekBarValues[0], seekBarValues[1])
+            val roomTriple = FilterData.getRoomTriple(
+                room!!,
+                lectures,
+                seekBarValues[0]
+            )
+            Log.d(TAG, "lecture list of ${roomTriple.first} is ${roomTriple.second}")
+            val eventName = roomTriple.third!!.name
+            val eventType = roomTriple.third!!.type
+
+            val popUpWindow = dialog.findViewById<View>(R.id.infoWindow)
+            popUpWindow.findViewById<TextView>(R.id.room_name).text = "Raum: ${room.name}"
+            val popUpEventTypeText = popUpWindow.findViewById<TextView>(R.id.event_type)
+            popUpEventTypeText.text = "Typ: ${eventType}"
+            val color = eventTypeToUiColor(eventType, activity!!.applicationContext)
+            popUpEventTypeText.setTextColor(color!!)
+            popUpWindow.findViewById<TextView>(R.id.event_name).text = eventName
+            popUpWindow.setOnClickListener { openRoomDetailActivity(roomData) }
+        }
     }
 
     private fun openRoomDetailActivity(roomData: Map<String, String>) {
