@@ -40,11 +40,11 @@ class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = 
     private val paint = Paint()
     private val vPin = PointF()
     private var sPinList: MutableList<Triple<PointF, Map<String, String>, PinColor.Color>> = ArrayList()
-    private var pinGreen = BitmapUtil.createCrispBitmap(R.drawable.pin_64, resources)
-    private var pinOrange = BitmapUtil.createCrispBitmap(R.drawable.pin_64_orange, resources)
-    private var pinBlue = BitmapUtil.createCrispBitmap(R.drawable.pin_64_blue, resources)
-    private var pinGrey = BitmapUtil.createCrispBitmap(R.drawable.pin_64_grey, resources)
-    private var pinFreeRoom = BitmapUtil.createCrispBitmap(R.drawable.pin_64_free_room, resources)
+    private var pinVorlesung = BitmapUtil.createCrispBitmap(R.drawable.pin_vorlesung, resources)
+    private var pinUebung = BitmapUtil.createCrispBitmap(R.drawable.pin_uebung, resources)
+    private var pinSeminar = BitmapUtil.createCrispBitmap(R.drawable.pin_seminar, resources)
+    private var pinOther = BitmapUtil.createCrispBitmap(R.drawable.pin_other, resources)
+    private var pinFreeRoom = BitmapUtil.createCrispBitmap(R.drawable.pin_free_room, resources)
     private var originalHeight: Int = 0
     private var originalWidth: Int = 0
 
@@ -100,11 +100,11 @@ class PinView @JvmOverloads constructor(context: Context, attr: AttributeSet? = 
 
     private fun pinForColor(color: PinColor.Color): Bitmap {
         return when (color) {
-            PinColor.Color.Orange -> pinOrange
-            PinColor.Color.Green -> pinGreen
-            PinColor.Color.Blue -> pinBlue
+            PinColor.Color.Orange -> pinUebung
+            PinColor.Color.Green -> pinVorlesung
+            PinColor.Color.Blue -> pinSeminar
             PinColor.Color.FreeRoom -> pinFreeRoom
-            else -> pinGrey
+            else -> pinOther
         }
     }
 

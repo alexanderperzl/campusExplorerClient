@@ -27,7 +27,7 @@
     <android.support.constraint.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="0dp" android:visibility="gone"
-            android:background="#33008577" android:elevation="5dp"
+            android:background="@color/spinnerBackground" android:elevation="5dp"
             android:id="@+id/spinnerWrapper" app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
