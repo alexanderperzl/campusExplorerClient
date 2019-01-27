@@ -49,8 +49,7 @@ class RoomDetailActivity : AppCompatActivity() {
         val building = Storage.findBuilding(buildingID)
         val room = Storage.findRoom(roomID)
 
-        val simpleDateFormat = SimpleDateFormat("HH:mm", Locale.GERMANY)
-        val currentTime = simpleDateFormat.format(Date())
+        val currentTime = intent.getStringExtra("time")
         val roomTriple =
             FilterData.getRoomTriple(room!!, FilterData.getFilteredDataForBuilding(building!!, true), currentTime)
         Log.d(TAG, "roomtriple")
@@ -67,7 +66,7 @@ class RoomDetailActivity : AppCompatActivity() {
         actionBar!!.setDisplayHomeAsUpEnabled(true)
 
         eventManager = LinearLayoutManager(this)
-        eventAdapter = RoomDetailAdapter(roomTriple.second)
+        eventAdapter = RoomDetailAdapter(roomTriple)
 
         eventView = findViewById<RecyclerView>(R.id.lecture_list_detail).apply {
             // use this setting to improve performance if you know that changes

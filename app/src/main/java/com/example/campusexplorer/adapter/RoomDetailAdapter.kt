@@ -1,8 +1,11 @@
 package com.example.campusexplorer.adapter
 
+import android.graphics.Color
+import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.RecyclerView
 import android.text.Html
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,10 +14,14 @@ import android.widget.TextView
 import com.example.campusexplorer.R
 import com.example.campusexplorer.model.Event
 import com.example.campusexplorer.model.Lecture
+import com.example.campusexplorer.model.Room
+import kotlin.math.absoluteValue
 
 
-class RoomDetailAdapter(private val myDataset: List<Lecture>) :
+class RoomDetailAdapter(private val myDataset : Triple<Room, List<Lecture>, Lecture?>) :
     RecyclerView.Adapter<RoomDetailAdapter.MyViewHolder>() {
+
+    val TAG = "RoomDetailActivity"
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -27,6 +34,7 @@ class RoomDetailAdapter(private val myDataset: List<Lecture>) :
         val event_link = view.findViewById<TextView>(R.id.event_link)
         val event_faculty = view.findViewById<TextView>(R.id.event_faculty)
         val event_type_icon = view.findViewById<ImageView>(R.id.event_type_icon)
+        val background = view.findViewById<ConstraintLayout>(R.id.item_container)
     }
 
 
@@ -42,19 +50,27 @@ class RoomDetailAdapter(private val myDataset: List<Lecture>) :
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.event_name.text = myDataset[position].name
-        holder.event_type.text =myDataset[position].type
-        holder.event_faculty.text = myDataset[position].faculty
-        val linkText = Html.fromHtml("<a href=\"${myDataset[position].link}\">LSF-Link</a>", Html.FROM_HTML_MODE_LEGACY)
+        val currentLecture : Lecture = myDataset.second[position]
+        holder.event_name.text = currentLecture.name
+        holder.event_type.text =currentLecture.type
+        holder.event_faculty.text = currentLecture.faculty
+        val linkText = Html.fromHtml("<a href=\"${currentLecture.link}\">LSF-Link</a>", Html.FROM_HTML_MODE_LEGACY)
         holder.event_link.text = linkText
         holder.event_link.movementMethod = LinkMovementMethod.getInstance()
 
-        val eventIcon = getEventTypeIcon(myDataset[position].type)
+        val eventIcon = getEventTypeIcon(currentLecture.type)
         holder.event_type_icon.setImageResource(eventIcon)
-        val eventIconBackground = getEventTypeIconBackground(myDataset[position].type)
+        val eventIconBackground = getEventTypeIconBackground(currentLecture.type)
         holder.event_type_icon.setBackgroundResource(eventIconBackground)
+        if (myDataset.second.indexOf(currentLecture) < myDataset.second.indexOfFirst { lecture ->  lecture.events[0] == myDataset.third!!.events[0]} ){
+            holder.background.alpha = 0.5f
+        }
+        if (currentLecture.events[0] == myDataset.third!!.events[0]){
+            Log.d(TAG, "$currentLecture is the current third ${myDataset.third}")
+            holder.background.setBackgroundResource(android.R.color.holo_green_dark)
+        }
 
-        var events : List<Event> = myDataset[position].events.distinctBy {it.dayOfWeek to it.time}
+        var events : List<Event> = currentLecture.events.distinctBy {it.dayOfWeek to it.time}
         val eventTimes = events.fold("") { accumulator, item -> accumulator + "${item.cycle}, ${item.dayOfWeek}, ${item.time} \n"}.replaceAfterLast("t.", "")
 
         holder.event_times.text = eventTimes
@@ -79,5 +95,5 @@ class RoomDetailAdapter(private val myDataset: List<Lecture>) :
     }
 
     // Return the size of your dataset (invoked by the layout manager)
-    override fun getItemCount() = myDataset.size
+    override fun getItemCount() = myDataset.second.size
 }

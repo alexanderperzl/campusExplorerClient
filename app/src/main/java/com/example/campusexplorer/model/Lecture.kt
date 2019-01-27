@@ -8,4 +8,8 @@ data class Lecture(
     val type: String,
     val faculty: String,
     val link: String
-)
+) {
+    override fun toString(): String {
+        return "Lecture(_id='$_id', name='$name', events=$events, department='$department', type='$type', faculty='$faculty', link='$link')"
+    }
+}

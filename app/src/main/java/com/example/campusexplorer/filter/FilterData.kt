@@ -134,7 +134,7 @@ object FilterData {
     fun getRoomTriple(
         room: Room,
         filteredLectures: List<Lecture>,
-        beginTime: String = "14:00", endTime: String = beginTime
+        beginTime: String = "14:00"
     ): Triple<Room, List<Lecture>, Lecture?> {
         val roomLectures = filteredLectures.asSequence()
             // remove all events which are not in this room
@@ -174,10 +174,9 @@ object FilterData {
             }.asSequence()
             // finally, sort them by their starting beginTime
             .sortedWith(compareBy { lecture ->
-                timeRegex.findAll(lecture.events[0].time).toList().map { it -> it.value }.getOrElse(0) { "" }
+                timeRegex.findAll(lecture.events[0].time).toList().map { it.value }.getOrElse(0) { "" }
             })
             .toList()
-        val gson = Gson()
 
 //        Log.d(TAG, "room triple:")
 //        Log.d(TAG, gson.toJson(Triple(room, roomLectures, getCurrentLecture(roomLectures, beginTime, endTime))))
@@ -273,7 +272,7 @@ object FilterData {
         if (lectureType == eventType) {
             return true
         } else {
-            if (eventType == "Sonstiges" && !(eventTypes.asSequence().map { it -> it.name }.contains(lectureType))) {
+            if (eventType == "Sonstiges" && !(eventTypes.asSequence().map { it.name }.contains(lectureType))) {
                 return true
             }
         }
