@@ -8,6 +8,6 @@
             android:title="@string/settings"
             app:showAsAction="ifRoom"/>
     <item android:title="Server IP" android:id="@+id/ip"/>
-    <item android:title="Show Tour" android:id="@+id/show_tour"/>
+    <item android:title="Tutorial" android:id="@+id/show_tour"/>
 
 </menu>
